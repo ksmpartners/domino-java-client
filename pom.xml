@@ -1,14 +1,15 @@
 <project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://maven.apache.org/POM/4.0.0" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.ksmpartners</groupId>
-    <artifactId>domino-api-client</artifactId>
+    <artifactId>domino-java-client</artifactId>
     <packaging>jar</packaging>
     <version>5.5.1</version>
     <name>Domino Data Lab API Client</name>
     <description>Domino Data Lab API Client to connect to Domino web services using Java HTTP Client.</description>
+    <url>https://github.com/ksmpartners/domino-java-client</url>
     <properties>
         <java.version>11</java.version>
-        <project.build.sourceEncoding>ISO-8859-1</project.build.sourceEncoding>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
     <licenses>
         <license>
@@ -27,6 +28,27 @@
         <url>https://github.com/ksmpartners/domino-java-client</url>
         <tag>HEAD</tag>
     </scm>
+    <developers>
+        <developer>
+            <id>melloware</id>
+            <name>Emil Lefkof</name>
+            <email>elefkof@ksmpartners.com</email>
+            <roles>
+                <role>Buildmaster</role>
+                <role>Developer</role>
+            </roles>
+            <timezone>America/New_York</timezone>
+        </developer>
+        <developer>
+            <id>mharnish</id>
+            <name>Mike Harnish</name>
+            <email>mharnish@ksmpartners.com</email>
+            <roles>
+                <role>Developer</role>
+            </roles>
+            <timezone>America/New_York</timezone>
+        </developer>
+    </developers>
     <dependencies>
         <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>
