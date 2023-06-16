@@ -11,7 +11,7 @@
 <br>
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![CI](https://github.com/ksmpartners/domino-cli/actions/workflows/build.yml/badge.svg)](https://github.com/ksmpartners/domino-cli/actions/workflows/build.yml)
+[![CI](https://github.com/ksmpartners/domino-java-client/actions/workflows/build.yml/badge.svg)](https://github.com/ksmpartners/domino-java-client/actions/workflows/build.yml)
 
 Domino Data Lab Java Client is a library that wrappers the REST API calls for Domino using a Java native HTTP client.
 
