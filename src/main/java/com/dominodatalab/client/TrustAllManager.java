@@ -1,16 +1,18 @@
 package com.dominodatalab.client;
 
+import javax.net.ssl.SSLContext;
+import javax.net.ssl.TrustManager;
+import javax.net.ssl.X509TrustManager;
 import java.security.KeyManagementException;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
 
-import javax.net.ssl.SSLContext;
-import javax.net.ssl.TrustManager;
-import javax.net.ssl.X509TrustManager;
-
+/**
+ * Manager to allow internal Domino instances without valid SSL Certs to still work.
+ */
 public class TrustAllManager {
 
-   private static final TrustManager[] TRUST_ALL_CERTS = new TrustManager[] { new X509TrustManager() {
+   private static final TrustManager[] TRUST_ALL_CERTS = new TrustManager[]{new X509TrustManager() {
       @Override
       public java.security.cert.X509Certificate[] getAcceptedIssuers() {
          return null;
@@ -23,7 +25,7 @@ public class TrustAllManager {
       @Override
       public void checkServerTrusted(final java.security.cert.X509Certificate[] certs, final String authType) {
       }
-   } };
+   }};
 
    public static SSLContext createSslContext() {
       SSLContext sslContext;
