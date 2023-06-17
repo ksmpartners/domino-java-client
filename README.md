@@ -24,16 +24,25 @@ To use this library you will need the following:
 - JDK 11+
 - Domino API Key to an active Domino instance
 
-# Build and Test
-
-To build the project requires Apache Maven:
-
-```shell
-$ mvn clean package
-```
-
 # Usage
 
+The library is available on Maven Central for use in Maven/Gradle/Ivy etc.
+
+**Apache Maven:**
+```xml
+<dependency>
+    <groupId>com.ksmpartners</groupId>
+    <artifactId>domino-java-client</artifactId>
+    <version>${domino.version}</version>
+</dependency>
+```
+
+**Gradle:**
+```groovy
+implementation group: 'com.ksmpartners', name: 'domino-java-client', version: '5.5.1'
+```
+
+**Example:**
 Using the library is simple, you just need a Domino API Key and URL.
 
 ```java
@@ -83,6 +92,14 @@ Result output:
   "userName": "hs12345",
   "email": "homer.simpson@springfield.org"
 }
+```
+
+# Build and Test
+
+To build the project requires Apache Maven:
+
+```shell
+$ mvn clean package
 ```
 
 ## Releasing
