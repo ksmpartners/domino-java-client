@@ -81,7 +81,7 @@ public class DominoTest {
 }
 ```
 
-Result output:
+**Resulting JSON output:**
 
 ```json
 {
