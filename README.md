@@ -10,7 +10,7 @@
 </div>
 <br>
 
-[![Maven](https://img.shields.io/maven-central/v/com.ksmpartners/domino-api-client.svg?style=for-the-badge)](https://repo1.maven.org/maven2/com/ksmpartners/domino-api-client/)
+[![Maven](https://img.shields.io/maven-central/v/com.ksmpartners/domino-java-client.svg?style=for-the-badge)](https://repo1.maven.org/maven2/com/ksmpartners/domino-java-client/)
 [![License](https://img.shields.io/github/license/ksmpartners/domino-java-client?style=for-the-badge&logo=mit)](https://opensource.org/licenses/MIT)
 [![Java CI with Maven](https://img.shields.io/github/actions/workflow/status/ksmpartners/domino-java-client/build.yml?branch=main&logo=GitHub&style=for-the-badge)](https://github.com/ksmpartners/domino-java-client/actions/workflows/build.yml)
 
