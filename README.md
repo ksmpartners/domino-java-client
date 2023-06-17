@@ -15,7 +15,7 @@
 [![Java CI with Maven](https://img.shields.io/github/actions/workflow/status/ksmpartners/domino-java-client/build.yml?branch=main&logo=GitHub&style=for-the-badge)](https://github.com/ksmpartners/domino-java-client/actions/workflows/build.yml)
 
 
-Domino Data Lab Java Client is a library that wrappers the REST API calls for Domino using a Java native HTTP client.
+[Domino Data Lab](https://www.dominodatalab.com/) Java Client is a library that wrappers the REST API calls for Domino using a Java native HTTP client.
 
 # Requirements
 
@@ -39,7 +39,7 @@ The library is available on Maven Central for use in Maven/Gradle/Ivy etc.
 
 **Gradle:**
 ```groovy
-implementation group: 'com.ksmpartners', name: 'domino-java-client', version: '5.5.1'
+implementation group: 'com.ksmpartners', name: 'domino-java-client', version: '${domino.version}'
 ```
 
 **Example:**
