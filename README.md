@@ -119,12 +119,10 @@ $ mvn install
 
 # License
 
-***
 Licensed under the [MIT](https://en.wikipedia.org/wiki/MIT_License) license.
 
 `SPDX-License-Identifier: MIT`
 
 # Copyright
 
-***
 Domino and Domino Data Lab are © 2023 Domino Data Lab, Inc. Made in San Francisco. 
