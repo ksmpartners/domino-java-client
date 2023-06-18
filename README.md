@@ -96,27 +96,35 @@ public class DominoTest {
 
 # Build and Test
 
-To build the project requires Apache Maven:
+Build the project with Apache Maven:
 
 ```shell
 $ mvn clean package
 ```
 
-## Releasing
+Install it to your local Maven repository with:
+
+```shell
+$ mvn install
+```
+
+# Release
 
 - Run `mvn versions:set -DgenerateBackupPoms=false -DnewVersion=5.5.1` to update all modules versions
 - Commit and push the changes to GitHub
-- In GitHub create a new Release titled `5.5.1` to tag this release
+- In GitHub create a new release titled `5.5.1` to tag this release
 - Run `mvn clean deploy -Prelease` to push to Maven Central
 
-### License
+(Replace `5.5.1` in the steps above with the actual SEMVER release number.)
+
+# License
 
 ***
 Licensed under the [MIT](https://en.wikipedia.org/wiki/MIT_License) license.
 
 `SPDX-License-Identifier: MIT`
 
-### Copyright
+# Copyright
 
 ***
 Domino and Domino Data Lab are © 2023 Domino Data Lab, Inc. Made in San Francisco. 
