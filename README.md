@@ -28,12 +28,22 @@ To use this library you will need the following:
 
 The library is available on Maven Central for use in Maven/Gradle/Ivy etc.
 
-**Apache Maven:**
+**Apache Maven (javax):**
 ```xml
 <dependency>
     <groupId>com.ksmpartners</groupId>
     <artifactId>domino-java-client</artifactId>
     <version>${domino.version}</version>
+</dependency>
+```
+
+**Apache Maven (jakarta):**
+```xml
+<dependency>
+    <groupId>com.ksmpartners</groupId>
+    <artifactId>domino-java-client</artifactId>
+    <version>${domino.version}</version>
+    <classifier>jakarta</classifier>
 </dependency>
 ```
 
