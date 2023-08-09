@@ -1,14 +1,4 @@
-<div align="center">
-    <div style="flex-grow: 1; width: 50vw"> 
-<a href="https://www.dominodatalab.com/" alt="Domino Data Lab">
-   <img class="spinner" loading="lazy" height="80" width="116" src="https://www.dominodatalab.com/hubfs/NBM/domino-logo-spinner.webp" alt="Domino Data Logo - Graphic part">
-   <img loading="lazy" height="80" src="https://www.dominodatalab.com/hubfs/NBM/domino-logo-text.webp" alt="Domino Data Logo - Text part">
-</a>
-    </div>
- 
 # Domino Data Lab Java Client
-</div>
-<br>
 
 [![Maven](https://img.shields.io/maven-central/v/com.ksmpartners/domino-java-client.svg?style=for-the-badge)](https://repo1.maven.org/maven2/com/ksmpartners/domino-java-client/)
 [![License](https://img.shields.io/github/license/ksmpartners/domino-java-client?style=for-the-badge&logo=mit)](https://opensource.org/licenses/MIT)
