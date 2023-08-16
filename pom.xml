@@ -3,7 +3,7 @@
     <groupId>com.ksmpartners</groupId>
     <artifactId>domino-java-client</artifactId>
     <packaging>jar</packaging>
-    <version>5.5.2</version>
+    <version>5.7.0</version>
     <name>Domino Data Lab API Client</name>
     <description>Domino Data Lab API Client to connect to Domino web services using Java HTTP Client.</description>
     <url>https://github.com/ksmpartners/domino-java-client</url>
@@ -43,6 +43,15 @@
             <id>mharnish</id>
             <name>Mike Harnish</name>
             <email>mharnish@ksmpartners.com</email>
+            <roles>
+                <role>Developer</role>
+            </roles>
+            <timezone>America/New_York</timezone>
+        </developer>
+        <developer>
+            <id>kjhoerr</id>
+            <name>Kevin Hoerr</name>
+            <email>khoerr@ksmpartners.com</email>
             <roles>
                 <role>Developer</role>
             </roles>
