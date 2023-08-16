@@ -17284,7 +17284,7 @@
       "get": {
         "operationId": "getKubecostLiveness",
         "tags": [
-          "controlcenter"
+          "Control Center"
         ],
         "summary": "this endpoint will be temporarily used to discover if Kubecost is installed and will be removed if we retire the current cost& compute page",
         "responses": {}
