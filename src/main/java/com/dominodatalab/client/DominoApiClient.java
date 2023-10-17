@@ -10,8 +10,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 
-import org.openapitools.jackson.nullable.JsonNullableModule;
-
 import lombok.experimental.UtilityClass;
 
 /**
@@ -50,7 +48,6 @@ public class DominoApiClient {
       mapper.enable(SerializationFeature.WRITE_ENUMS_USING_TO_STRING);
       mapper.enable(DeserializationFeature.READ_ENUMS_USING_TO_STRING);
       mapper.disable(DeserializationFeature.ADJUST_DATES_TO_CONTEXT_TIME_ZONE);
-      mapper.registerModule(new JsonNullableModule());
       final JavaTimeModule module = new JavaTimeModule();
       mapper.registerModule(module);
       return mapper;
