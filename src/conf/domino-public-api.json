@@ -319,40 +319,52 @@
       "CostAllocationV1": {
         "properties": {
           "cpuCoreHours": {
-            "type": "double"
+            "format": "double",
+            "type": "integer"
           },
           "cpuCoreRequestAverage": {
-            "type": "double"
+            "format": "double",
+            "type": "integer"
           },
           "cpuCoreUsageAverage": {
-            "type": "double"
+            "format": "double",
+            "type": "integer"
           },
           "cpuCores": {
-            "type": "double"
+            "format": "double",
+            "type": "integer"
           },
           "cpuCost": {
-            "type": "double"
+            "format": "double",
+            "type": "integer"
           },
           "cpuCostAdjustment": {
-            "type": "double"
+            "format": "double",
+            "type": "integer"
           },
           "cpuEfficincy": {
-            "type": "double"
+            "format": "double",
+            "type": "integer"
           },
           "discount": {
-            "type": "double"
+            "format": "double",
+            "type": "integer"
           },
           "gpuCount": {
-            "type": "double"
+            "format": "double",
+            "type": "integer"
           },
           "gpuHours": {
-            "type": "double"
+            "format": "double",
+            "type": "integer"
           },
           "gpucost": {
-            "type": "double"
+            "format": "double",
+            "type": "integer"
           },
           "gpucostAdjustment": {
-            "type": "double"
+            "format": "double",
+            "type": "integer"
           },
           "labels": {
             "properties": {
@@ -390,10 +402,12 @@
             "type": "object"
           },
           "loadBalancerCost": {
-            "type": "double"
+            "format": "double",
+            "type": "integer"
           },
           "loadBalancerCostAdjustment": {
-            "type": "double"
+            "format": "double",
+            "type": "integer"
           },
           "name": {
             "type": "string"
@@ -404,25 +418,31 @@
           "pv": {
             "properties": {
               "pvByteHours": {
-                "type": "double"
+                "format": "double",
+                "type": "integer"
               },
               "pvBytes": {
-                "type": "double"
+                "format": "double",
+                "type": "integer"
               },
               "pvCost": {
-                "type": "double"
+                "format": "double",
+                "type": "integer"
               },
               "pvCostAdjustment": {
-                "type": "double"
+                "format": "double",
+                "type": "integer"
               },
               "pvs": {
                 "additionalProperties": {
                   "properties": {
                     "byteHours": {
-                      "type": "double"
+                      "format": "double",
+                      "type": "integer"
                     },
                     "cost": {
-                      "type": "double"
+                      "format": "double",
+                      "type": "integer"
                     }
                   },
                   "type": "object"
@@ -433,13 +453,16 @@
             "type": "object"
           },
           "ramCost": {
-            "type": "double"
+            "format": "double",
+            "type": "integer"
           },
           "ramCostAdjustment": {
-            "type": "double"
+            "format": "double",
+            "type": "integer"
           },
           "totalCost": {
-            "type": "double"
+            "format": "double",
+            "type": "integer"
           },
           "window": {
             "properties": {
@@ -447,7 +470,8 @@
                 "type": "string"
               },
               "minutes": {
-                "type": "double"
+                "format": "double",
+                "type": "integer"
               },
               "start": {
                 "type": "string"
@@ -475,10 +499,12 @@
       "CostAssetsV1": {
         "properties": {
           "cpuCost": {
-            "type": "double"
+            "format": "double",
+            "type": "integer"
           },
           "gpuCost": {
-            "type": "double"
+            "format": "double",
+            "type": "integer"
           },
           "labels": {
             "properties": {
@@ -521,17 +547,18 @@
             "type": "object"
           },
           "ramCost": {
-            "type": "double"
+            "format": "double",
+            "type": "integer"
           },
           "totalCost": {
-            "type": "double"
+            "format": "double",
+            "type": "integer"
           },
           "type": {
             "type": "string"
           },
           "window": {
-            "$ref": "#/components/schemas/CostAssetsV1Window",
-            "type": "object"
+            "$ref": "#/components/schemas/CostAssetsV1Window"
           }
         },
         "type": "object"
@@ -542,7 +569,8 @@
             "type": "string"
           },
           "minutes": {
-            "type": "double"
+            "format": "double",
+            "type": "integer"
           },
           "start": {
             "type": "string"
