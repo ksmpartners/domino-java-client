@@ -30741,6 +30741,7 @@
             "name": "path",
             "required": false,
             "schema": {
+              "nullable": true,
               "type": "string"
             }
           }
