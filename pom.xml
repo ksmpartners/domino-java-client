@@ -3,7 +3,7 @@
     <groupId>com.ksmpartners</groupId>
     <artifactId>domino-java-client</artifactId>
     <packaging>jar</packaging>
-    <version>5.7.2</version>
+    <version>5.9.1.0</version>
     <name>Domino Data Lab API Client</name>
     <description>Domino Data Lab API Client to connect to Domino web services using Java HTTP Client.</description>
     <url>https://github.com/ksmpartners/domino-java-client</url>
@@ -127,6 +127,7 @@
                 <version>7.2.0</version>
                 <executions>
                     <execution>
+                        <id>domino-v4-endpoints</id>
                         <goals>
                             <goal>generate</goal>
                         </goals>
@@ -139,6 +140,30 @@
                             <apiPackage>com.dominodatalab.api.rest</apiPackage>
                             <modelPackage>com.dominodatalab.api.model</modelPackage>
                             <invokerPackage>com.dominodatalab.api.invoker</invokerPackage>
+                            <generateSupportingFiles>true</generateSupportingFiles>
+                            <generateModelTests>false</generateModelTests>
+                            <generateApiTests>false</generateApiTests>
+                            <configOptions>
+                                <serializableModel>false</serializableModel>
+                                <dateLibrary>java8</dateLibrary>
+                                <openApiNullable>false</openApiNullable>
+                            </configOptions>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>domino-public-endpoints</id>
+                        <goals>
+                            <goal>generate</goal>
+                        </goals>
+                        <configuration>
+                            <inputSpec>${project.basedir}/src/conf/domino-public-api.json</inputSpec>
+                            <skipValidateSpec>true</skipValidateSpec>
+                            <skipIfSpecIsUnchanged>true</skipIfSpecIsUnchanged>
+                            <generatorName>java</generatorName>
+                            <library>native</library>
+                            <apiPackage>com.dominodatalab.pub.rest</apiPackage>
+                            <modelPackage>com.dominodatalab.pub.model</modelPackage>
+                            <invokerPackage>com.dominodatalab.pub.invoker</invokerPackage>
                             <generateSupportingFiles>true</generateSupportingFiles>
                             <generateModelTests>false</generateModelTests>
                             <generateApiTests>false</generateApiTests>

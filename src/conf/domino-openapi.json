@@ -323,24 +323,32 @@
             "enum": [
               "MODEL_API_STATUS_CHANGE",
               "PROJECT_GOAL_MODEL_LINK_CHANGE",
+              "MODEL_REVIEW_CREATED",
               "JOB_STATUS_CHANGE",
               "WORKSPACE_TITLE_CHANGE",
               "PROJECT_STATUS_CHANGE",
-              "PROJECT_GOAL_CREATE",
               "APP_STATUS_CHANGE",
               "FILE_CHANGE",
               "PROJECT_GOAL_APP_LINK_CHANGE",
               "SCHEDULE_JOB_CONFIG_CHANGE",
+              "PROJECT_GOAL_STAGE_CHANGE",
+              "ALL_MODEL_REVIEWERS_APPROVED",
               "JOB_TITLE_CHANGE",
               "PROJECT_GOAL_TITLE_CHANGE",
               "COMMENT_UPDATED",
+              "MODEL_REVIEWER_APPROVED",
+              "MODEL_REVIEW_CANCELLED",
               "PROJECT_GOAL_DESCRIPTION_CHANGE",
               "PROJECT_STAGE_CHANGE",
               "COMMENT_ADDED",
+              "PROJECT_GOAL_ASSIGNMENT_CHANGE",
+              "PROJECT_GOAL_CREATE",
               "SCHEDULE_JOB_TRIGGER_CHANGE",
               "PROJECT_LINK_CHANGE",
               "PROJECT_GOAL_FILE_LINK_CHANGE",
               "PROJECT_GOAL_STATUS_CHANGE",
+              "REGISTERED_MODEL_STAGE_TRANSITIONED",
+              "MODEL_REVIEWER_REQUESTED_CHANGES",
               "PROJECT_GOAL_JOB_LINK_CHANGE",
               "COMMENT_ARCHIVED",
               "WORKSPACE_STATUS_CHANGE",
@@ -357,11 +365,13 @@
               "project",
               "job",
               "model_api",
-              "workspace",
               "comment",
               "app",
+              "goals",
               "schedule_job",
-              "files"
+              "files",
+              "workspace",
+              "registered_model"
             ],
             "type": "string"
           },
@@ -447,6 +457,9 @@
       },
       "domino.activity.api.AllMetadata": {
         "properties": {
+          "allModelReviewersApprovedMetadata": {
+            "$ref": "#/components/schemas/domino.activity.api.AllModelReviewersApprovedMetadata"
+          },
           "appStatusActivityMetaData": {
             "$ref": "#/components/schemas/domino.activity.api.AppStatusActivityMetaData"
           },
@@ -471,11 +484,17 @@
           "jobStatusActivityMetaData": {
             "$ref": "#/components/schemas/domino.activity.api.JobStatusActivityMetaData"
           },
+          "modelReviewActivityWithNotesMetadata": {
+            "$ref": "#/components/schemas/domino.activity.api.ModelReviewActivityWithNotesMetadata"
+          },
           "modelVersionStatusActivityMetaData": {
             "$ref": "#/components/schemas/domino.activity.api.ModelVersionStatusActivityMetaData"
           },
           "projectGoalAppLinkActivityMetadata": {
             "$ref": "#/components/schemas/domino.activity.api.ProjectGoalAppLinkActivityMetadata"
+          },
+          "projectGoalAssignmentChangeActivityMetadata": {
+            "$ref": "#/components/schemas/domino.activity.api.ProjectGoalAssignmentChangeActivityMetadata"
           },
           "projectGoalCreateActivityMetadata": {
             "$ref": "#/components/schemas/domino.activity.api.ProjectGoalCreateActivityMetadata"
@@ -488,6 +507,9 @@
           },
           "projectGoalModelLinkActivityMetadata": {
             "$ref": "#/components/schemas/domino.activity.api.ProjectGoalModelLinkActivityMetadata"
+          },
+          "projectGoalStageChangeActivityMetaData": {
+            "$ref": "#/components/schemas/domino.activity.api.ProjectGoalStageChangeActivityMetadata"
           },
           "projectGoalStatusChangeActivityMetadata": {
             "$ref": "#/components/schemas/domino.activity.api.ProjectGoalStatusChangeActivityMetadata"
@@ -509,6 +531,9 @@
           },
           "projectStatusChangeActivityMetaData": {
             "$ref": "#/components/schemas/domino.activity.api.ProjectStatusChangeActivityMetaData"
+          },
+          "registeredModelStageTransitionedMetadata": {
+            "$ref": "#/components/schemas/domino.activity.api.RegisteredModelStageTransitionedMetadata"
           },
           "scheduleJobActivityMetaData": {
             "$ref": "#/components/schemas/domino.activity.api.ScheduleJobActivityMetaData"
@@ -537,6 +562,8 @@
           "fileChangeActivityMetaData",
           "projectGoalCreateActivityMetadata",
           "projectGoalStatusChangeActivityMetadata",
+          "projectGoalStageChangeActivityMetaData",
+          "projectGoalAssignmentChangeActivityMetadata",
           "projectGoalUpdateTitleActivityMetadata",
           "projectGoalUpdateDescriptionActivityMetadata",
           "projectGoalFileLinkActivityMetadata",
@@ -544,7 +571,33 @@
           "projectGoalWorkspaceLinkActivityMetadata",
           "projectGoalAppLinkActivityMetadata",
           "projectGoalModelLinkActivityMetadata",
-          "projectLinkChangeActivityMetadata"
+          "projectLinkChangeActivityMetadata",
+          "modelReviewActivityWithNotesMetadata",
+          "allModelReviewersApprovedMetadata",
+          "registeredModelStageTransitionedMetadata"
+        ]
+      },
+      "domino.activity.api.AllModelReviewersApprovedMetadata": {
+        "properties": {
+          "initialStage": {
+            "type": "string"
+          },
+          "modelVersion": {
+            "format": "int32",
+            "type": "integer"
+          },
+          "reviewId": {
+            "type": "string"
+          },
+          "targetStage": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "modelVersion",
+          "initialStage",
+          "targetStage",
+          "reviewId"
         ]
       },
       "domino.activity.api.AppStatusActivityMetaData": {
@@ -762,6 +815,33 @@
           "commentCount"
         ]
       },
+      "domino.activity.api.ModelReviewActivityWithNotesMetadata": {
+        "properties": {
+          "initialStage": {
+            "type": "string"
+          },
+          "modelVersion": {
+            "format": "int32",
+            "type": "integer"
+          },
+          "notes": {
+            "type": "string"
+          },
+          "reviewId": {
+            "type": "string"
+          },
+          "targetStage": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "modelVersion",
+          "initialStage",
+          "targetStage",
+          "reviewId",
+          "notes"
+        ]
+      },
       "domino.activity.api.ModelVersionStatusActivityMetaData": {
         "properties": {
           "action": {
@@ -824,6 +904,20 @@
           "appVersionId",
           "projectGoalTitle",
           "name"
+        ]
+      },
+      "domino.activity.api.ProjectGoalAssignmentChangeActivityMetadata": {
+        "properties": {
+          "assignee": {
+            "nullable": true,
+            "type": "string"
+          },
+          "title": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "title"
         ]
       },
       "domino.activity.api.ProjectGoalCreateActivityMetadata": {
@@ -931,12 +1025,38 @@
           "name"
         ]
       },
+      "domino.activity.api.ProjectGoalStageChangeActivityMetadata": {
+        "properties": {
+          "fromStage": {
+            "$ref": "#/components/schemas/domino.activity.api.ProjectStage"
+          },
+          "title": {
+            "type": "string"
+          },
+          "toStage": {
+            "$ref": "#/components/schemas/domino.activity.api.ProjectStage"
+          }
+        },
+        "required": [
+          "fromStage",
+          "toStage",
+          "title"
+        ]
+      },
       "domino.activity.api.ProjectGoalStatusChangeActivityMetadata": {
         "properties": {
+          "fromStatus": {
+            "enum": [
+              "complete",
+              "incomplete",
+              "delete"
+            ],
+            "type": "string"
+          },
           "projectGoalTitle": {
             "type": "string"
           },
-          "statusChange": {
+          "toStatus": {
             "enum": [
               "complete",
               "incomplete",
@@ -946,7 +1066,8 @@
           }
         },
         "required": [
-          "statusChange",
+          "fromStatus",
+          "toStatus",
           "projectGoalTitle"
         ]
       },
@@ -1111,6 +1232,25 @@
           "projectName",
           "fromStatus",
           "toStatus"
+        ]
+      },
+      "domino.activity.api.RegisteredModelStageTransitionedMetadata": {
+        "properties": {
+          "initialStage": {
+            "type": "string"
+          },
+          "modelVersion": {
+            "format": "int32",
+            "type": "integer"
+          },
+          "targetStage": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "modelVersion",
+          "initialStage",
+          "targetStage"
         ]
       },
       "domino.activity.api.ScheduleJobActivityMetaData": {
@@ -1434,6 +1574,42 @@
           "diskUtilization"
         ]
       },
+      "domino.admin.interface.ConfigSettingDto": {
+        "properties": {
+          "key": {
+            "type": "string"
+          },
+          "nameMaybe": {
+            "nullable": true,
+            "type": "string"
+          },
+          "namespace": {
+            "type": "string"
+          },
+          "value": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "namespace",
+          "key",
+          "value"
+        ]
+      },
+      "domino.admin.interface.ConfigSettingEntityDto": {
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "setting": {
+            "$ref": "#/components/schemas/domino.admin.interface.ConfigSettingDto"
+          }
+        },
+        "required": [
+          "id",
+          "setting"
+        ]
+      },
       "domino.admin.interface.ExecutionOverview": {
         "properties": {
           "computeClusterOverviews": {
@@ -1677,6 +1853,13 @@
           "appName": {
             "type": "string"
           },
+          "appURL": {
+            "type": "string"
+          },
+          "colorTheme": {
+            "nullable": true,
+            "type": "string"
+          },
           "defaultProjectName": {
             "type": "string"
           },
@@ -1691,6 +1874,9 @@
           },
           "helpContentUrl": {
             "type": "string"
+          },
+          "hideAddProjectAction": {
+            "type": "boolean"
           },
           "hideDownloadDominoCli": {
             "type": "boolean"
@@ -1724,14 +1910,20 @@
           },
           "supportEmail": {
             "type": "string"
+          },
+          "supportUrl": {
+            "type": "string"
           }
         },
         "required": [
+          "appURL",
           "errorPageContactEmail",
           "defaultProjectName",
           "favicon",
           "gitCredentialsDescription",
           "helpContentUrl",
+          "supportUrl",
+          "hideAddProjectAction",
           "hidePopularProjects",
           "hideDownloadDominoCli",
           "hideMarketingDisclaimer",
@@ -1754,6 +1946,16 @@
           }
         },
         "type": "object"
+      },
+      "domino.common.DominoId": {
+        "properties": {
+          "raw": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "raw"
+        ]
       },
       "domino.common.ProjectId": {
         "properties": {
@@ -1943,6 +2145,20 @@
           "totalCostAmount"
         ]
       },
+      "domino.common.gateway.search.CollaboratorDetails": {
+        "properties": {
+          "highlightedUsername": {
+            "type": "string"
+          },
+          "username": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "username",
+          "highlightedUsername"
+        ]
+      },
       "domino.common.gateway.search.EntityHighlight": {
         "properties": {
           "entityName": {
@@ -2083,6 +2299,274 @@
           "maybeHighlightedModelAuthor"
         ]
       },
+      "domino.common.gateway.search.SearchCommentDTO": {
+        "properties": {
+          "contextDescription": {
+            "type": "string"
+          },
+          "offset": {
+            "format": "int32",
+            "type": "integer"
+          },
+          "project": {
+            "$ref": "#/components/schemas/domino.common.gateway.search.SearchProjectDetails"
+          }
+        },
+        "required": [
+          "project",
+          "contextDescription",
+          "offset"
+        ]
+      },
+      "domino.common.gateway.search.SearchDatasetDTO": {
+        "properties": {
+          "authorName": {
+            "type": "string"
+          },
+          "created": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "project": {
+            "$ref": "#/components/schemas/domino.common.gateway.search.SearchProjectDetails"
+          },
+          "status": {
+            "type": "string"
+          },
+          "tagNames": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          }
+        },
+        "required": [
+          "description",
+          "authorName",
+          "status",
+          "created",
+          "project",
+          "tagNames"
+        ]
+      },
+      "domino.common.gateway.search.SearchEnvironmentDTO": {
+        "properties": {
+          "description": {
+            "type": "string"
+          },
+          "dockerfile": {
+            "type": "string"
+          },
+          "visibility": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "description",
+          "visibility",
+          "dockerfile"
+        ]
+      },
+      "domino.common.gateway.search.SearchFileDTO": {
+        "properties": {
+          "codeSnippet": {
+            "nullable": true,
+            "type": "string"
+          },
+          "project": {
+            "$ref": "#/components/schemas/domino.common.gateway.search.SearchProjectDetails"
+          }
+        },
+        "required": [
+          "project"
+        ]
+      },
+      "domino.common.gateway.search.SearchModelDTO": {
+        "properties": {
+          "collaborators": {
+            "items": {
+              "$ref": "#/components/schemas/domino.common.gateway.search.CollaboratorDetails"
+            },
+            "type": "array"
+          },
+          "environmentLink": {
+            "type": "string"
+          },
+          "environmentName": {
+            "type": "string"
+          },
+          "projects": {
+            "items": {
+              "$ref": "#/components/schemas/domino.common.gateway.search.SearchProjectDetails"
+            },
+            "type": "array"
+          }
+        },
+        "required": [
+          "environmentName",
+          "environmentLink",
+          "projects",
+          "collaborators"
+        ]
+      },
+      "domino.common.gateway.search.SearchPageGatewayDTO": {
+        "properties": {
+          "hasMoreResults": {
+            "type": "boolean"
+          },
+          "results": {
+            "items": {
+              "$ref": "#/components/schemas/domino.common.gateway.search.SearchPageResultGatewayDTO"
+            },
+            "type": "array"
+          }
+        },
+        "required": [
+          "results",
+          "hasMoreResults"
+        ]
+      },
+      "domino.common.gateway.search.SearchPageResultGatewayDTO": {
+        "properties": {
+          "area": {
+            "type": "string"
+          },
+          "commentInfo": {
+            "$ref": "#/components/schemas/domino.common.gateway.search.SearchCommentDTO",
+            "nullable": true
+          },
+          "datasetInfo": {
+            "$ref": "#/components/schemas/domino.common.gateway.search.SearchDatasetDTO",
+            "nullable": true
+          },
+          "displayText": {
+            "nullable": true,
+            "type": "string"
+          },
+          "environmentInfo": {
+            "$ref": "#/components/schemas/domino.common.gateway.search.SearchEnvironmentDTO",
+            "nullable": true
+          },
+          "featureViewInfo": {
+            "$ref": "#/components/schemas/domino.common.gateway.search.FeatureViewSearchResultDTO",
+            "nullable": true
+          },
+          "fileInfo": {
+            "$ref": "#/components/schemas/domino.common.gateway.search.SearchFileDTO",
+            "nullable": true
+          },
+          "id": {
+            "nullable": true,
+            "pattern": "^[0-9a-f]{24}$",
+            "type": "string"
+          },
+          "link": {
+            "type": "string"
+          },
+          "modelInfo": {
+            "$ref": "#/components/schemas/domino.common.gateway.search.SearchModelDTO",
+            "nullable": true
+          },
+          "ownerId": {
+            "nullable": true,
+            "pattern": "^[0-9a-f]{24}$",
+            "type": "string"
+          },
+          "path": {
+            "nullable": true,
+            "type": "string"
+          },
+          "projectId": {
+            "nullable": true,
+            "pattern": "^[0-9a-f]{24}$",
+            "type": "string"
+          },
+          "projectInfo": {
+            "$ref": "#/components/schemas/domino.common.gateway.search.SearchProjectDTO",
+            "nullable": true
+          },
+          "runInfo": {
+            "$ref": "#/components/schemas/domino.common.gateway.search.SearchRunDTO",
+            "nullable": true
+          }
+        },
+        "required": [
+          "link",
+          "area"
+        ]
+      },
+      "domino.common.gateway.search.SearchProjectDTO": {
+        "properties": {
+          "blockerReason": {
+            "nullable": true,
+            "type": "string"
+          },
+          "goal": {
+            "nullable": true,
+            "type": "string"
+          },
+          "goalLink": {
+            "type": "string"
+          },
+          "isRestricted": {
+            "nullable": true,
+            "type": "boolean"
+          },
+          "snippet": {
+            "type": "string"
+          },
+          "tags": {
+            "items": {
+              "$ref": "#/components/schemas/domino.common.gateway.search.SearchProjectTag"
+            },
+            "type": "array"
+          }
+        },
+        "required": [
+          "snippet",
+          "tags",
+          "goalLink"
+        ]
+      },
+      "domino.common.gateway.search.SearchProjectDetails": {
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "projectLink": {
+            "type": "string"
+          },
+          "projectName": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "projectName",
+          "projectLink"
+        ]
+      },
+      "domino.common.gateway.search.SearchProjectTag": {
+        "properties": {
+          "id": {
+            "pattern": "^[0-9a-f]{24}$",
+            "type": "string"
+          },
+          "isApproved": {
+            "type": "boolean"
+          },
+          "name": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "name",
+          "isApproved"
+        ]
+      },
       "domino.common.gateway.search.SearchResultGatewayDTO": {
         "properties": {
           "area": {
@@ -2122,6 +2606,44 @@
         "required": [
           "link",
           "area"
+        ]
+      },
+      "domino.common.gateway.search.SearchRunDTO": {
+        "properties": {
+          "command": {
+            "type": "string"
+          },
+          "completed": {
+            "type": "string"
+          },
+          "duration": {
+            "type": "string"
+          },
+          "jobLink": {
+            "type": "string"
+          },
+          "ownerName": {
+            "type": "string"
+          },
+          "projectName": {
+            "type": "string"
+          },
+          "resultLink": {
+            "type": "string"
+          },
+          "status": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "command",
+          "status",
+          "completed",
+          "duration",
+          "ownerName",
+          "projectName",
+          "jobLink",
+          "resultLink"
         ]
       },
       "domino.common.gateway.search.TagKeyHighlight": {
@@ -2813,6 +3335,16 @@
           "stateMap"
         ]
       },
+      "domino.common.util.yaml.DefaultYamlString": {
+        "properties": {
+          "raw": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "raw"
+        ]
+      },
       "domino.computecluster.api.ComputeClusterConfig": {
         "properties": {
           "clusterType": {
@@ -3145,52 +3677,6 @@
           "workerCount"
         ]
       },
-      "domino.computegrid.ExecutionCheckpoint": {
-        "properties": {
-          "checkpointName": {
-            "enum": [
-              "UserFilesSaved",
-              "ResourcesCreated",
-              "NodeAssigned",
-              "VolumesMounted",
-              "ResourcesDeleted",
-              "QuotaChecked",
-              "VolumesReleased",
-              "UserCodeLaunched",
-              "FilesPrepared",
-              "Acknowledged",
-              "ImagesPulled"
-            ],
-            "type": "string"
-          },
-          "completedTimestamp": {
-            "format": "date-time",
-            "nullable": true,
-            "type": "string"
-          },
-          "message": {
-            "nullable": true,
-            "type": "string"
-          },
-          "status": {
-            "enum": [
-              "Pending",
-              "Completed",
-              "Error"
-            ],
-            "type": "string"
-          },
-          "timeSpentMillis": {
-            "format": "int64",
-            "nullable": true,
-            "type": "integer"
-          }
-        },
-        "required": [
-          "checkpointName",
-          "status"
-        ]
-      },
       "domino.computegrid.ExecutionEventDto": {
         "properties": {
           "attempt": {
@@ -3417,6 +3903,151 @@
           "pagination"
         ]
       },
+      "domino.computegrid.MonitoredExecutionResource": {
+        "properties": {
+          "debugText": {
+            "nullable": true,
+            "type": "string"
+          },
+          "extraInfo": {
+            "additionalProperties": true,
+            "nullable": true,
+            "type": "object"
+          },
+          "fullName": {
+            "type": "string"
+          },
+          "helpText": {
+            "nullable": true,
+            "type": "string"
+          },
+          "lastEventTimestamp": {
+            "format": "date-time",
+            "nullable": true,
+            "type": "string"
+          },
+          "shortName": {
+            "type": "string"
+          },
+          "startupStatus": {
+            "enum": [
+              "READY",
+              "IN_PROGRESS",
+              "WARNING",
+              "UNKNOWN"
+            ],
+            "type": "string"
+          },
+          "startupStatusMessage": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "shortName",
+          "fullName",
+          "startupStatus",
+          "startupStatusMessage"
+        ]
+      },
+      "domino.computegrid.MonitoredExecutionResourceList": {
+        "properties": {
+          "combinedResourceStatus": {
+            "enum": [
+              "READY",
+              "IN_PROGRESS",
+              "WARNING",
+              "UNKNOWN"
+            ],
+            "type": "string"
+          },
+          "resourcePluralName": {
+            "type": "string"
+          },
+          "resourceSingularName": {
+            "type": "string"
+          },
+          "resources": {
+            "items": {
+              "$ref": "#/components/schemas/domino.computegrid.MonitoredExecutionResource"
+            },
+            "type": "array"
+          }
+        },
+        "required": [
+          "resourcePluralName",
+          "resourceSingularName",
+          "resources",
+          "combinedResourceStatus"
+        ]
+      },
+      "domino.computegrid.MonitoredResourceExecutionCheckpoint": {
+        "properties": {
+          "checkpointName": {
+            "enum": [
+              "UserFilesSaved",
+              "ResourcesCreated",
+              "NodeAssigned",
+              "VolumesMounted",
+              "ResourcesDeleted",
+              "QuotaChecked",
+              "ExecutionAvailable",
+              "VolumesReleased",
+              "UserCodeLaunched",
+              "FilesPrepared",
+              "Acknowledged",
+              "ImagesPulled"
+            ],
+            "type": "string"
+          },
+          "combinedResourceStatus": {
+            "enum": [
+              "READY",
+              "IN_PROGRESS",
+              "WARNING",
+              "UNKNOWN"
+            ],
+            "nullable": true,
+            "type": "string"
+          },
+          "completedTimestamp": {
+            "format": "date-time",
+            "nullable": true,
+            "type": "string"
+          },
+          "message": {
+            "nullable": true,
+            "type": "string"
+          },
+          "resources": {
+            "items": {
+              "$ref": "#/components/schemas/domino.computegrid.MonitoredExecutionResourceList"
+            },
+            "nullable": true,
+            "type": "array"
+          },
+          "startupTip": {
+            "nullable": true,
+            "type": "string"
+          },
+          "status": {
+            "enum": [
+              "Pending",
+              "Completed",
+              "Error"
+            ],
+            "type": "string"
+          },
+          "timeSpentMillis": {
+            "format": "int64",
+            "nullable": true,
+            "type": "integer"
+          }
+        },
+        "required": [
+          "checkpointName",
+          "status"
+        ]
+      },
       "domino.computegrid.PaginationFilter": {
         "properties": {
           "latestTimeNano": {
@@ -3483,6 +4114,7 @@
               "AWSIAMRole",
               "AWSIAMRoleWithUsername",
               "OAuth",
+              "PersonalToken",
               "UserOnly",
               "BasicOptional",
               "NoAuth",
@@ -3649,6 +4281,13 @@
             },
             "type": "array"
           },
+          "projectsInfo": {
+            "items": {
+              "$ref": "#/components/schemas/domino.datamount.api.DataMountProjectInfoDto"
+            },
+            "nullable": true,
+            "type": "array"
+          },
           "pvId": {
             "type": "string"
           },
@@ -3692,6 +4331,29 @@
           "isPublic",
           "isRegistered",
           "dataPlanes"
+        ]
+      },
+      "domino.datamount.api.DataMountProjectInfoDto": {
+        "properties": {
+          "isProjectArchived": {
+            "type": "boolean"
+          },
+          "projectId": {
+            "pattern": "^[0-9a-f]{24}$",
+            "type": "string"
+          },
+          "projectName": {
+            "type": "string"
+          },
+          "projectOwnerUsername": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "projectId",
+          "projectName",
+          "projectOwnerUsername",
+          "isProjectArchived"
         ]
       },
       "domino.datamount.web.CreateDataMountRequest": {
@@ -3995,6 +4657,9 @@
           "message": {
             "type": "string"
           },
+          "requiresUpgrade": {
+            "type": "boolean"
+          },
           "state": {
             "enum": [
               "Healthy",
@@ -4011,6 +4676,17 @@
         "required": [
           "state",
           "message",
+          "version",
+          "requiresUpgrade"
+        ]
+      },
+      "domino.dataplane.TargetDataPlaneVersionDto": {
+        "properties": {
+          "version": {
+            "type": "string"
+          }
+        },
+        "required": [
           "version"
         ]
       },
@@ -4513,6 +5189,15 @@
       },
       "domino.datasetrw.api.DatasetRwFiletaskCopyUpdateDto": {
         "properties": {
+          "errorCode": {
+            "format": "int32",
+            "nullable": true,
+            "type": "integer"
+          },
+          "errorMessage": {
+            "nullable": true,
+            "type": "string"
+          },
           "progress": {
             "format": "int64",
             "type": "integer"
@@ -5470,6 +6155,61 @@
           "status"
         ]
       },
+      "domino.datasource.api.DataSourceAccessedInfo": {
+        "properties": {
+          "dataSourceId": {
+            "pattern": "^[0-9a-f]{24}$",
+            "type": "string"
+          },
+          "dataSourceName": {
+            "type": "string"
+          },
+          "dataSourceType": {
+            "enum": [
+              "ADLSConfig",
+              "AzureBlobStorageConfig",
+              "BigQueryConfig",
+              "ClickHouseConfig",
+              "DatabricksConfig",
+              "DB2Config",
+              "DruidConfig",
+              "GCSConfig",
+              "GenericJDBCConfig",
+              "GenericS3Config",
+              "GreenplumConfig",
+              "IgniteConfig",
+              "MariaDBConfig",
+              "MongoDBConfig",
+              "MySQLConfig",
+              "NetezzaConfig",
+              "OracleConfig",
+              "PalantirConfig",
+              "PostgreSQLConfig",
+              "RedshiftConfig",
+              "S3Config",
+              "SAPHanaConfig",
+              "SingleStoreConfig",
+              "SQLServerConfig",
+              "SnowflakeConfig",
+              "SynapseConfig",
+              "TabularS3GlueConfig",
+              "TeradataConfig",
+              "TrinoConfig",
+              "VerticaConfig"
+            ],
+            "type": "string"
+          },
+          "ownerName": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "dataSourceId",
+          "dataSourceName",
+          "dataSourceType",
+          "ownerName"
+        ]
+      },
       "domino.datasource.api.DataSourceAdminInfoDto": {
         "properties": {
           "projectIdOwnerUsernameMap": {
@@ -5551,6 +6291,7 @@
               "AWSIAMRole",
               "AWSIAMRoleWithUsername",
               "OAuth",
+              "PersonalToken",
               "UserOnly",
               "BasicOptional",
               "NoAuth",
@@ -5576,21 +6317,35 @@
           "dataSourceType": {
             "enum": [
               "ADLSConfig",
+              "AzureBlobStorageConfig",
               "BigQueryConfig",
+              "ClickHouseConfig",
+              "DatabricksConfig",
+              "DB2Config",
+              "DruidConfig",
               "GCSConfig",
+              "GenericJDBCConfig",
               "GenericS3Config",
+              "GreenplumConfig",
+              "IgniteConfig",
+              "MariaDBConfig",
               "MongoDBConfig",
               "MySQLConfig",
+              "NetezzaConfig",
               "OracleConfig",
+              "PalantirConfig",
               "PostgreSQLConfig",
               "RedshiftConfig",
               "S3Config",
+              "SAPHanaConfig",
+              "SingleStoreConfig",
               "SQLServerConfig",
               "SnowflakeConfig",
+              "SynapseConfig",
               "TabularS3GlueConfig",
               "TeradataConfig",
               "TrinoConfig",
-              "PalantirConfig"
+              "VerticaConfig"
             ],
             "type": "string"
           },
@@ -5671,42 +6426,6 @@
         ],
         "type": "object"
       },
-      "domino.datasource.api.DataSourceMetadataDto": {
-        "properties": {
-          "dataSourceType": {
-            "enum": [
-              "ADLSConfig",
-              "BigQueryConfig",
-              "GCSConfig",
-              "GenericS3Config",
-              "MongoDBConfig",
-              "MySQLConfig",
-              "OracleConfig",
-              "PostgreSQLConfig",
-              "RedshiftConfig",
-              "S3Config",
-              "SQLServerConfig",
-              "SnowflakeConfig",
-              "TabularS3GlueConfig",
-              "TeradataConfig",
-              "TrinoConfig",
-              "PalantirConfig"
-            ],
-            "type": "string"
-          },
-          "description": {
-            "nullable": true,
-            "type": "string"
-          },
-          "name": {
-            "type": "string"
-          }
-        },
-        "required": [
-          "name",
-          "dataSourceType"
-        ]
-      },
       "domino.datasource.api.DataSourceOwnerInfoDto": {
         "properties": {
           "isOwnerAdmin": {
@@ -5777,21 +6496,35 @@
           "dataSourceType": {
             "enum": [
               "ADLSConfig",
+              "AzureBlobStorageConfig",
               "BigQueryConfig",
+              "ClickHouseConfig",
+              "DatabricksConfig",
+              "DB2Config",
+              "DruidConfig",
               "GCSConfig",
+              "GenericJDBCConfig",
               "GenericS3Config",
+              "GreenplumConfig",
+              "IgniteConfig",
+              "MariaDBConfig",
               "MongoDBConfig",
               "MySQLConfig",
+              "NetezzaConfig",
               "OracleConfig",
+              "PalantirConfig",
               "PostgreSQLConfig",
               "RedshiftConfig",
               "S3Config",
+              "SAPHanaConfig",
+              "SingleStoreConfig",
               "SQLServerConfig",
               "SnowflakeConfig",
+              "SynapseConfig",
               "TabularS3GlueConfig",
               "TeradataConfig",
               "TrinoConfig",
-              "PalantirConfig"
+              "VerticaConfig"
             ],
             "type": "string"
           },
@@ -5879,10 +6612,36 @@
           "AWSIAMRole",
           "AWSIAMRoleWithUsername",
           "OAuth",
+          "PersonalToken",
           "BasicOptional",
           "UserOnly",
           "NoAuth",
           "ClientIdSecret"
+        ],
+        "type": "string"
+      },
+      "domino.datasource.model.ConnectorGroup": {
+        "enum": [
+          "Native",
+          "Starburst",
+          "StarburstSelfService"
+        ],
+        "type": "string"
+      },
+      "domino.datasource.model.ConnectorType": {
+        "enum": [
+          "clickhouse",
+          "db2",
+          "druid",
+          "genericJdbc",
+          "greenplum",
+          "ignite",
+          "mariadb",
+          "netezza",
+          "sapHana",
+          "singlestore",
+          "synapse",
+          "vertica"
         ],
         "type": "string"
       },
@@ -5893,6 +6652,12 @@
               "$ref": "#/components/schemas/domino.datasource.model.AuthType"
             },
             "type": "array"
+          },
+          "connectorGroup": {
+            "$ref": "#/components/schemas/domino.datasource.model.ConnectorGroup"
+          },
+          "connectorType": {
+            "$ref": "#/components/schemas/domino.datasource.model.ConnectorType"
           },
           "datasourceType": {
             "$ref": "#/components/schemas/domino.datasource.model.DatasourceType"
@@ -5921,21 +6686,35 @@
       "domino.datasource.model.DatasourceType": {
         "enum": [
           "ADLSConfig",
+          "AzureBlobStorageConfig",
           "BigQueryConfig",
+          "ClickHouseConfig",
+          "DatabricksConfig",
+          "DB2Config",
+          "DruidConfig",
           "GCSConfig",
+          "GenericJDBCConfig",
           "GenericS3Config",
+          "GreenplumConfig",
+          "IgniteConfig",
+          "MariaDBConfig",
           "MongoDBConfig",
           "MySQLConfig",
+          "NetezzaConfig",
           "OracleConfig",
+          "PalantirConfig",
           "PostgreSQLConfig",
           "RedshiftConfig",
           "S3Config",
+          "SAPHanaConfig",
+          "SingleStoreConfig",
           "SQLServerConfig",
           "SnowflakeConfig",
+          "SynapseConfig",
           "TabularS3GlueConfig",
           "TeradataConfig",
           "TrinoConfig",
-          "PalantirConfig"
+          "VerticaConfig"
         ],
         "type": "string"
       },
@@ -5951,6 +6730,9 @@
           "alias": {
             "type": "string"
           },
+          "initialValue": {
+            "type": "string"
+          },
           "isOptional": {
             "type": "boolean"
           },
@@ -5961,6 +6743,9 @@
             "type": "boolean"
           },
           "name": {
+            "type": "string"
+          },
+          "placeholder": {
             "type": "string"
           },
           "regexp": {
@@ -6004,6 +6789,7 @@
               "AWSIAMRole",
               "AWSIAMRoleWithUsername",
               "OAuth",
+              "PersonalToken",
               "UserOnly",
               "BasicOptional",
               "NoAuth",
@@ -6019,6 +6805,10 @@
             "nullable": true,
             "type": "string"
           },
+          "catalogCode": {
+            "nullable": true,
+            "type": "string"
+          },
           "credentialType": {
             "enum": [
               "Individual",
@@ -6029,21 +6819,35 @@
           "dataSourceType": {
             "enum": [
               "ADLSConfig",
+              "AzureBlobStorageConfig",
               "BigQueryConfig",
+              "ClickHouseConfig",
+              "DatabricksConfig",
+              "DB2Config",
+              "DruidConfig",
               "GCSConfig",
+              "GenericJDBCConfig",
               "GenericS3Config",
+              "GreenplumConfig",
+              "IgniteConfig",
+              "MariaDBConfig",
               "MongoDBConfig",
               "MySQLConfig",
+              "NetezzaConfig",
               "OracleConfig",
+              "PalantirConfig",
               "PostgreSQLConfig",
               "RedshiftConfig",
               "S3Config",
+              "SAPHanaConfig",
+              "SingleStoreConfig",
               "SQLServerConfig",
               "SnowflakeConfig",
+              "SynapseConfig",
               "TabularS3GlueConfig",
               "TeradataConfig",
               "TrinoConfig",
-              "PalantirConfig"
+              "VerticaConfig"
             ],
             "type": "string"
           },
@@ -6052,6 +6856,14 @@
             "type": "string"
           },
           "host": {
+            "nullable": true,
+            "type": "string"
+          },
+          "httpPath": {
+            "nullable": true,
+            "type": "string"
+          },
+          "networkingProxy": {
             "nullable": true,
             "type": "string"
           },
@@ -6106,6 +6918,7 @@
               "AWSIAMRole",
               "AWSIAMRoleWithUsername",
               "OAuth",
+              "PersonalToken",
               "UserOnly",
               "BasicOptional",
               "NoAuth",
@@ -6129,21 +6942,35 @@
           "dataSourceType": {
             "enum": [
               "ADLSConfig",
+              "AzureBlobStorageConfig",
               "BigQueryConfig",
+              "ClickHouseConfig",
+              "DatabricksConfig",
+              "DB2Config",
+              "DruidConfig",
               "GCSConfig",
+              "GenericJDBCConfig",
               "GenericS3Config",
+              "GreenplumConfig",
+              "IgniteConfig",
+              "MariaDBConfig",
               "MongoDBConfig",
               "MySQLConfig",
+              "NetezzaConfig",
               "OracleConfig",
+              "PalantirConfig",
               "PostgreSQLConfig",
               "RedshiftConfig",
               "S3Config",
+              "SAPHanaConfig",
+              "SingleStoreConfig",
               "SQLServerConfig",
               "SnowflakeConfig",
+              "SynapseConfig",
               "TabularS3GlueConfig",
               "TeradataConfig",
               "TrinoConfig",
-              "PalantirConfig"
+              "VerticaConfig"
             ],
             "type": "string"
           },
@@ -6196,6 +7023,24 @@
           "userIds"
         ]
       },
+      "domino.datasource.web.DataSourcesAccessedInRunResponse": {
+        "properties": {
+          "accessedDataSources": {
+            "items": {
+              "$ref": "#/components/schemas/domino.datasource.api.DataSourceAccessedInfo"
+            },
+            "type": "array"
+          },
+          "runId": {
+            "pattern": "^[0-9a-f]{24}$",
+            "type": "string"
+          }
+        },
+        "required": [
+          "runId",
+          "accessedDataSources"
+        ]
+      },
       "domino.datasource.web.GetAdminUsersRequest": {
         "properties": {
           "userIds": {
@@ -6224,6 +7069,28 @@
           "dataSourceIds"
         ]
       },
+      "domino.datasource.web.RecordDataSourceAccessRequest": {
+        "properties": {
+          "clientSource": {
+            "nullable": true,
+            "type": "string"
+          },
+          "dataPlaneId": {
+            "nullable": true,
+            "pattern": "^[0-9a-f]{24}$",
+            "type": "string"
+          },
+          "runId": {
+            "nullable": true,
+            "pattern": "^[0-9a-f]{24}$",
+            "type": "string"
+          },
+          "userName": {
+            "nullable": true,
+            "type": "string"
+          }
+        }
+      },
       "domino.datasource.web.UpdateDataSourceConfigRequest": {
         "properties": {
           "accountID": {
@@ -6242,24 +7109,42 @@
             "nullable": true,
             "type": "string"
           },
+          "catalogCode": {
+            "nullable": true,
+            "type": "string"
+          },
           "dataSourceType": {
             "enum": [
               "ADLSConfig",
+              "AzureBlobStorageConfig",
               "BigQueryConfig",
+              "ClickHouseConfig",
+              "DatabricksConfig",
+              "DB2Config",
+              "DruidConfig",
               "GCSConfig",
+              "GenericJDBCConfig",
               "GenericS3Config",
+              "GreenplumConfig",
+              "IgniteConfig",
+              "MariaDBConfig",
               "MongoDBConfig",
               "MySQLConfig",
+              "NetezzaConfig",
               "OracleConfig",
+              "PalantirConfig",
               "PostgreSQLConfig",
               "RedshiftConfig",
               "S3Config",
+              "SAPHanaConfig",
+              "SingleStoreConfig",
               "SQLServerConfig",
               "SnowflakeConfig",
+              "SynapseConfig",
               "TabularS3GlueConfig",
               "TeradataConfig",
               "TrinoConfig",
-              "PalantirConfig"
+              "VerticaConfig"
             ],
             "type": "string"
           },
@@ -6268,6 +7153,14 @@
             "type": "string"
           },
           "host": {
+            "nullable": true,
+            "type": "string"
+          },
+          "httpPath": {
+            "nullable": true,
+            "type": "string"
+          },
+          "networkingProxy": {
             "nullable": true,
             "type": "string"
           },
@@ -6312,6 +7205,7 @@
               "AWSIAMRole",
               "AWSIAMRoleWithUsername",
               "OAuth",
+              "PersonalToken",
               "UserOnly",
               "BasicOptional",
               "NoAuth",
@@ -6379,6 +7273,20 @@
           "userIds"
         ]
       },
+      "domino.environments.api.CreateNewEnvironment": {
+        "properties": {
+          "newEnvironment": {
+            "$ref": "#/components/schemas/domino.environments.api.NewEnvironment"
+          },
+          "newEnvironmentRevision": {
+            "$ref": "#/components/schemas/domino.environments.api.NewEnvironmentRevision"
+          }
+        },
+        "required": [
+          "newEnvironment",
+          "newEnvironmentRevision"
+        ]
+      },
       "domino.environments.api.EnvProjectPagination": {
         "properties": {
           "pageNo": {
@@ -6395,6 +7303,73 @@
           "pageNo"
         ]
       },
+      "domino.environments.api.Environment": {
+        "properties": {
+          "activeRevisionTags": {
+            "items": {
+              "type": "string"
+            },
+            "nullable": true,
+            "type": "array"
+          },
+          "archived": {
+            "type": "boolean"
+          },
+          "description": {
+            "type": "string"
+          },
+          "id": {
+            "pattern": "^[0-9a-f]{24}$",
+            "type": "string"
+          },
+          "internalTags": {
+            "items": {
+              "type": "string"
+            },
+            "nullable": true,
+            "type": "array"
+          },
+          "isCurated": {
+            "type": "boolean"
+          },
+          "name": {
+            "type": "string"
+          },
+          "owner": {
+            "$ref": "#/components/schemas/domino.environments.api.EnvironmentOwner",
+            "nullable": true
+          },
+          "supportedClusters": {
+            "items": {
+              "enum": [
+                "Dask",
+                "Spark",
+                "Ray",
+                "MPI"
+              ],
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "visibility": {
+            "enum": [
+              "Global",
+              "Private",
+              "Organization"
+            ],
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "description",
+          "archived",
+          "name",
+          "visibility",
+          "supportedClusters",
+          "isCurated"
+        ]
+      },
       "domino.environments.api.EnvironmentDetails": {
         "properties": {
           "activeRevisionTags": {
@@ -6407,8 +7382,15 @@
           "archived": {
             "type": "boolean"
           },
+          "base": {
+            "$ref": "#/components/schemas/domino.environments.api.EnvironmentRevision",
+            "nullable": true
+          },
           "baseDependenciesInitImage": {
             "nullable": true,
+            "type": "string"
+          },
+          "description": {
             "type": "string"
           },
           "id": {
@@ -6426,8 +7408,17 @@
             "nullable": true,
             "type": "boolean"
           },
+          "lastUpdated": {
+            "format": "date-time",
+            "nullable": true,
+            "type": "string"
+          },
           "latestRevision": {
             "$ref": "#/components/schemas/domino.environments.api.RevisionOverview",
+            "nullable": true
+          },
+          "latestRevisionDetails": {
+            "$ref": "#/components/schemas/domino.environments.api.EnvironmentRevision",
             "nullable": true
           },
           "name": {
@@ -6436,6 +7427,11 @@
           "owner": {
             "$ref": "#/components/schemas/domino.environments.api.EnvironmentOwner",
             "nullable": true
+          },
+          "projectsCount": {
+            "format": "int64",
+            "nullable": true,
+            "type": "integer"
           },
           "restrictedRevision": {
             "$ref": "#/components/schemas/domino.environments.api.RevisionOverview",
@@ -6468,6 +7464,7 @@
         },
         "required": [
           "id",
+          "description",
           "archived",
           "name",
           "visibility",
@@ -6497,14 +7494,48 @@
           "environmentOwnerType"
         ]
       },
-      "domino.environments.api.EnvironmentPermissionsResult": {
+      "domino.environments.api.EnvironmentPermissions": {
         "properties": {
-          "canClassifyEnvironments": {
+          "canEdit": {
             "type": "boolean"
           }
         },
         "required": [
-          "canClassifyEnvironments"
+          "canEdit"
+        ]
+      },
+      "domino.environments.api.EnvironmentPermissionsResult": {
+        "properties": {
+          "canClassifyEnvironments": {
+            "type": "boolean"
+          },
+          "canCreateEnvironments": {
+            "type": "boolean"
+          },
+          "canCreateGlobalEnvironment": {
+            "type": "boolean"
+          },
+          "canEditPrivilegedFields": {
+            "type": "boolean"
+          },
+          "canSetEnvironmentsAsDefault": {
+            "type": "boolean"
+          },
+          "canTransferOwnership": {
+            "type": "boolean"
+          },
+          "environment": {
+            "$ref": "#/components/schemas/domino.environments.api.EnvironmentPermissions",
+            "nullable": true
+          }
+        },
+        "required": [
+          "canClassifyEnvironments",
+          "canCreateEnvironments",
+          "canSetEnvironmentsAsDefault",
+          "canTransferOwnership",
+          "canCreateGlobalEnvironment",
+          "canEditPrivilegedFields"
         ]
       },
       "domino.environments.api.EnvironmentProjectUsageSummariesSet": {
@@ -6557,6 +7588,140 @@
           "ownerName",
           "visibility",
           "latestRuns"
+        ]
+      },
+      "domino.environments.api.EnvironmentRevision": {
+        "properties": {
+          "buildEnvironmentVariables": {
+            "items": {
+              "additionalProperties": {
+                "type": "string"
+              },
+              "type": "object"
+            },
+            "type": "array"
+          },
+          "clusterTypes": {
+            "items": {
+              "enum": [
+                "Dask",
+                "Spark",
+                "Ray",
+                "MPI"
+              ],
+              "type": "string"
+            },
+            "nullable": true,
+            "type": "array"
+          },
+          "dockerArguments": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "dockerImage": {
+            "nullable": true,
+            "type": "string"
+          },
+          "dockerfileInstructions": {
+            "nullable": true,
+            "type": "string"
+          },
+          "environmentId": {
+            "pattern": "^[0-9a-f]{24}$",
+            "type": "string"
+          },
+          "id": {
+            "pattern": "^[0-9a-f]{24}$",
+            "type": "string"
+          },
+          "imageType": {
+            "enum": [
+              "DefaultImage",
+              "Environment",
+              "CustomImage"
+            ],
+            "type": "string"
+          },
+          "isBuilt": {
+            "type": "boolean"
+          },
+          "isRestricted": {
+            "type": "boolean"
+          },
+          "number": {
+            "format": "int32",
+            "nullable": true,
+            "type": "integer"
+          },
+          "postRunScript": {
+            "nullable": true,
+            "type": "string"
+          },
+          "postSetupScript": {
+            "nullable": true,
+            "type": "string"
+          },
+          "preRunScript": {
+            "nullable": true,
+            "type": "string"
+          },
+          "preSetupScript": {
+            "nullable": true,
+            "type": "string"
+          },
+          "shouldUseVPN": {
+            "type": "boolean"
+          },
+          "summary": {
+            "nullable": true,
+            "type": "string"
+          },
+          "workspacesProperties": {
+            "$ref": "#/components/schemas/domino.common.util.yaml.DefaultYamlString",
+            "nullable": true
+          }
+        },
+        "required": [
+          "id",
+          "environmentId",
+          "imageType",
+          "isRestricted",
+          "isBuilt",
+          "dockerArguments",
+          "shouldUseVPN",
+          "buildEnvironmentVariables"
+        ]
+      },
+      "domino.environments.api.EnvironmentRevisionDetails": {
+        "properties": {
+          "canRevertTo": {
+            "type": "boolean"
+          },
+          "environment": {
+            "$ref": "#/components/schemas/domino.environments.api.Environment"
+          },
+          "environmentRevision": {
+            "$ref": "#/components/schemas/domino.environments.api.EnvironmentRevision"
+          },
+          "hasRunningBuild": {
+            "type": "boolean"
+          },
+          "isLatestRevision": {
+            "type": "boolean"
+          },
+          "visibleEnvironments": {
+            "$ref": "#/components/schemas/domino.environments.api.VisibleEnvironments"
+          }
+        },
+        "required": [
+          "environment",
+          "environmentRevision",
+          "isLatestRevision",
+          "visibleEnvironments",
+          "canRevertTo",
+          "hasRunningBuild"
         ]
       },
       "domino.environments.api.EnvironmentRevisionSummary": {
@@ -6647,6 +7812,170 @@
           "title",
           "start"
         ]
+      },
+      "domino.environments.api.NewEnvironment": {
+        "properties": {
+          "addBaseDependencies": {
+            "type": "boolean"
+          },
+          "clusterTypes": {
+            "items": {
+              "enum": [
+                "Dask",
+                "Spark",
+                "Ray",
+                "MPI"
+              ],
+              "type": "string"
+            },
+            "nullable": true,
+            "type": "array"
+          },
+          "description": {
+            "type": "string"
+          },
+          "isCurated": {
+            "type": "boolean"
+          },
+          "isRestricted": {
+            "nullable": true,
+            "type": "boolean"
+          },
+          "lastUpdated": {
+            "format": "date-time",
+            "nullable": true,
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "ownerId": {
+            "nullable": true,
+            "pattern": "^[0-9a-f]{24}$",
+            "type": "string"
+          },
+          "projectsCount": {
+            "format": "int64",
+            "nullable": true,
+            "type": "integer"
+          },
+          "skipFirstBuild": {
+            "type": "boolean"
+          },
+          "visibility": {
+            "enum": [
+              "Global",
+              "Private",
+              "Organization"
+            ],
+            "type": "string"
+          }
+        },
+        "required": [
+          "name",
+          "description",
+          "visibility",
+          "addBaseDependencies",
+          "isCurated",
+          "skipFirstBuild"
+        ]
+      },
+      "domino.environments.api.NewEnvironmentRevision": {
+        "properties": {
+          "baseRevision": {
+            "$ref": "#/components/schemas/domino.environments.api.NewEnvironmentRevisionBase"
+          },
+          "dockerArguments": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "dockerfileInstructions": {
+            "nullable": true,
+            "type": "string"
+          },
+          "environmentVariables": {
+            "additionalProperties": {
+              "type": "string"
+            },
+            "type": "object"
+          },
+          "isRestricted": {
+            "nullable": true,
+            "type": "boolean"
+          },
+          "postRunScript": {
+            "nullable": true,
+            "type": "string"
+          },
+          "postSetupScript": {
+            "nullable": true,
+            "type": "string"
+          },
+          "preRunScript": {
+            "nullable": true,
+            "type": "string"
+          },
+          "preSetupScript": {
+            "nullable": true,
+            "type": "string"
+          },
+          "shouldUseVpn": {
+            "type": "boolean"
+          },
+          "skipCache": {
+            "type": "boolean"
+          },
+          "summary": {
+            "nullable": true,
+            "type": "string"
+          },
+          "supportedClusters": {
+            "items": {
+              "enum": [
+                "Dask",
+                "Spark",
+                "Ray",
+                "MPI"
+              ],
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "tags": {
+            "items": {
+              "type": "string"
+            },
+            "nullable": true,
+            "type": "array"
+          },
+          "workspaceTools": {
+            "nullable": true,
+            "type": "string"
+          }
+        },
+        "required": [
+          "baseRevision",
+          "supportedClusters",
+          "environmentVariables",
+          "dockerArguments",
+          "skipCache",
+          "shouldUseVpn"
+        ]
+      },
+      "domino.environments.api.NewEnvironmentRevisionBase": {
+        "properties": {
+          "baseRevisionId": {
+            "nullable": true,
+            "pattern": "^[0-9a-f]{24}$",
+            "type": "string"
+          },
+          "image": {
+            "nullable": true,
+            "type": "string"
+          }
+        }
       },
       "domino.environments.api.PaginatedRevisionData": {
         "properties": {
@@ -6801,6 +8130,47 @@
         },
         "required": [
           "isRestricted"
+        ]
+      },
+      "domino.environments.api.VisibilityUpdateRequest": {
+        "properties": {
+          "ownerId": {
+            "nullable": true,
+            "pattern": "^[0-9a-f]{24}$",
+            "type": "string"
+          },
+          "visibility": {
+            "enum": [
+              "Global",
+              "Private",
+              "Organization"
+            ],
+            "type": "string"
+          }
+        },
+        "required": [
+          "visibility"
+        ]
+      },
+      "domino.environments.api.VisibleEnvironments": {
+        "properties": {
+          "activeEnvironmentRevisions": {
+            "items": {
+              "$ref": "#/components/schemas/domino.environments.api.EnvironmentRevisionSummary"
+            },
+            "type": "array"
+          },
+          "defaultEnv": {
+            "$ref": "#/components/schemas/domino.environments.api.Environment"
+          },
+          "defaultEnvRev": {
+            "$ref": "#/components/schemas/domino.environments.api.EnvironmentRevision",
+            "nullable": true
+          }
+        },
+        "required": [
+          "activeEnvironmentRevisions",
+          "defaultEnv"
         ]
       },
       "domino.executor.api.BranchEntryDto": {
@@ -8704,10 +10074,18 @@
           "isDefault": {
             "type": "boolean"
           },
+          "isDefaultForModelApi": {
+            "nullable": true,
+            "type": "boolean"
+          },
           "isFree": {
             "type": "boolean"
           },
           "isGlobal": {
+            "type": "boolean"
+          },
+          "isModelApiTier": {
+            "nullable": true,
             "type": "boolean"
           },
           "isVisible": {
@@ -8987,10 +10365,18 @@
           "isDefault": {
             "type": "boolean"
           },
+          "isDefaultForModelApi": {
+            "nullable": true,
+            "type": "boolean"
+          },
           "isFree": {
             "type": "boolean"
           },
           "isGlobal": {
+            "type": "boolean"
+          },
+          "isModelApiTier": {
+            "nullable": true,
             "type": "boolean"
           },
           "isVisible": {
@@ -9474,6 +10860,10 @@
       },
       "domino.jobs.interface.Environment": {
         "properties": {
+          "environmentId": {
+            "pattern": "^[0-9a-f]{24}$",
+            "type": "string"
+          },
           "environmentName": {
             "type": "string"
           },
@@ -9511,6 +10901,7 @@
           }
         },
         "required": [
+          "environmentId",
           "environmentName",
           "environmentRevisionSpec"
         ]
@@ -9975,22 +11366,12 @@
           },
           "isScheduled": {
             "type": "boolean"
-          },
-          "volumeRecoverabilityStatus": {
-            "enum": [
-              "Unauthorized",
-              "VolumeUnavailable",
-              "Recoverable",
-              "NoActionNecessary"
-            ],
-            "type": "string"
           }
         },
         "required": [
           "isCompleted",
           "isArchived",
           "isScheduled",
-          "volumeRecoverabilityStatus",
           "executionStatus"
         ]
       },
@@ -10861,6 +12242,12 @@
       },
       "domino.mlflow.api.MlflowData": {
         "properties": {
+          "accessedDataSources": {
+            "items": {
+              "$ref": "#/components/schemas/domino.datasource.api.DataSourceAccessedInfo"
+            },
+            "type": "array"
+          },
           "dataSources": {
             "type": "string"
           },
@@ -10919,7 +12306,35 @@
           "mlflowSourceType",
           "runNumber",
           "datasetInfo",
-          "dataSources"
+          "dataSources",
+          "accessedDataSources"
+        ]
+      },
+      "domino.mlflow.api.MlflowProjectInfo": {
+        "properties": {
+          "collaborators": {
+            "items": {
+              "$ref": "#/components/schemas/domino.projects.api.CollaboratorDTO"
+            },
+            "type": "array"
+          },
+          "id": {
+            "pattern": "^[0-9a-f]{24}$",
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "ownerId": {
+            "pattern": "^[0-9a-f]{24}$",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "name",
+          "ownerId",
+          "collaborators"
         ]
       },
       "domino.mlflow.api.PreviewFileConfigDTO": {
@@ -10931,6 +12346,71 @@
         },
         "required": [
           "maxPreviewFileSizeMB"
+        ]
+      },
+      "domino.modelmanager.api.DeploymentLabels": {
+        "properties": {
+          "containerNames": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "podNames": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          }
+        },
+        "required": [
+          "podNames",
+          "containerNames"
+        ]
+      },
+      "domino.modelmanager.api.LogLine": {
+        "properties": {
+          "log": {
+            "type": "string"
+          },
+          "streamType": {
+            "type": "string"
+          },
+          "tags": {
+            "items": {
+              "$ref": "#/components/schemas/domino.modelmanager.api.LogTag"
+            },
+            "type": "array"
+          },
+          "timeNano": {
+            "format": "int64",
+            "type": "integer"
+          },
+          "timestamp": {
+            "format": "int64",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "timestamp",
+          "timeNano",
+          "log",
+          "streamType",
+          "tags"
+        ]
+      },
+      "domino.modelmanager.api.LogTag": {
+        "properties": {
+          "key": {
+            "type": "string"
+          },
+          "value": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "key",
+          "value"
         ]
       },
       "domino.modelmanager.api.Model": {
@@ -10954,6 +12434,7 @@
             "enum": [
               "Starting",
               "Ready to run",
+              "Unreachable",
               "Running",
               "Preparing to build",
               "Failed",
@@ -11140,6 +12621,39 @@
           "logs"
         ]
       },
+      "domino.modelmanager.api.ModelBuildLogsV2": {
+        "properties": {
+          "logs": {
+            "items": {
+              "$ref": "#/components/schemas/domino.modelmanager.api.LogLine"
+            },
+            "type": "array"
+          },
+          "modelId": {
+            "pattern": "^[0-9a-f]{24}$",
+            "type": "string"
+          },
+          "modelVersionId": {
+            "pattern": "^[0-9a-f]{24}$",
+            "type": "string"
+          },
+          "status": {
+            "enum": [
+              "preparing",
+              "building",
+              "complete",
+              "failed"
+            ],
+            "type": "string"
+          }
+        },
+        "required": [
+          "modelId",
+          "modelVersionId",
+          "status",
+          "logs"
+        ]
+      },
       "domino.modelmanager.api.ModelExport": {
         "properties": {
           "created": {
@@ -11195,6 +12709,45 @@
           "modelDescription",
           "isArchived",
           "created"
+        ]
+      },
+      "domino.modelmanager.api.ModelExportLogs": {
+        "properties": {
+          "logs": {
+            "items": {
+              "$ref": "#/components/schemas/domino.modelmanager.api.LogLine"
+            },
+            "type": "array"
+          },
+          "modelId": {
+            "pattern": "^[0-9a-f]{24}$",
+            "type": "string"
+          },
+          "modelVersionId": {
+            "pattern": "^[0-9a-f]{24}$",
+            "type": "string"
+          },
+          "sinceTimeNano": {
+            "format": "int64",
+            "nullable": true,
+            "type": "integer"
+          },
+          "status": {
+            "enum": [
+              "exporting",
+              "preparing",
+              "complete",
+              "not_triggered",
+              "failed"
+            ],
+            "type": "string"
+          }
+        },
+        "required": [
+          "modelId",
+          "modelVersionId",
+          "status",
+          "logs"
         ]
       },
       "domino.modelmanager.api.ModelExportTargetDetails": {
@@ -11374,6 +12927,51 @@
           "projectId",
           "modelVersion",
           "modelId"
+        ]
+      },
+      "domino.modelmanager.api.ModelInstanceLogs": {
+        "properties": {
+          "containerName": {
+            "nullable": true,
+            "type": "string"
+          },
+          "logs": {
+            "items": {
+              "$ref": "#/components/schemas/domino.modelmanager.api.LogLine"
+            },
+            "type": "array"
+          },
+          "maxResults": {
+            "format": "int32",
+            "type": "integer"
+          },
+          "modelId": {
+            "pattern": "^[0-9a-f]{24}$",
+            "type": "string"
+          },
+          "modelVersionId": {
+            "pattern": "^[0-9a-f]{24}$",
+            "type": "string"
+          },
+          "podName": {
+            "nullable": true,
+            "type": "string"
+          },
+          "sinceTimeNano": {
+            "format": "int64",
+            "nullable": true,
+            "type": "integer"
+          },
+          "tail": {
+            "nullable": true,
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "modelId",
+          "modelVersionId",
+          "maxResults",
+          "logs"
         ]
       },
       "domino.modelmanager.api.ModelOwner": {
@@ -11697,6 +13295,21 @@
           "startIndex",
           "totalItems",
           "items"
+        ]
+      },
+      "domino.modelmanager.api.responses.ModelPermissionForMonitoringApiResponse": {
+        "properties": {
+          "canListModelApi": {
+            "type": "boolean"
+          },
+          "modelId": {
+            "pattern": "^[0-9a-f]{24}$",
+            "type": "string"
+          }
+        },
+        "required": [
+          "modelId",
+          "canListModelApi"
         ]
       },
       "domino.modelmanager.api.responses.ModelPermissionsForUIApiResponse": {
@@ -13970,6 +15583,10 @@
           "tags": {
             "$ref": "#/components/schemas/domino.projects.api.NewTagsDTO"
           },
+          "templateDetails": {
+            "$ref": "#/components/schemas/domino.projects.api.ProjectTemplateDetails",
+            "nullable": true
+          },
           "visibility": {
             "enum": [
               "Public",
@@ -14055,6 +15672,10 @@
               "$ref": "#/components/schemas/domino.projects.api.ProjectTagDTO"
             },
             "type": "array"
+          },
+          "templateDetails": {
+            "$ref": "#/components/schemas/domino.projects.api.ProjectTemplateDetails",
+            "nullable": true
           },
           "visibility": {
             "type": "string"
@@ -14626,6 +16247,17 @@
           "isDeleted"
         ]
       },
+      "domino.projectManagement.web.ArchiveProjectGoalStage": {
+        "properties": {
+          "stageId": {
+            "pattern": "^[0-9a-f]{24}$",
+            "type": "string"
+          }
+        },
+        "required": [
+          "stageId"
+        ]
+      },
       "domino.projectManagement.web.CommentRequest": {
         "properties": {
           "comment": {
@@ -14634,6 +16266,16 @@
         },
         "required": [
           "comment"
+        ]
+      },
+      "domino.projectManagement.web.CreateProjectGoalStage": {
+        "properties": {
+          "stageName": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "stageName"
         ]
       },
       "domino.projectManagement.web.ErrorResponse": {
@@ -14653,6 +16295,26 @@
           "code"
         ],
         "type": "object"
+      },
+      "domino.projectManagement.web.FilterProjectGoals": {
+        "properties": {
+          "assigneeIds": {
+            "items": {
+              "pattern": "^[0-9a-f]{24}$",
+              "type": "string"
+            },
+            "nullable": true,
+            "type": "array"
+          },
+          "stageIds": {
+            "items": {
+              "pattern": "^[0-9a-f]{24}$",
+              "type": "string"
+            },
+            "nullable": true,
+            "type": "array"
+          }
+        }
       },
       "domino.projectManagement.web.LinkFileToGoalRequest": {
         "properties": {
@@ -14764,6 +16426,21 @@
         "required": [
           "projectId",
           "goalId"
+        ]
+      },
+      "domino.projectManagement.web.UpdateProjectGoalStage": {
+        "properties": {
+          "stageId": {
+            "pattern": "^[0-9a-f]{24}$",
+            "type": "string"
+          },
+          "stageName": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "stageId",
+          "stageName"
         ]
       },
       "domino.projects.api.AssetPortfolioElement": {
@@ -15345,6 +17022,34 @@
           "uri"
         ]
       },
+      "domino.projects.api.NamedLink": {
+        "properties": {
+          "link": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "name",
+          "link"
+        ]
+      },
+      "domino.projects.api.NamedOptionalLink": {
+        "properties": {
+          "link": {
+            "nullable": true,
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "name"
+        ]
+      },
       "domino.projects.api.NewTagsDTO": {
         "properties": {
           "tagNames": {
@@ -15648,6 +17353,11 @@
       },
       "domino.projects.api.ProjectGoal": {
         "properties": {
+          "assigneeId": {
+            "nullable": true,
+            "pattern": "^[0-9a-f]{24}$",
+            "type": "string"
+          },
           "createdAt": {
             "format": "int64",
             "type": "integer"
@@ -15679,6 +17389,11 @@
             "type": "integer"
           },
           "lastTitleUpdatedAt": {
+            "format": "int64",
+            "nullable": true,
+            "type": "integer"
+          },
+          "lastUpdatedAt": {
             "format": "int64",
             "nullable": true,
             "type": "integer"
@@ -15733,6 +17448,209 @@
           "lastStageUpdatedAt"
         ]
       },
+      "domino.projects.api.ProjectHubModel": {
+        "properties": {
+          "link": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "size": {
+            "$ref": "#/components/schemas/domino.projects.api.ProjectHubTemplateSize",
+            "nullable": true
+          },
+          "source": {
+            "$ref": "#/components/schemas/domino.projects.api.NamedLink",
+            "nullable": true
+          }
+        },
+        "required": [
+          "name",
+          "link"
+        ]
+      },
+      "domino.projects.api.ProjectHubTemplateResult": {
+        "properties": {
+          "base64Logo": {
+            "nullable": true,
+            "type": "string"
+          },
+          "categories": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "created": {
+            "format": "date-time",
+            "type": "string"
+          },
+          "data": {
+            "$ref": "#/components/schemas/domino.projects.api.NamedOptionalLink",
+            "nullable": true
+          },
+          "dataFormat": {
+            "nullable": true,
+            "type": "string"
+          },
+          "description": {
+            "nullable": true,
+            "type": "string"
+          },
+          "environment": {
+            "$ref": "#/components/schemas/domino.projects.api.ProjectTemplateEnvironment",
+            "nullable": true
+          },
+          "environmentReqs": {
+            "$ref": "#/components/schemas/domino.projects.api.ValueOptionalLink",
+            "nullable": true
+          },
+          "goals": {
+            "items": {
+              "$ref": "#/components/schemas/domino.projects.api.ProjectTemplateGoals"
+            },
+            "nullable": true,
+            "type": "array"
+          },
+          "hardwareTier": {
+            "$ref": "#/components/schemas/domino.projects.api.ValueOptionalLink",
+            "nullable": true
+          },
+          "importedRepositories": {
+            "items": {
+              "$ref": "#/components/schemas/domino.projects.api.ProjectTemplateImportedRepository"
+            },
+            "type": "array"
+          },
+          "license": {
+            "$ref": "#/components/schemas/domino.projects.api.NamedLink",
+            "nullable": true
+          },
+          "mainRepository": {
+            "$ref": "#/components/schemas/domino.projects.api.repositories.responses.ProjectTemplateRepositoryDTO"
+          },
+          "models": {
+            "items": {
+              "$ref": "#/components/schemas/domino.projects.api.ProjectHubModel"
+            },
+            "type": "array"
+          },
+          "owner": {
+            "$ref": "#/components/schemas/domino.projects.api.NamedLink"
+          },
+          "prerequisites": {
+            "items": {
+              "$ref": "#/components/schemas/domino.projects.api.ProjectTemplatePrerequisites"
+            },
+            "nullable": true,
+            "type": "array"
+          },
+          "recommended": {
+            "nullable": true,
+            "type": "boolean"
+          },
+          "revisionId": {
+            "type": "string"
+          },
+          "templateId": {
+            "type": "string"
+          },
+          "title": {
+            "type": "string"
+          },
+          "updated": {
+            "format": "date-time",
+            "type": "string"
+          }
+        },
+        "required": [
+          "templateId",
+          "title",
+          "categories",
+          "mainRepository",
+          "created",
+          "updated",
+          "owner",
+          "models",
+          "revisionId",
+          "importedRepositories"
+        ]
+      },
+      "domino.projects.api.ProjectHubTemplateSize": {
+        "properties": {
+          "units": {
+            "type": "string"
+          },
+          "value": {
+            "format": "int32",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "value",
+          "units"
+        ]
+      },
+      "domino.projects.api.ProjectHubTemplatesResult": {
+        "properties": {
+          "base64Logo": {
+            "nullable": true,
+            "type": "string"
+          },
+          "categories": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "created": {
+            "format": "date-time",
+            "type": "string"
+          },
+          "dataFormat": {
+            "nullable": true,
+            "type": "string"
+          },
+          "description": {
+            "nullable": true,
+            "type": "string"
+          },
+          "license": {
+            "$ref": "#/components/schemas/domino.projects.api.NamedLink",
+            "nullable": true
+          },
+          "owner": {
+            "$ref": "#/components/schemas/domino.projects.api.NamedLink"
+          },
+          "recommended": {
+            "nullable": true,
+            "type": "boolean"
+          },
+          "revisionId": {
+            "type": "string"
+          },
+          "templateId": {
+            "type": "string"
+          },
+          "title": {
+            "type": "string"
+          },
+          "updated": {
+            "format": "date-time",
+            "type": "string"
+          }
+        },
+        "required": [
+          "templateId",
+          "title",
+          "categories",
+          "created",
+          "updated",
+          "owner",
+          "revisionId"
+        ]
+      },
       "domino.projects.api.ProjectInfo": {
         "properties": {
           "hasProjectAccess": {
@@ -15779,10 +17697,18 @@
         "properties": {
           "canClassifyProjects": {
             "type": "boolean"
+          },
+          "canCreateProjects": {
+            "type": "boolean"
+          },
+          "currentProjectPermissions": {
+            "$ref": "#/components/schemas/domino.projects.api.SingleProjectPermissionResult",
+            "nullable": true
           }
         },
         "required": [
-          "canClassifyProjects"
+          "canClassifyProjects",
+          "canCreateProjects"
         ]
       },
       "domino.projects.api.ProjectPortfolioElement": {
@@ -16144,6 +18070,10 @@
             },
             "type": "array"
           },
+          "templateDetails": {
+            "$ref": "#/components/schemas/domino.projects.api.ProjectTemplateDetails",
+            "nullable": true
+          },
           "visibility": {
             "type": "string"
           }
@@ -16180,6 +18110,81 @@
           "id",
           "name",
           "isApproved"
+        ]
+      },
+      "domino.projects.api.ProjectTemplateDetails": {
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "templateId": {
+            "type": "string"
+          },
+          "templateRevisionId": {
+            "nullable": true,
+            "type": "string"
+          }
+        },
+        "required": [
+          "name",
+          "templateId"
+        ]
+      },
+      "domino.projects.api.ProjectTemplateEnvironment": {
+        "properties": {
+          "id": {
+            "pattern": "^[0-9a-f]{24}$",
+            "type": "string"
+          },
+          "link": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "name",
+          "link"
+        ]
+      },
+      "domino.projects.api.ProjectTemplateGoals": {
+        "properties": {
+          "description": {
+            "nullable": true,
+            "type": "string"
+          },
+          "title": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "title"
+        ]
+      },
+      "domino.projects.api.ProjectTemplateImportedRepository": {
+        "properties": {
+          "uri": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "uri"
+        ]
+      },
+      "domino.projects.api.ProjectTemplatePrerequisites": {
+        "properties": {
+          "link": {
+            "type": "string"
+          },
+          "value": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "value",
+          "link"
         ]
       },
       "domino.projects.api.ProxyConfig": {
@@ -16314,6 +18319,20 @@
           "latestRevisionUrl"
         ]
       },
+      "domino.projects.api.SingleProjectPermissionResult": {
+        "properties": {
+          "canCopy": {
+            "type": "boolean"
+          },
+          "canFork": {
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "canFork",
+          "canCopy"
+        ]
+      },
       "domino.projects.api.StageStat": {
         "properties": {
           "id": {
@@ -16369,6 +18388,20 @@
         },
         "required": [
           "environments"
+        ]
+      },
+      "domino.projects.api.ValueOptionalLink": {
+        "properties": {
+          "link": {
+            "nullable": true,
+            "type": "string"
+          },
+          "value": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "value"
         ]
       },
       "domino.projects.api.WritableProjectMounts": {
@@ -16649,6 +18682,38 @@
           "data"
         ]
       },
+      "domino.projects.api.repositories.responses.ProjectTemplateReferenceDTO": {
+        "properties": {
+          "type": {
+            "type": "string"
+          },
+          "value": {
+            "nullable": true,
+            "type": "string"
+          }
+        },
+        "required": [
+          "type"
+        ]
+      },
+      "domino.projects.api.repositories.responses.ProjectTemplateRepositoryDTO": {
+        "properties": {
+          "ref": {
+            "$ref": "#/components/schemas/domino.projects.api.repositories.responses.ProjectTemplateReferenceDTO"
+          },
+          "serviceProvider": {
+            "type": "string"
+          },
+          "uri": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "uri",
+          "ref",
+          "serviceProvider"
+        ]
+      },
       "domino.projects.api.repositories.responses.browse.CommitAuthorDTO": {
         "properties": {
           "date": {
@@ -16807,8 +18872,18 @@
       },
       "domino.projects.web.CreateProjectGoal": {
         "properties": {
+          "assigneeId": {
+            "nullable": true,
+            "pattern": "^[0-9a-f]{24}$",
+            "type": "string"
+          },
           "description": {
             "nullable": true,
+            "type": "string"
+          },
+          "stageId": {
+            "nullable": true,
+            "pattern": "^[0-9a-f]{24}$",
             "type": "string"
           },
           "title": {
@@ -17552,6 +19627,28 @@
           "humanReadableCronString"
         ]
       },
+      "domino.scheduledjob.api.DataConfigDto": {
+        "properties": {
+          "datasetConfig": {
+            "nullable": true,
+            "type": "string"
+          },
+          "externalVolumeMounts": {
+            "items": {
+              "pattern": "^[0-9a-f]{24}$",
+              "type": "string"
+            },
+            "nullable": true,
+            "type": "array"
+          },
+          "snapshotDatasetsOnCompletion": {
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "snapshotDatasetsOnCompletion"
+        ]
+      },
       "domino.scheduledjob.api.EditCronScheduleDTO": {
         "properties": {
           "cronString": {
@@ -17646,6 +19743,14 @@
               }
             ]
           },
+          "externalVolumeMounts": {
+            "items": {
+              "pattern": "^[0-9a-f]{24}$",
+              "type": "string"
+            },
+            "nullable": true,
+            "type": "array"
+          },
           "hardwareTierIdentifier": {
             "type": "string"
           },
@@ -17724,9 +19829,8 @@
             "format": "date-time",
             "type": "string"
           },
-          "datasetConfig": {
-            "nullable": true,
-            "type": "string"
+          "dataConfig": {
+            "$ref": "#/components/schemas/domino.scheduledjob.api.DataConfigDto"
           },
           "environmentRevisionSpec": {
             "oneOf": [
@@ -17796,9 +19900,6 @@
           "scheduledByUserName": {
             "type": "string"
           },
-          "snapshotDatasetsOnCompletion": {
-            "type": "boolean"
-          },
           "timezoneId": {
             "type": "string"
           },
@@ -17827,7 +19928,7 @@
           "scheduledByUserId",
           "scheduledByUserName",
           "notifyOnCompleteEmailAddresses",
-          "snapshotDatasetsOnCompletion"
+          "dataConfig"
         ]
       },
       "domino.scheduledjob.api.ScheduledJobForRequestingUserDto": {
@@ -17881,6 +19982,14 @@
                 "type": "object"
               }
             ]
+          },
+          "externalVolumeMounts": {
+            "items": {
+              "pattern": "^[0-9a-f]{24}$",
+              "type": "string"
+            },
+            "nullable": true,
+            "type": "array"
           },
           "hardwareTierIdentifier": {
             "type": "string"
@@ -18377,6 +20486,10 @@
             },
             "type": "array"
           },
+          "templateDetails": {
+            "$ref": "#/components/schemas/domino.projects.api.ProjectTemplateDetails",
+            "nullable": true
+          },
           "totalRunTime": {
             "description": "sum of run times of all executions in the project, in ISO8601 duration format including only seconds and milliseconds",
             "type": "string"
@@ -18732,6 +20845,11 @@
       },
       "domino.workspace.api.DataMountSpecificationDto": {
         "properties": {
+          "id": {
+            "nullable": true,
+            "pattern": "^[0-9a-f]{24}$",
+            "type": "string"
+          },
           "mount": {
             "$ref": "#/components/schemas/domino.workspace.api.VolumeMountDto"
           },
@@ -20873,15 +22991,6 @@
           "usage": {
             "$ref": "#/components/schemas/domino.workspaces.api.WorkspaceResourceUsage",
             "nullable": true
-          },
-          "volumeRecoverabilityStatus": {
-            "enum": [
-              "Unauthorized",
-              "VolumeUnavailable",
-              "Recoverable",
-              "NoActionNecessary"
-            ],
-            "type": "string"
           }
         },
         "required": [
@@ -20897,7 +23006,6 @@
           "tags",
           "commentsCount",
           "status",
-          "volumeRecoverabilityStatus",
           "inputCommitId",
           "dominoStats",
           "dependentRepositories",
@@ -21775,11 +23883,13 @@
                   "project",
                   "job",
                   "model_api",
-                  "workspace",
                   "comment",
                   "app",
+                  "goals",
                   "schedule_job",
-                  "files"
+                  "files",
+                  "workspace",
+                  "registered_model"
                 ],
                 "type": "string"
               },
@@ -21848,6 +23958,255 @@
         "summary": "Metadata entries.",
         "tags": [
           "Activity"
+        ]
+      }
+    },
+    "/activity/registered_model": {
+      "get": {
+        "operationId": "getRegisteredModelActivityStream",
+        "parameters": [
+          {
+            "description": "Name of the registered model",
+            "in": "query",
+            "name": "modelName",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "description": "Version number of the registered model",
+            "in": "query",
+            "name": "modelVersion",
+            "required": true,
+            "schema": {
+              "format": "int32",
+              "type": "integer"
+            }
+          },
+          {
+            "in": "query",
+            "name": "projectId",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "description": "page size to get the activity",
+            "in": "query",
+            "name": "pageSize",
+            "required": false,
+            "schema": {
+              "format": "int32",
+              "nullable": true,
+              "type": "integer"
+            }
+          },
+          {
+            "description": "latest time stamp of the activity",
+            "in": "query",
+            "name": "latestTimeStamp",
+            "required": false,
+            "schema": {
+              "format": "int64",
+              "nullable": true,
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/domino.activity.api.ActivityStream"
+                }
+              }
+            },
+            "description": "success"
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalError"
+          }
+        },
+        "summary": "Gets the activity stream for a registered model",
+        "tags": [
+          "Activity"
+        ]
+      }
+    },
+    "/admin/centralConfigSettings": {
+      "get": {
+        "operationId": "getCentralConfigSettings",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/domino.admin.interface.ConfigSettingEntityDto"
+                }
+              }
+            },
+            "description": "success"
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalError"
+          }
+        },
+        "summary": "Gets all central config settings",
+        "tags": [
+          "Admin"
+        ]
+      },
+      "post": {
+        "operationId": "createCentralConfigSetting",
+        "parameters": [],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/domino.admin.interface.ConfigSettingDto"
+              }
+            }
+          },
+          "description": "config setting to create",
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/domino.admin.interface.ConfigSettingEntityDto"
+                }
+              }
+            },
+            "description": "success"
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalError"
+          }
+        },
+        "summary": "Create a new central config setting",
+        "tags": [
+          "Admin"
+        ]
+      }
+    },
+    "/admin/centralConfigSettings/{id}": {
+      "delete": {
+        "operationId": "deleteCentralConfigSetting",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "success"
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalError"
+          }
+        },
+        "summary": "Delete a central config setting",
+        "tags": [
+          "Admin"
+        ]
+      },
+      "put": {
+        "operationId": "updateCentralConfigSetting",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/domino.admin.interface.ConfigSettingDto"
+              }
+            }
+          },
+          "description": "config setting to create",
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/domino.admin.interface.ConfigSettingEntityDto"
+                }
+              }
+            },
+            "description": "success"
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalError"
+          }
+        },
+        "summary": "Update a central config setting",
+        "tags": [
+          "Admin"
         ]
       }
     },
@@ -23591,6 +25950,18 @@
     "/datamount/all": {
       "get": {
         "operationId": "getAllRegisteredDataMounts",
+        "parameters": [
+          {
+            "description": "boolean to update statuses of all outdated datmaounts",
+            "in": "query",
+            "name": "updateStatuses",
+            "required": false,
+            "schema": {
+              "nullable": true,
+              "type": "boolean"
+            }
+          }
+        ],
         "responses": {
           "200": {
             "content": {
@@ -24639,6 +27010,85 @@
           }
         },
         "summary": "Restart Data Plane Agent",
+        "tags": [
+          "DataPlane"
+        ]
+      }
+    },
+    "/dataplanes/dataplanes/{dataPlaneId}/upgrade": {
+      "patch": {
+        "operationId": "upgradeAgent",
+        "parameters": [
+          {
+            "description": "Id of the Data Plane",
+            "in": "path",
+            "name": "dataPlaneId",
+            "required": true,
+            "schema": {
+              "pattern": "^[0-9a-f]{24}$",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/domino.dataplane.DataPlane"
+                }
+              }
+            },
+            "description": "success"
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalError"
+          }
+        },
+        "summary": "Upgrade Data Plane Agent",
+        "tags": [
+          "DataPlane"
+        ]
+      }
+    },
+    "/dataplanes/targetVersion": {
+      "get": {
+        "operationId": "getTargetDataPlaneVersion",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/domino.dataplane.TargetDataPlaneVersionDto"
+                }
+              }
+            },
+            "description": "success"
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalError"
+          }
+        },
+        "summary": "Get target Data Plane version",
         "tags": [
           "DataPlane"
         ]
@@ -26610,6 +29060,51 @@
         ]
       }
     },
+    "/datasetrw/dataset/enforce-limit/{projectId}": {
+      "get": {
+        "operationId": "shouldEnforceLimits",
+        "parameters": [
+          {
+            "description": "Project ID",
+            "in": "path",
+            "name": "projectId",
+            "required": true,
+            "schema": {
+              "pattern": "^[0-9a-f]{24}$",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "boolean"
+                }
+              }
+            },
+            "description": "success"
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalError"
+          }
+        },
+        "summary": "Get whether a project should enforce dataset limits",
+        "tags": [
+          "DatasetRw"
+        ]
+      }
+    },
     "/datasetrw/dataset/file/normalized": {
       "post": {
         "operationId": "getNormalizedFileNames",
@@ -28244,8 +30739,9 @@
             "description": "subPath to get files at",
             "in": "query",
             "name": "path",
-            "required": true,
+            "required": false,
             "schema": {
+              "nullable": true,
               "type": "string"
             }
           }
@@ -30138,6 +32634,162 @@
         ]
       }
     },
+    "/datasource/audit": {
+      "get": {
+        "operationId": "getDataSourcesAccessedInRuns",
+        "parameters": [
+          {
+            "description": "the ids of the runs to query datasources from",
+            "in": "query",
+            "name": "runIds",
+            "required": true,
+            "schema": {
+              "items": {
+                "pattern": "^[0-9a-f]{24}$",
+                "type": "string"
+              },
+              "type": "array"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/domino.datasource.web.DataSourcesAccessedInRunResponse"
+                  },
+                  "type": "array"
+                }
+              }
+            },
+            "description": "success"
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalError"
+          }
+        },
+        "summary": "Get datasources accessed in runs",
+        "tags": [
+          "DataSource"
+        ]
+      }
+    },
+    "/datasource/audit/download": {
+      "get": {
+        "operationId": "downloadDataSourceAuditData",
+        "parameters": [
+          {
+            "description": "if true output will be json file, else txt",
+            "in": "query",
+            "name": "jsonFile",
+            "required": false,
+            "schema": {
+              "nullable": true,
+              "type": "boolean"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/octet-stream": {
+                "schema": {
+                  "format": "binary",
+                  "type": "string"
+                }
+              }
+            },
+            "description": "success"
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalError"
+          }
+        },
+        "summary": "Download DataSource Audit Data for past 6 months",
+        "tags": [
+          "DataSource"
+        ]
+      }
+    },
+    "/datasource/audit/download/runs": {
+      "get": {
+        "operationId": "downloadDataSourceAuditDataInRuns",
+        "parameters": [
+          {
+            "description": "the ids of the runs to query datasources from",
+            "in": "query",
+            "name": "runIds",
+            "required": true,
+            "schema": {
+              "items": {
+                "pattern": "^[0-9a-f]{24}$",
+                "type": "string"
+              },
+              "type": "array"
+            }
+          },
+          {
+            "description": "if true output will be json file, else txt",
+            "in": "query",
+            "name": "jsonFile",
+            "required": false,
+            "schema": {
+              "nullable": true,
+              "type": "boolean"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/jsonl": {
+                "schema": {
+                  "format": "binary",
+                  "type": "string"
+                }
+              }
+            },
+            "description": "success"
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalError"
+          }
+        },
+        "summary": "Download DataSource Audit Data accessed in Domino runs",
+        "tags": [
+          "DataSource"
+        ]
+      }
+    },
     "/datasource/authentication-status": {
       "post": {
         "operationId": "getAuthenticationStatuses",
@@ -30512,64 +33164,6 @@
         ]
       }
     },
-    "/datasource/info/user/{userId}": {
-      "get": {
-        "operationId": "getDataSourcesByUserForExecutor",
-        "parameters": [
-          {
-            "description": "User ID",
-            "in": "path",
-            "name": "userId",
-            "required": true,
-            "schema": {
-              "pattern": "^[0-9a-f]{24}$",
-              "type": "string"
-            }
-          },
-          {
-            "description": "DataPlane ID",
-            "in": "query",
-            "name": "dataPlaneId",
-            "required": false,
-            "schema": {
-              "pattern": "^[0-9a-f]{24}$",
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "content": {
-              "application/json": {
-                "schema": {
-                  "items": {
-                    "$ref": "#/components/schemas/domino.datasource.api.DataSourceMetadataDto"
-                  },
-                  "type": "array"
-                }
-              }
-            },
-            "description": "success"
-          },
-          "400": {
-            "$ref": "#/components/responses/BadRequest"
-          },
-          "401": {
-            "$ref": "#/components/responses/Unauthorized"
-          },
-          "403": {
-            "$ref": "#/components/responses/Forbidden"
-          },
-          "500": {
-            "$ref": "#/components/responses/InternalError"
-          }
-        },
-        "summary": "Get data sources info by user (used by executor)",
-        "tags": [
-          "DataSource"
-        ]
-      }
-    },
     "/datasource/name/check/{name}": {
       "get": {
         "operationId": "checkValidDataSourceName",
@@ -30802,51 +33396,6 @@
           }
         },
         "summary": "Get whether the user is allowed to see project-specific and datasource-involved data but only with project context",
-        "tags": [
-          "DataSource"
-        ]
-      }
-    },
-    "/datasource/project/{projectId}/notification": {
-      "get": {
-        "operationId": "shouldNotificationBubbleAppear",
-        "parameters": [
-          {
-            "description": "Project Id",
-            "in": "path",
-            "name": "projectId",
-            "required": true,
-            "schema": {
-              "pattern": "^[0-9a-f]{24}$",
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "boolean"
-                }
-              }
-            },
-            "description": "success"
-          },
-          "400": {
-            "$ref": "#/components/responses/BadRequest"
-          },
-          "401": {
-            "$ref": "#/components/responses/Unauthorized"
-          },
-          "403": {
-            "$ref": "#/components/responses/Forbidden"
-          },
-          "500": {
-            "$ref": "#/components/responses/InternalError"
-          }
-        },
-        "summary": "Get whether notification bubble in workspace pane appears (new datasources added to project in last week)",
         "tags": [
           "DataSource"
         ]
@@ -31307,6 +33856,55 @@
           }
         },
         "summary": "Get data source",
+        "tags": [
+          "DataSource"
+        ]
+      }
+    },
+    "/datasource/{dataSourceId}/access": {
+      "post": {
+        "operationId": "recordDataSourceAccess",
+        "parameters": [
+          {
+            "description": "accessed data source id",
+            "in": "path",
+            "name": "dataSourceId",
+            "required": true,
+            "schema": {
+              "pattern": "^[0-9a-f]{24}$",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/domino.datasource.web.RecordDataSourceAccessRequest"
+              }
+            }
+          },
+          "description": "body with username and runid of access to record",
+          "required": false
+        },
+        "responses": {
+          "200": {
+            "description": "success"
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalError"
+          }
+        },
+        "summary": "Record access to datasource from an execution",
         "tags": [
           "DataSource"
         ]
@@ -32235,6 +34833,51 @@
         ]
       }
     },
+    "/environments": {
+      "post": {
+        "operationId": "createEnvironment",
+        "parameters": [],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/domino.environments.api.CreateNewEnvironment"
+              }
+            }
+          },
+          "description": "JSON object with environment data to create a new environment",
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/domino.environments.api.EnvironmentDetails"
+                }
+              }
+            },
+            "description": "success"
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalError"
+          }
+        },
+        "summary": "Create environment",
+        "tags": [
+          "Environments"
+        ]
+      }
+    },
     "/environments/defaultEnvironment": {
       "get": {
         "operationId": "getDefaultEnvironment",
@@ -32269,10 +34912,65 @@
         ]
       }
     },
+    "/environments/environmentRevision/{environmentRevisionId}": {
+      "get": {
+        "operationId": "getEnvironmentRevisionDetailsViewModel",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "environmentRevisionId",
+            "required": true,
+            "schema": {
+              "pattern": "^[0-9a-f]{24}$",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/domino.environments.api.EnvironmentRevisionDetails"
+                }
+              }
+            },
+            "description": "success"
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalError"
+          }
+        },
+        "summary": "Get environment revision",
+        "tags": [
+          "Environments"
+        ]
+      }
+    },
     "/environments/permissions/all": {
       "get": {
         "operationId": "getEnvironmentPermissions",
-        "parameters": [],
+        "parameters": [
+          {
+            "description": "Domino id of the environment",
+            "in": "query",
+            "name": "environmentId",
+            "required": false,
+            "schema": {
+              "pattern": "^[0-9a-f]{24}$",
+              "type": "string"
+            }
+          }
+        ],
         "responses": {
           "200": {
             "content": {
@@ -32311,6 +35009,16 @@
             "description": "Whether to only get restricted environments or not",
             "in": "query",
             "name": "isRestricted",
+            "required": false,
+            "schema": {
+              "nullable": true,
+              "type": "boolean"
+            }
+          },
+          {
+            "description": "Whether to only get environments with an active revision",
+            "in": "query",
+            "name": "getOnlyActiveRevisions",
             "required": false,
             "schema": {
               "nullable": true,
@@ -32390,6 +35098,52 @@
       }
     },
     "/environments/{environmentId}": {
+      "delete": {
+        "operationId": "archiveEnvironment",
+        "parameters": [
+          {
+            "description": "Domino id of the environment to archive",
+            "in": "path",
+            "name": "environmentId",
+            "required": true,
+            "schema": {
+              "pattern": "^[0-9a-f]{24}$",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/domino.environments.api.EnvironmentDetails"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "204": {
+            "description": "success"
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalError"
+          }
+        },
+        "summary": "Archive an Environment, removing it from the list of visible environments.",
+        "tags": [
+          "Environments"
+        ]
+      },
       "get": {
         "operationId": "getEnvironmentById",
         "parameters": [
@@ -32482,6 +35236,107 @@
         ]
       }
     },
+    "/environments/{environmentId}/duplicate": {
+      "post": {
+        "operationId": "duplicateEnvironment",
+        "parameters": [
+          {
+            "description": "Id of the environment to duplicate",
+            "in": "path",
+            "name": "environmentId",
+            "required": true,
+            "schema": {
+              "pattern": "^[0-9a-f]{24}$",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/domino.environments.api.EnvironmentDetails"
+                }
+              }
+            },
+            "description": "success"
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalError"
+          }
+        },
+        "summary": "Duplicate environment",
+        "tags": [
+          "Environments"
+        ]
+      }
+    },
+    "/environments/{environmentId}/environmentRevision": {
+      "post": {
+        "operationId": "createEnvironmentRevision",
+        "parameters": [
+          {
+            "description": "Domino id of the environment to create revision",
+            "in": "path",
+            "name": "environmentId",
+            "required": true,
+            "schema": {
+              "pattern": "^[0-9a-f]{24}$",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/domino.environments.api.NewEnvironmentRevision"
+              }
+            }
+          },
+          "description": "JSON object with environmentrevision data to create a new environment revision",
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/domino.environments.api.EnvironmentRevisionDetails"
+                }
+              }
+            },
+            "description": "success"
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalError"
+          }
+        },
+        "summary": "Create environment revision",
+        "tags": [
+          "Environments"
+        ]
+      }
+    },
     "/environments/{environmentId}/environmentRevision/{environmentRevisionId}": {
       "patch": {
         "operationId": "updateEnvironmentRevisionIsRestricted",
@@ -32535,6 +35390,54 @@
           }
         },
         "summary": "Update isRestricted for environments if user has EnvironmentClassifier role",
+        "tags": [
+          "Environments"
+        ]
+      }
+    },
+    "/environments/{environmentId}/environmentRevision/{environmentRevisionId}/cancel": {
+      "post": {
+        "operationId": "killRevisionBuild",
+        "parameters": [
+          {
+            "description": "Domino id of the environment",
+            "in": "path",
+            "name": "environmentId",
+            "required": true,
+            "schema": {
+              "pattern": "^[0-9a-f]{24}$",
+              "type": "string"
+            }
+          },
+          {
+            "description": "Domino id of the environment revision",
+            "in": "path",
+            "name": "environmentRevisionId",
+            "required": true,
+            "schema": {
+              "pattern": "^[0-9a-f]{24}$",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "success"
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalError"
+          }
+        },
+        "summary": "Cancel build for environment revision",
         "tags": [
           "Environments"
         ]
@@ -32666,6 +35569,102 @@
           }
         },
         "summary": "Get project usage summaries for an environment",
+        "tags": [
+          "Environments"
+        ]
+      }
+    },
+    "/environments/{environmentId}/setactive": {
+      "post": {
+        "operationId": "setActiveRevision",
+        "parameters": [
+          {
+            "description": "Domino id of the environment",
+            "in": "path",
+            "name": "environmentId",
+            "required": true,
+            "schema": {
+              "pattern": "^[0-9a-f]{24}$",
+              "type": "string"
+            }
+          },
+          {
+            "description": "Domino id of the environment revision",
+            "in": "query",
+            "name": "revisionId",
+            "required": true,
+            "schema": {
+              "pattern": "^[0-9a-f]{24}$",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "success"
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalError"
+          }
+        },
+        "summary": "Set the active revision for an environment. If no revision Id is specified, active revision is set to the latest successfully built revision",
+        "tags": [
+          "Environments"
+        ]
+      }
+    },
+    "/environments/{environmentId}/visibility": {
+      "post": {
+        "operationId": "updateEnvironmentVisibility",
+        "parameters": [
+          {
+            "description": "Domino id of the environment",
+            "in": "path",
+            "name": "environmentId",
+            "required": true,
+            "schema": {
+              "pattern": "^[0-9a-f]{24}$",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/domino.environments.api.VisibilityUpdateRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "204": {
+            "description": "success"
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalError"
+          }
+        },
+        "summary": "Update the visibility of an environment",
         "tags": [
           "Environments"
         ]
@@ -35005,6 +38004,16 @@
               "nullable": true,
               "type": "string"
             }
+          },
+          {
+            "in": "query",
+            "name": "page",
+            "required": false,
+            "schema": {
+              "format": "int32",
+              "nullable": true,
+              "type": "integer"
+            }
           }
         ],
         "responses": {
@@ -35035,6 +38044,80 @@
           }
         },
         "summary": "searches for the specified terms in the relevant areas with a limit on the number of results",
+        "tags": [
+          "Gateway",
+          "Search"
+        ]
+      }
+    },
+    "/gateway/search-page": {
+      "get": {
+        "operationId": "searchForPage",
+        "parameters": [
+          {
+            "description": "Search term.",
+            "in": "query",
+            "name": "query",
+            "required": true,
+            "schema": {
+              "nullable": true,
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "area",
+            "required": false,
+            "schema": {
+              "nullable": true,
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "page",
+            "required": false,
+            "schema": {
+              "format": "int32",
+              "nullable": true,
+              "type": "integer"
+            }
+          },
+          {
+            "in": "query",
+            "name": "timestampFormat",
+            "required": false,
+            "schema": {
+              "nullable": true,
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/domino.common.gateway.search.SearchPageGatewayDTO"
+                }
+              }
+            },
+            "description": "success"
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalError"
+          }
+        },
+        "summary": "provides search results for search page. has the same functionality as /search but returns more details for the selected area",
         "tags": [
           "Gateway",
           "Search"
@@ -37946,6 +41029,82 @@
         ]
       }
     },
+    "/mlflow/project/{projectId}": {
+      "get": {
+        "description": "Gets information about a project. Flattens collaborating orgs in the project into list of org members",
+        "operationId": "getProjectForMlflow",
+        "parameters": [
+          {
+            "description": "Id of project to retrieve info about",
+            "in": "path",
+            "name": "projectId",
+            "required": true,
+            "schema": {
+              "pattern": "^[0-9a-f]{24}$",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/domino.mlflow.api.MlflowProjectInfo"
+                }
+              }
+            },
+            "description": "success"
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalError"
+          }
+        },
+        "summary": "Get project info for use by the mlflow-proxy",
+        "tags": [
+          "MLFlow"
+        ]
+      }
+    },
+    "/mlflow/projectIds": {
+      "get": {
+        "operationId": "getCollaboratingProjectIds",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/domino.common.DominoId"
+                  },
+                  "type": "array"
+                }
+              }
+            },
+            "description": "success"
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalError"
+          }
+        },
+        "summary": "Get ids of projects a user can access for use by the mlflow proxy",
+        "tags": [
+          "MLFlow"
+        ]
+      }
+    },
     "/modelManager/archiveModelExport/{exportId}": {
       "delete": {
         "operationId": "archiveModelExport",
@@ -37975,7 +41134,7 @@
             "$ref": "#/components/responses/InternalError"
           }
         },
-        "summary": "Archives model export for a given export id",
+        "summary": "Archives model API export for a given export id",
         "tags": [
           "ModelManager"
         ]
@@ -37993,7 +41152,7 @@
               }
             }
           },
-          "description": "JSON object with information for building a model image",
+          "description": "JSON object with information for building a model API image",
           "required": true
         },
         "responses": {
@@ -38005,7 +41164,7 @@
                 }
               }
             },
-            "description": "Request accepted, building of model image continues offline"
+            "description": "Request accepted, building of model API image continues offline"
           },
           "400": {
             "$ref": "#/components/responses/BadRequest"
@@ -38020,7 +41179,7 @@
             "$ref": "#/components/responses/InternalError"
           }
         },
-        "summary": "Build a Model Image",
+        "summary": "Build a Model API Image",
         "tags": [
           "ModelManager"
         ]
@@ -38102,7 +41261,7 @@
               }
             }
           },
-          "description": "JSON object with information for exporting a model into the Snowflake Api",
+          "description": "JSON object with information for exporting a model API into the Snowflake API",
           "required": true
         },
         "responses": {
@@ -38114,7 +41273,7 @@
                 }
               }
             },
-            "description": "Request accepted, exporting of model image continues offline"
+            "description": "Request accepted, exporting of model API image continues offline"
           },
           "400": {
             "$ref": "#/components/responses/BadRequest"
@@ -38129,7 +41288,7 @@
             "$ref": "#/components/responses/InternalError"
           }
         },
-        "summary": "Export a Model to Snowflake",
+        "summary": "Export a Model API to Snowflake",
         "tags": [
           "ModelManager"
         ]
@@ -38140,7 +41299,7 @@
         "operationId": "getBuildLogs",
         "parameters": [
           {
-            "description": "Id of model to return build logs for.",
+            "description": "Id of model API to return build logs for.",
             "in": "path",
             "name": "modelId",
             "required": true,
@@ -38150,7 +41309,7 @@
             }
           },
           {
-            "description": "Id of the version of the model to return build logs for.",
+            "description": "Id of the version of the model API to return build logs for.",
             "in": "path",
             "name": "modelVersionId",
             "required": true,
@@ -38160,13 +41319,24 @@
             }
           },
           {
-            "description": "build Id of the model to return build logs for.",
+            "description": "build Id of the model API to return build logs for.",
             "in": "query",
             "name": "buildId",
             "required": false,
             "schema": {
               "pattern": "^[0-9a-f]{24}$",
               "type": "string"
+            }
+          },
+          {
+            "description": "The epoch time in nanoseconds to start fetching from, such as \"1543538813745986325\". \"0\" by default and will typically be used for a timestamp-based offset log fetching strategy.",
+            "in": "query",
+            "name": "sinceTimeNano",
+            "required": false,
+            "schema": {
+              "format": "int64",
+              "nullable": true,
+              "type": "integer"
             }
           }
         ],
@@ -38197,7 +41367,155 @@
             "$ref": "#/components/responses/InternalError"
           }
         },
-        "summary": "Get model image build logs",
+        "summary": "Get model API image build logs. Returns logs as String",
+        "tags": [
+          "ModelManager"
+        ]
+      }
+    },
+    "/modelManager/getBuildLogsV2/{modelId}/{modelVersionId}": {
+      "get": {
+        "operationId": "getBuildLogsV2",
+        "parameters": [
+          {
+            "description": "Id of model API to return build logs for.",
+            "in": "path",
+            "name": "modelId",
+            "required": true,
+            "schema": {
+              "pattern": "^[0-9a-f]{24}$",
+              "type": "string"
+            }
+          },
+          {
+            "description": "Id of the version of the model API to return build logs for.",
+            "in": "path",
+            "name": "modelVersionId",
+            "required": true,
+            "schema": {
+              "pattern": "^[0-9a-f]{24}$",
+              "type": "string"
+            }
+          },
+          {
+            "description": "build Id of the model API to return build logs for.",
+            "in": "query",
+            "name": "buildId",
+            "required": false,
+            "schema": {
+              "pattern": "^[0-9a-f]{24}$",
+              "type": "string"
+            }
+          },
+          {
+            "description": "The epoch time in nanoseconds to start fetching from, such as \"1543538813745986325\". \"0\" by default and will typically be used for a timestamp-based offset log fetching strategy.",
+            "in": "query",
+            "name": "sinceTimeNano",
+            "required": false,
+            "schema": {
+              "format": "int64",
+              "nullable": true,
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/domino.modelmanager.api.ModelBuildLogsV2"
+                  },
+                  "type": "array"
+                }
+              }
+            },
+            "description": "success"
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalError"
+          }
+        },
+        "summary": "Get model API image build logs version 2. Returns logs as LogLine - JSON formatted and detailed metadata",
+        "tags": [
+          "ModelManager"
+        ]
+      }
+    },
+    "/modelManager/getExportLogs/{modelId}/{modelVersionId}": {
+      "get": {
+        "operationId": "getExportLogs",
+        "parameters": [
+          {
+            "description": "Id of model API to return build logs for.",
+            "in": "path",
+            "name": "modelId",
+            "required": true,
+            "schema": {
+              "pattern": "^[0-9a-f]{24}$",
+              "type": "string"
+            }
+          },
+          {
+            "description": "Id of the version of the model API to return build logs for.",
+            "in": "path",
+            "name": "modelVersionId",
+            "required": true,
+            "schema": {
+              "pattern": "^[0-9a-f]{24}$",
+              "type": "string"
+            }
+          },
+          {
+            "description": "The epoch time in nanoseconds to start fetching from, such as \"1543538813745986325\". \"0\" by default and will typically be used for a timestamp-based offset log fetching strategy.",
+            "in": "query",
+            "name": "sinceTimeNano",
+            "required": false,
+            "schema": {
+              "format": "int64",
+              "nullable": true,
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/domino.modelmanager.api.ModelExportLogs"
+                  },
+                  "type": "array"
+                }
+              }
+            },
+            "description": "success"
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalError"
+          }
+        },
+        "summary": "Get model API image export logs",
         "tags": [
           "ModelManager"
         ]
@@ -38244,7 +41562,173 @@
             "$ref": "#/components/responses/InternalError"
           }
         },
-        "summary": "Get model image export version logs",
+        "summary": "Get model API image export version logs",
+        "tags": [
+          "ModelManager"
+        ]
+      }
+    },
+    "/modelManager/getInstanceLogs/{modelId}/{modelVersionId}": {
+      "get": {
+        "operationId": "getInstanceLogs",
+        "parameters": [
+          {
+            "description": "Id of model API to return build logs for.",
+            "in": "path",
+            "name": "modelId",
+            "required": true,
+            "schema": {
+              "pattern": "^[0-9a-f]{24}$",
+              "type": "string"
+            }
+          },
+          {
+            "description": "Id of the version of the model API to return build logs for.",
+            "in": "path",
+            "name": "modelVersionId",
+            "required": true,
+            "schema": {
+              "pattern": "^[0-9a-f]{24}$",
+              "type": "string"
+            }
+          },
+          {
+            "description": "The pod name of the model API instance.",
+            "in": "query",
+            "name": "podName",
+            "required": false,
+            "schema": {
+              "nullable": true,
+              "type": "string"
+            }
+          },
+          {
+            "description": "The container name of the model API instance.",
+            "in": "query",
+            "name": "containerName",
+            "required": false,
+            "schema": {
+              "nullable": true,
+              "type": "string"
+            }
+          },
+          {
+            "description": "The epoch time in nanoseconds to start fetching from, such as \"1543538813745986325\". \"0\" by default and will typically be used for a timestamp-based offset log fetching strategy.",
+            "in": "query",
+            "name": "sinceTimeNano",
+            "required": false,
+            "schema": {
+              "format": "int64",
+              "nullable": true,
+              "type": "integer"
+            }
+          },
+          {
+            "description": "Whether to fetch from tail or not.",
+            "in": "query",
+            "name": "tail",
+            "required": false,
+            "schema": {
+              "nullable": true,
+              "type": "boolean"
+            }
+          },
+          {
+            "description": "The maximum number of logs to retrieve.",
+            "in": "query",
+            "name": "maxResults",
+            "required": false,
+            "schema": {
+              "type": "number"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/domino.modelmanager.api.ModelInstanceLogs"
+                  },
+                  "type": "array"
+                }
+              }
+            },
+            "description": "success"
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalError"
+          }
+        },
+        "summary": "Get model API image instance logs",
+        "tags": [
+          "ModelManager"
+        ]
+      }
+    },
+    "/modelManager/getModelDeploymentLabels/{modelId}/{modelVersionId}": {
+      "get": {
+        "operationId": "getModelDeploymentLabels",
+        "parameters": [
+          {
+            "description": "Id of model API to return deployment labels for.",
+            "in": "path",
+            "name": "modelId",
+            "required": true,
+            "schema": {
+              "pattern": "^[0-9a-f]{24}$",
+              "type": "string"
+            }
+          },
+          {
+            "description": "Id of the version of the model API to return deployment labels for.",
+            "in": "path",
+            "name": "modelVersionId",
+            "required": true,
+            "schema": {
+              "pattern": "^[0-9a-f]{24}$",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/domino.modelmanager.api.DeploymentLabels"
+                  },
+                  "type": "array"
+                }
+              }
+            },
+            "description": "success"
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalError"
+          }
+        },
+        "summary": "Get deployment labels for a model API",
         "tags": [
           "ModelManager"
         ]
@@ -38286,7 +41770,7 @@
             "$ref": "#/components/responses/InternalError"
           }
         },
-        "summary": "Gets model export for a given export id",
+        "summary": "Gets model API export for a given export id",
         "tags": [
           "ModelManager"
         ]
@@ -38297,7 +41781,7 @@
         "operationId": "getModelExportVersions",
         "parameters": [
           {
-            "description": "Id of the export to get model export versions for.",
+            "description": "Id of the export to get model API export versions for.",
             "in": "path",
             "name": "exportId",
             "required": true,
@@ -38379,7 +41863,7 @@
             "$ref": "#/components/responses/InternalError"
           }
         },
-        "summary": "Gets all model export versions for a given export id.",
+        "summary": "Gets all model API export versions for a given export id.",
         "tags": [
           "ModelManager"
         ]
@@ -38390,7 +41874,7 @@
         "operationId": "getModelExportsByProjectId",
         "parameters": [
           {
-            "description": "Id of the project to get model exports for.",
+            "description": "Id of the project to get model API exports for.",
             "in": "path",
             "name": "projectId",
             "required": true,
@@ -38484,7 +41968,7 @@
             "$ref": "#/components/responses/InternalError"
           }
         },
-        "summary": "Gets all model exports for a given project id.",
+        "summary": "Gets all model API exports for a given project id.",
         "tags": [
           "ModelManager"
         ]
@@ -38531,7 +42015,7 @@
             "$ref": "#/components/responses/InternalError"
           }
         },
-        "summary": "Get all models in a project",
+        "summary": "Get all models APIs in a project",
         "tags": [
           "ModelManager"
         ]
@@ -38579,7 +42063,68 @@
             "$ref": "#/components/responses/InternalError"
           }
         },
-        "summary": "Get all models that use a certain domino environment",
+        "summary": "Get all models APIs that use a certain domino environment",
+        "tags": [
+          "ModelManager"
+        ]
+      }
+    },
+    "/modelManager/monitoring/permissions": {
+      "get": {
+        "operationId": "getModelPermissionsForMonitoring",
+        "parameters": [
+          {
+            "description": "User ID to check permissions for.",
+            "in": "query",
+            "name": "userIdToCheckPermissionsFor",
+            "required": true,
+            "schema": {
+              "pattern": "^[0-9a-f]{24}$",
+              "type": "string"
+            }
+          },
+          {
+            "description": "Model IDs to check permissions for.",
+            "in": "query",
+            "name": "modelIds",
+            "required": true,
+            "schema": {
+              "items": {
+                "pattern": "^[0-9a-f]{24}$",
+                "type": "string"
+              },
+              "type": "array"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/domino.modelmanager.api.responses.ModelPermissionForMonitoringApiResponse"
+                  },
+                  "type": "array"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalError"
+          }
+        },
+        "summary": "Get current user's permissions to inform behavior for monitoring",
         "tags": [
           "ModelManager"
         ]
@@ -38744,7 +42289,7 @@
             "$ref": "#/components/responses/InternalError"
           }
         },
-        "summary": "Get models for display in the UI",
+        "summary": "Get model APIs for display in the UI",
         "tags": [
           "ModelManager"
         ]
@@ -38836,7 +42381,7 @@
             "$ref": "#/components/responses/InternalError"
           }
         },
-        "summary": "Get model's all model versions reproduce in workspace details",
+        "summary": "Get model API's all model API versions reproduce in workspace details",
         "tags": [
           "ModelManager"
         ]
@@ -38883,7 +42428,7 @@
             "$ref": "#/components/responses/InternalError"
           }
         },
-        "summary": "Get last 24 hour invocation counts for model apis",
+        "summary": "Get last 24 hour invocation counts for model APIs",
         "tags": [
           "ModelManager"
         ]
@@ -38948,7 +42493,7 @@
             "$ref": "#/components/responses/InternalError"
           }
         },
-        "summary": "Get timeseries of data for model invocation",
+        "summary": "Get timeseries of data for model API invocation",
         "tags": [
           "ModelManager"
         ]
@@ -38959,7 +42504,7 @@
         "operationId": "linkModelToGoal",
         "parameters": [
           {
-            "description": "Domino id of the model version",
+            "description": "Domino id of the model API version",
             "in": "path",
             "name": "modelVersionId",
             "required": true,
@@ -38977,7 +42522,7 @@
               }
             }
           },
-          "description": "JSON object with information for linking model to a goal",
+          "description": "JSON object with information for linking model API to a goal",
           "required": true
         },
         "responses": {
@@ -39007,7 +42552,7 @@
             "$ref": "#/components/responses/InternalError"
           }
         },
-        "summary": "Link model to a goal",
+        "summary": "Link model API to a goal",
         "tags": [
           "ModelManager"
         ]
@@ -39092,7 +42637,7 @@
               }
             }
           },
-          "description": "JSON object with information for unlinking model to a goal",
+          "description": "JSON object with information for unlinking model API from a goal",
           "required": true
         },
         "responses": {
@@ -39122,7 +42667,7 @@
             "$ref": "#/components/responses/InternalError"
           }
         },
-        "summary": "Unlink model to a goal",
+        "summary": "Unlink model API from a goal",
         "tags": [
           "ModelManager"
         ]
@@ -41169,6 +44714,110 @@
         "tags": [
           "ProjectManagement"
         ]
+      },
+      "get": {
+        "operationId": "getProjectGoal",
+        "parameters": [
+          {
+            "description": "Domino id of the goal to get",
+            "in": "path",
+            "name": "goalId",
+            "required": true,
+            "schema": {
+              "pattern": "^[0-9a-f]{24}$",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/domino.projects.api.ProjectGoal"
+                }
+              }
+            },
+            "description": "success"
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "409": {
+            "$ref": "#/components/responses/ProjectManagementErrorResponse"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalError"
+          }
+        },
+        "summary": "Get individual project goal",
+        "tags": [
+          "ProjectManagement"
+        ]
+      }
+    },
+    "/projectManagement/goal/{goalId}/assign": {
+      "post": {
+        "operationId": "assignUserToGoal",
+        "parameters": [
+          {
+            "description": "Domino id of the goal",
+            "in": "path",
+            "name": "goalId",
+            "required": true,
+            "schema": {
+              "pattern": "^[0-9a-f]{24}$",
+              "type": "string"
+            }
+          },
+          {
+            "description": "Domino id of user being assigned to the goal",
+            "in": "query",
+            "name": "assigneeId",
+            "required": false,
+            "schema": {
+              "pattern": "^[0-9a-f]{24}$",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/domino.projects.api.ProjectGoal"
+                }
+              }
+            },
+            "description": "success"
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "409": {
+            "$ref": "#/components/responses/ProjectManagementErrorResponse"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalError"
+          }
+        },
+        "summary": "Assign a user to a goal",
+        "tags": [
+          "ProjectManagement"
+        ]
       }
     },
     "/projectManagement/goal/{goalId}/comment": {
@@ -42733,6 +46382,61 @@
         ]
       }
     },
+    "/projectManagement/{projectId}/archiveProjectGoalStage": {
+      "delete": {
+        "operationId": "archiveProjectGoalStage",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "projectId",
+            "required": true,
+            "schema": {
+              "pattern": "^[0-9a-f]{24}$",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/domino.projectManagement.web.ArchiveProjectGoalStage"
+              }
+            }
+          },
+          "description": "JSON object with data to create a goal stage",
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/domino.projects.api.ProjectStage"
+                }
+              }
+            },
+            "description": "success"
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalError"
+          }
+        },
+        "summary": "Archive a goal stage",
+        "tags": [
+          "ProjectManagement"
+        ]
+      }
+    },
     "/projectManagement/{projectId}/createGoal": {
       "post": {
         "operationId": "createManageProjectGoal",
@@ -42793,6 +46497,61 @@
           }
         },
         "summary": "Create project goal",
+        "tags": [
+          "ProjectManagement"
+        ]
+      }
+    },
+    "/projectManagement/{projectId}/createProjectGoalStage": {
+      "post": {
+        "operationId": "createProjectGoalStage",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "projectId",
+            "required": true,
+            "schema": {
+              "pattern": "^[0-9a-f]{24}$",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/domino.projectManagement.web.CreateProjectGoalStage"
+              }
+            }
+          },
+          "description": "JSON object with data to create a goal stage",
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/domino.projects.api.ProjectStage"
+                }
+              }
+            },
+            "description": "success"
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalError"
+          }
+        },
+        "summary": "Create goal stages",
         "tags": [
           "ProjectManagement"
         ]
@@ -43000,6 +46759,72 @@
         "tags": [
           "ProjectManagement"
         ]
+      },
+      "post": {
+        "operationId": "getFilteredProjectGoals",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "projectId",
+            "required": true,
+            "schema": {
+              "pattern": "^[0-9a-f]{24}$",
+              "type": "string"
+            }
+          },
+          {
+            "in": "cookie",
+            "name": "X-Domino-PmApiToken",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/domino.projectManagement.web.FilterProjectGoals"
+              }
+            }
+          },
+          "description": "JSON object with data to filter project goals",
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/domino.projects.api.ProjectGoal"
+                  },
+                  "type": "array"
+                }
+              }
+            },
+            "description": "success"
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "409": {
+            "$ref": "#/components/responses/ProjectManagementErrorResponse"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalError"
+          }
+        },
+        "summary": "Get project goals",
+        "tags": [
+          "ProjectManagement"
+        ]
       }
     },
     "/projectManagement/{projectId}/linkDominoProjectToPMTTicket": {
@@ -43173,6 +46998,61 @@
           }
         },
         "summary": "UnLink a Project with Project Management Ticket",
+        "tags": [
+          "ProjectManagement"
+        ]
+      }
+    },
+    "/projectManagement/{projectId}/updateProjectGoalStage": {
+      "post": {
+        "operationId": "updateProjectGoalStage",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "projectId",
+            "required": true,
+            "schema": {
+              "pattern": "^[0-9a-f]{24}$",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/domino.projectManagement.web.UpdateProjectGoalStage"
+              }
+            }
+          },
+          "description": "JSON object with data to create a goal stage",
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/domino.projects.api.ProjectStage"
+                }
+              }
+            },
+            "description": "success"
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalError"
+          }
+        },
+        "summary": "Update name of existing goal stage",
         "tags": [
           "ProjectManagement"
         ]
@@ -43392,7 +47272,7 @@
             "$ref": "#/components/responses/InternalError"
           }
         },
-        "summary": "retrieves the project to be used for Actionable Insights for a Model",
+        "summary": "retrieves the project to be used for Actionable Insights for a Model API",
         "tags": [
           "ActionableInsights"
         ]
@@ -43472,6 +47352,17 @@
     "/projects/permissions/all": {
       "get": {
         "operationId": "getProjectPermissions",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "projectId",
+            "required": false,
+            "schema": {
+              "pattern": "^[0-9a-f]{24}$",
+              "type": "string"
+            }
+          }
+        ],
         "responses": {
           "200": {
             "content": {
@@ -44221,6 +48112,98 @@
         ]
       }
     },
+    "/projects/templates/projectHubTemplates": {
+      "get": {
+        "operationId": "getProjectHubTemplates",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/domino.projects.api.ProjectHubTemplatesResult"
+                  },
+                  "type": "array"
+                }
+              }
+            },
+            "description": "success"
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalError"
+          }
+        },
+        "summary": "Get the project hub templates for a deployment",
+        "tags": [
+          "Projects",
+          "Templates"
+        ]
+      }
+    },
+    "/projects/templates/{templateId}": {
+      "get": {
+        "operationId": "getProjectHubTemplate",
+        "parameters": [
+          {
+            "description": "String of the template's id",
+            "in": "path",
+            "name": "templateId",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "description": "string of the template's revision id",
+            "in": "query",
+            "name": "revisionId",
+            "required": false,
+            "schema": {
+              "nullable": true,
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/domino.projects.api.ProjectHubTemplateResult"
+                }
+              }
+            },
+            "description": "success"
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalError"
+          }
+        },
+        "summary": "Get a single project hub template for a deployment",
+        "tags": [
+          "Projects",
+          "Templates"
+        ]
+      }
+    },
     "/projects/transferOwnership": {
       "post": {
         "operationId": "transferProjectOwnership",
@@ -44454,6 +48437,59 @@
       }
     },
     "/projects/{projectId}/collaborators": {
+      "get": {
+        "operationId": "getProjectCollaborators",
+        "parameters": [
+          {
+            "description": "Id of the project",
+            "in": "path",
+            "name": "projectId",
+            "required": true,
+            "schema": {
+              "pattern": "^[0-9a-f]{24}$",
+              "type": "string"
+            }
+          },
+          {
+            "description": "Return only users and org members.",
+            "in": "query",
+            "name": "getUsers",
+            "required": false,
+            "schema": {
+              "nullable": true,
+              "type": "boolean"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/domino.common.user.Person"
+                  },
+                  "type": "array"
+                }
+              }
+            },
+            "description": "success"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalError"
+          }
+        },
+        "summary": "Retrieves all of the collaborators in a project",
+        "tags": [
+          "Projects"
+        ]
+      },
       "post": {
         "operationId": "addCollaborator",
         "parameters": [
@@ -45304,7 +49340,7 @@
     },
     "/projects/{projectId}/environmentVariables": {
       "get": {
-        "operationId": "listProjectEnvironmentVariables",
+        "operationId": "getProjectEnvironmentVariables",
         "parameters": [
           {
             "in": "path",
@@ -45321,7 +49357,10 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/domino.common.models.EnvironmentVariables"
+                  "items": {
+                    "$ref": "#/components/schemas/domino.common.models.EnvironmentVariable"
+                  },
+                  "type": "array"
                 }
               }
             },
@@ -45346,7 +49385,7 @@
         ]
       },
       "post": {
-        "operationId": "setProjectEnvironmentVariables",
+        "operationId": "upsertProjectEnvironmentVariable",
         "parameters": [
           {
             "description": "Id of the project to add environment variables",
@@ -45363,7 +49402,7 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/domino.common.models.EnvironmentVariables"
+                "$ref": "#/components/schemas/domino.common.models.EnvironmentVariable"
               }
             }
           },
@@ -45374,7 +49413,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/domino.common.models.EnvironmentVariables"
+                  "$ref": "#/components/schemas/domino.common.models.EnvironmentVariable"
                 }
               }
             },
@@ -45394,6 +49433,53 @@
           }
         },
         "summary": "sets the specified project's environment variables",
+        "tags": [
+          "Projects"
+        ]
+      }
+    },
+    "/projects/{projectId}/environmentVariables/{environmentVariableName}": {
+      "delete": {
+        "operationId": "deleteProjectEnvironmentVariable",
+        "parameters": [
+          {
+            "description": "Id of the project to remove environment variables",
+            "in": "path",
+            "name": "projectId",
+            "required": true,
+            "schema": {
+              "pattern": "^[0-9a-f]{24}$",
+              "type": "string"
+            }
+          },
+          {
+            "description": "name of the environment variable to remove",
+            "in": "path",
+            "name": "environmentVariableName",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "success"
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalError"
+          }
+        },
+        "summary": "deletes the environment variable from the specified project",
         "tags": [
           "Projects"
         ]
@@ -46511,54 +50597,6 @@
         ]
       }
     },
-    "/projects/{projectId}/goals": {
-      "get": {
-        "operationId": "getProjectGoals",
-        "parameters": [
-          {
-            "description": "Domino id of the project",
-            "in": "path",
-            "name": "projectId",
-            "required": true,
-            "schema": {
-              "pattern": "^[0-9a-f]{24}$",
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "content": {
-              "application/json": {
-                "schema": {
-                  "items": {
-                    "$ref": "#/components/schemas/domino.projects.api.ProjectGoal"
-                  },
-                  "type": "array"
-                }
-              }
-            },
-            "description": "success"
-          },
-          "400": {
-            "$ref": "#/components/responses/BadRequest"
-          },
-          "401": {
-            "$ref": "#/components/responses/Unauthorized"
-          },
-          "403": {
-            "$ref": "#/components/responses/Forbidden"
-          },
-          "500": {
-            "$ref": "#/components/responses/InternalError"
-          }
-        },
-        "summary": "Get project goals",
-        "tags": [
-          "Projects"
-        ]
-      }
-    },
     "/projects/{projectId}/hardwareTiers": {
       "get": {
         "operationId": "listHardwareTiersForProject",
@@ -46577,6 +50615,16 @@
             "description": "Flag to declare if archived hardware tiers are included in the response.",
             "in": "query",
             "name": "showArchived",
+            "required": false,
+            "schema": {
+              "nullable": true,
+              "type": "boolean"
+            }
+          },
+          {
+            "description": "Flag to declare if only model api hardware tiers are returned in the response.",
+            "in": "query",
+            "name": "forModelApi",
             "required": false,
             "schema": {
               "nullable": true,
@@ -49368,7 +53416,7 @@
               }
             }
           },
-          "description": "JSON object with information for building a model image",
+          "description": "JSON object with information for building a model API image",
           "required": true
         },
         "responses": {
@@ -49383,7 +53431,7 @@
                 }
               }
             },
-            "description": "Request accepted, building of model image continues offline"
+            "description": "Request accepted, building of model API image continues offline"
           },
           "400": {
             "$ref": "#/components/responses/BadRequest"
@@ -49398,7 +53446,7 @@
             "$ref": "#/components/responses/InternalError"
           }
         },
-        "summary": "Build a Model Image",
+        "summary": "Build a Model API Image",
         "tags": [
           "ModelManager"
         ]
@@ -49445,7 +53493,7 @@
             "$ref": "#/components/responses/InternalError"
           }
         },
-        "summary": "Get model image export status",
+        "summary": "Get model API image export status",
         "tags": [
           "ModelManager"
         ]
@@ -49492,7 +53540,7 @@
             "$ref": "#/components/responses/InternalError"
           }
         },
-        "summary": "Get model image export logs",
+        "summary": "Get model API image export logs",
         "tags": [
           "ModelManager"
         ]
@@ -49529,7 +53577,7 @@
               }
             }
           },
-          "description": "JSON object with information for exporting a model image",
+          "description": "JSON object with information for exporting a model API image",
           "required": true
         },
         "responses": {
@@ -49544,7 +53592,7 @@
                 }
               }
             },
-            "description": "Request accepted, exporting of model image continues offline"
+            "description": "Request accepted, exporting of model API image continues offline"
           },
           "400": {
             "$ref": "#/components/responses/BadRequest"
@@ -49559,7 +53607,7 @@
             "$ref": "#/components/responses/InternalError"
           }
         },
-        "summary": "Export a Model Image to NVIDIA Fleet command [BETA]",
+        "summary": "Export a Model API Image to NVIDIA Fleet command [BETA]",
         "tags": [
           "ModelManager"
         ]
@@ -49596,7 +53644,7 @@
               }
             }
           },
-          "description": "JSON object with information for exporting a model image",
+          "description": "JSON object with information for exporting a model API image",
           "required": true
         },
         "responses": {
@@ -49611,7 +53659,7 @@
                 }
               }
             },
-            "description": "Request accepted, exporting of model image continues offline"
+            "description": "Request accepted, exporting of model API image continues offline"
           },
           "400": {
             "$ref": "#/components/responses/BadRequest"
@@ -49626,7 +53674,7 @@
             "$ref": "#/components/responses/InternalError"
           }
         },
-        "summary": "Export a Model Image",
+        "summary": "Export a Model API Image",
         "tags": [
           "ModelManager"
         ]
@@ -49663,7 +53711,7 @@
               }
             }
           },
-          "description": "JSON object with information for exporting a model into the Snowflake Api",
+          "description": "JSON object with information for exporting a model API into the Snowflake Api",
           "required": true
         },
         "responses": {
@@ -49678,7 +53726,7 @@
                 }
               }
             },
-            "description": "Request accepted, exporting of model image continues offline"
+            "description": "Request accepted, exporting of model API image continues offline"
           },
           "400": {
             "$ref": "#/components/responses/BadRequest"
@@ -49693,7 +53741,7 @@
             "$ref": "#/components/responses/InternalError"
           }
         },
-        "summary": "Export a Model to Snowflake",
+        "summary": "Export a Model API to Snowflake",
         "tags": [
           "ModelManager"
         ]
@@ -49730,7 +53778,7 @@
               }
             }
           },
-          "description": "JSON object with information for exporting a model image",
+          "description": "JSON object with information for exporting a model API image",
           "required": true
         },
         "responses": {
@@ -49745,7 +53793,7 @@
                 }
               }
             },
-            "description": "Request accepted, exporting of model image continues offline"
+            "description": "Request accepted, exporting of model API image continues offline"
           },
           "400": {
             "$ref": "#/components/responses/BadRequest"
@@ -49760,7 +53808,7 @@
             "$ref": "#/components/responses/InternalError"
           }
         },
-        "summary": "Export a Model Image",
+        "summary": "Export a Model API Image",
         "tags": [
           "ModelManager"
         ]
@@ -49816,7 +53864,7 @@
             "$ref": "#/components/responses/InternalError"
           }
         },
-        "summary": "Get model image build logs",
+        "summary": "Get model API image build logs",
         "tags": [
           "ModelManager"
         ]
@@ -49872,7 +53920,7 @@
             "$ref": "#/components/responses/InternalError"
           }
         },
-        "summary": "Get model build status",
+        "summary": "Get model API image build status",
         "tags": [
           "ModelManager"
         ]
@@ -49928,7 +53976,7 @@
             "$ref": "#/components/responses/InternalError"
           }
         },
-        "summary": "Get deployment status for a model version",
+        "summary": "Get deployment status for a model API version",
         "tags": [
           "ModelManager"
         ]
@@ -49984,7 +54032,7 @@
             "$ref": "#/components/responses/InternalError"
           }
         },
-        "summary": "Get deployment logs for a model version",
+        "summary": "Get deployment logs for a model API version",
         "tags": [
           "ModelManager"
         ]
@@ -50040,7 +54088,7 @@
             "$ref": "#/components/responses/InternalError"
           }
         },
-        "summary": "Start a deployment of model version",
+        "summary": "Start a deployment of model API version",
         "tags": [
           "ModelManager"
         ]
@@ -50096,7 +54144,7 @@
             "$ref": "#/components/responses/InternalError"
           }
         },
-        "summary": "Stop the deployment of model version",
+        "summary": "Stop the deployment of model API version",
         "tags": [
           "ModelManager"
         ]
@@ -53052,7 +57100,7 @@
               "application/json": {
                 "schema": {
                   "items": {
-                    "$ref": "#/components/schemas/domino.computegrid.ExecutionCheckpoint"
+                    "$ref": "#/components/schemas/domino.computegrid.MonitoredResourceExecutionCheckpoint"
                   },
                   "type": "array"
                 }
@@ -53073,7 +57121,7 @@
             "$ref": "#/components/responses/InternalError"
           }
         },
-        "summary": "Get each checkpoint name and their individual status for an execution",
+        "summary": "Get checkpoint in (name, status, and possibly detailed info about monitored resources associated with the checkpoint) for an execution",
         "tags": [
           "Workspace"
         ]
