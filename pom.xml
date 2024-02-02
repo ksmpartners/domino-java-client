@@ -161,9 +161,9 @@
                             <skipIfSpecIsUnchanged>true</skipIfSpecIsUnchanged>
                             <generatorName>java</generatorName>
                             <library>native</library>
-                            <apiPackage>com.dominodatalab.public.rest</apiPackage>
-                            <modelPackage>com.dominodatalab.public.model</modelPackage>
-                            <invokerPackage>com.dominodatalab.public.invoker</invokerPackage>
+                            <apiPackage>com.dominodatalab.pub.rest</apiPackage>
+                            <modelPackage>com.dominodatalab.pub.model</modelPackage>
+                            <invokerPackage>com.dominodatalab.pub.invoker</invokerPackage>
                             <generateSupportingFiles>true</generateSupportingFiles>
                             <generateModelTests>false</generateModelTests>
                             <generateApiTests>false</generateApiTests>
