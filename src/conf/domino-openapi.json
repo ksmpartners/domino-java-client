@@ -46706,7 +46706,7 @@
     },
     "/projectManagement/{projectId}/goals": {
       "get": {
-        "operationId": "getManageProjectGoals",
+        "operationId": "getProjectGoals",
         "parameters": [
           {
             "in": "path",
@@ -46714,13 +46714,6 @@
             "required": true,
             "schema": {
               "pattern": "^[0-9a-f]{24}$",
-              "type": "string"
-            }
-          },
-          {
-            "in": "cookie",
-            "name": "X-Domino-PmApiToken",
-            "schema": {
               "type": "string"
             }
           }
@@ -46757,7 +46750,8 @@
         },
         "summary": "Get project goals",
         "tags": [
-          "ProjectManagement"
+          "ProjectManagement",
+          "Projects"
         ]
       },
       "post": {
