@@ -3,14 +3,14 @@ package com.dominodatalab.client;
 import java.net.http.HttpClient;
 import java.time.Duration;
 
-import com.dominodatalab.api.invoker.ApiClient;
+import com.dominodatalab.pub.invoker.ApiClient;
 import lombok.experimental.UtilityClass;
 
 /**
  * Utility class to construct an API client with some defaults.
  */
 @UtilityClass
-public class DominoApiClient extends DominoClient {
+public class DominoPublicClient extends DominoClient {
 
     /**
      * Create the API Client for accessing DataMiner over HTTP.
