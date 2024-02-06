@@ -12,13 +12,12 @@
 
 package com.dominodatalab.api.rest;
 
-import java.io.IOException;
 import java.io.InputStream;
 import java.net.http.HttpRequest;
-import java.net.http.HttpResponse;
 
 import com.dominodatalab.api.invoker.ApiException;
 import com.dominodatalab.api.invoker.ApiResponse;
+import com.dominodatalab.client.InputStreamExtractor;
 
 /**
  * Override the method because Java Native Client generation does not support Files or InputStream.
@@ -29,26 +28,12 @@ public class DatasetRwApiExtended extends DatasetRwApi {
     @Override
     public ApiResponse<InputStream> getFileRawWithHttpInfo(String snapshotId, String path, Boolean download) throws ApiException {
         HttpRequest.Builder localVarRequestBuilder = getFileRawRequestBuilder(snapshotId, path, download);
-        try {
-            HttpResponse<InputStream> localVarResponse = memberVarHttpClient.send(
-                    localVarRequestBuilder.build(),
-                    HttpResponse.BodyHandlers.ofInputStream());
-            if (memberVarResponseInterceptor != null) {
-                memberVarResponseInterceptor.accept(localVarResponse);
-            }
-            if (localVarResponse.statusCode() / 100 != 2) {
-                throw getApiException("getFileRaw", localVarResponse);
-            }
-            return new ApiResponse<>(
-                    localVarResponse.statusCode(),
-                    localVarResponse.headers().map(),
-                    localVarResponse.body()
-            );
-        } catch (IOException e) {
-            throw new ApiException(e);
-        } catch (InterruptedException e) {
-            Thread.currentThread().interrupt();
-            throw new ApiException(e);
-        }
+        return InputStreamExtractor.extractInputStreamResponse(memberVarHttpClient, memberVarResponseInterceptor, localVarRequestBuilder);
+    }
+
+    @Override
+    public ApiResponse<InputStream> downloadArchiveToLocalWithHttpInfo(String snapshotId, String taskKey) throws ApiException {
+        HttpRequest.Builder localVarRequestBuilder = downloadArchiveToLocalRequestBuilder(snapshotId, taskKey);
+        return InputStreamExtractor.extractInputStreamResponse(memberVarHttpClient, memberVarResponseInterceptor, localVarRequestBuilder);
     }
 }
