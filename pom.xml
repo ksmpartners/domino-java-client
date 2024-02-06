@@ -1,4 +1,5 @@
-<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://maven.apache.org/POM/4.0.0" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://maven.apache.org/POM/4.0.0"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.ksmpartners</groupId>
     <artifactId>domino-java-client</artifactId>
@@ -143,6 +144,11 @@
                             <generateSupportingFiles>true</generateSupportingFiles>
                             <generateModelTests>false</generateModelTests>
                             <generateApiTests>false</generateApiTests>
+                            <templateDirectory>${project.basedir}/src/conf/templates</templateDirectory>
+                            <typeMappings>
+                                <typeMapping>binary=java.io.InputStream</typeMapping>
+                                <typeMapping>file=java.io.InputStream</typeMapping>
+                            </typeMappings>
                             <configOptions>
                                 <serializableModel>false</serializableModel>
                                 <dateLibrary>java8</dateLibrary>
@@ -167,6 +173,11 @@
                             <generateSupportingFiles>true</generateSupportingFiles>
                             <generateModelTests>false</generateModelTests>
                             <generateApiTests>false</generateApiTests>
+                            <templateDirectory>${project.basedir}/src/conf/templates</templateDirectory>
+                            <typeMappings>
+                                <typeMapping>binary=java.io.InputStream</typeMapping>
+                                <typeMapping>file=java.io.InputStream</typeMapping>
+                            </typeMappings>
                             <configOptions>
                                 <serializableModel>false</serializableModel>
                                 <dateLibrary>java8</dateLibrary>
@@ -206,10 +217,12 @@
                             <shadedClassifierName>jakarta</shadedClassifierName>
                             <createDependencyReducedPom>false</createDependencyReducedPom>
                             <transformers>
-                                <transformer implementation="org.apache.maven.plugins.shade.resource.ServicesResourceTransformer"/>
+                                <transformer
+                                        implementation="org.apache.maven.plugins.shade.resource.ServicesResourceTransformer"/>
                                 <transformer implementation="io.yupiik.maven.shade.transformer.RelocationTransformer">
                                     <delegates>
-                                        <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer"/>
+                                        <transformer
+                                                implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer"/>
                                     </delegates>
                                 </transformer>
                             </transformers>
