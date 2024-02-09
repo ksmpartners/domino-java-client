@@ -5,10 +5,19 @@ import java.io.InputStream;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 
+import com.dominodatalab.pub.invoker.ApiClient;
 import com.dominodatalab.pub.invoker.ApiException;
 import com.dominodatalab.pub.invoker.ApiResponse;
 
 public class ProjectsFilesApiExtended extends ProjectsFilesApi {
+
+    public ProjectsFilesApiExtended() {
+        super();
+    }
+
+    public ProjectsFilesApiExtended(ApiClient client) {
+        super(client);
+    }
 
     @Override
     public ApiResponse<InputStream> getProjectFileContentsWithHttpInfo(String projectId, String commitId, String path) throws ApiException {
