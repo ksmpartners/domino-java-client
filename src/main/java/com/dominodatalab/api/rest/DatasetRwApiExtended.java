@@ -15,6 +15,7 @@ package com.dominodatalab.api.rest;
 import java.io.InputStream;
 import java.net.http.HttpRequest;
 
+import com.dominodatalab.api.invoker.ApiClient;
 import com.dominodatalab.api.invoker.ApiException;
 import com.dominodatalab.api.invoker.ApiResponse;
 import com.dominodatalab.client.InputStreamExtractor;
@@ -24,6 +25,14 @@ import com.dominodatalab.client.InputStreamExtractor;
  * If content-type =  application/octet-stream we need to handle this special.
  */
 public class DatasetRwApiExtended extends DatasetRwApi {
+
+    public DatasetRwApiExtended(){
+        super();
+    }
+
+    public DatasetRwApiExtended(ApiClient client){
+        super(client);
+    }
 
     @Override
     public ApiResponse<InputStream> getFileRawWithHttpInfo(String snapshotId, String path, Boolean download) throws ApiException {
