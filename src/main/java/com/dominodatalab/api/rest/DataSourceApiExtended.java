@@ -3,11 +3,20 @@ package com.dominodatalab.api.rest;
 import java.net.http.HttpRequest;
 import java.util.List;
 
+import com.dominodatalab.api.invoker.ApiClient;
 import com.dominodatalab.api.invoker.ApiException;
 import com.dominodatalab.api.invoker.ApiResponse;
 import com.dominodatalab.client.InputStreamExtractor;
 
 public class DataSourceApiExtended extends DataSourceApi {
+
+    public DataSourceApiExtended(){
+        super();
+    }
+
+    public DataSourceApiExtended(ApiClient client){
+        super(client);
+    }
 
     @Override
     public ApiResponse<java.io.InputStream> downloadDataSourceAuditDataWithHttpInfo(Boolean jsonFile) throws ApiException {
