@@ -168,10 +168,10 @@
       "ClusterTypeV1": {
         "description": "Type of compute cluster",
         "enum": [
-          "dask",
-          "mpi",
-          "ray",
-          "spark"
+          "Dask",
+          "Mpi",
+          "Ray",
+          "Spark"
         ],
         "type": "string"
       },
@@ -1093,8 +1093,8 @@
       "EnvironmentOwnerTypeV1": {
         "description": "Type of owner for an Environment. Environments can either be owned by a normal user or by an Organization.",
         "enum": [
-          "individual",
-          "organization"
+          "Individual",
+          "Organization"
         ],
         "type": "string"
       },
@@ -1124,14 +1124,14 @@
       "EnvironmentRevisionBuildStatusV1": {
         "description": "Status of the build for an Environment Revision.",
         "enum": [
-          "queued",
-          "starting",
-          "pulling",
-          "building",
-          "pushing",
-          "succeeded",
-          "failed",
-          "killed"
+          "Queued",
+          "Starting",
+          "Pulling",
+          "Building",
+          "Pushing",
+          "Succeeded",
+          "Failed",
+          "Killed"
         ],
         "type": "string"
       },
@@ -1325,9 +1325,9 @@
       "EnvironmentVisibilityV1": {
         "description": "Visiblity of an environment. Private Environments are only visible to the creating user, whereas Organization owned Environments can be seen by all Org members.",
         "enum": [
-          "global",
-          "private",
-          "organization"
+          "Global",
+          "Private",
+          "Organization"
         ],
         "type": "string"
       },
@@ -1478,23 +1478,23 @@
       },
       "GitReferenceTypeV1": {
         "enum": [
-          "head",
-          "branch",
-          "tag",
-          "commit"
+          "Head",
+          "Branch",
+          "Tag",
+          "Commit"
         ],
         "type": "string"
       },
       "GitServiceProviderV1": {
         "description": "Git service provider",
         "enum": [
-          "bitbucket",
-          "bitbucketServer",
-          "github",
-          "githubEnterprise",
-          "gitLab",
-          "gitLabEnterprise",
-          "unknown"
+          "Bitbucket",
+          "BitbucketServer",
+          "Github",
+          "GithubEnterprise",
+          "GitLab",
+          "GitLabEnterprise",
+          "Unknown"
         ],
         "type": "string"
       },
@@ -1951,10 +1951,10 @@
       "LogTypeV1": {
         "description": "Type of log. Complete includes all log types.",
         "enum": [
-          "stdOut",
-          "stdErr",
-          "prepareOutput",
-          "complete"
+          "StdOut",
+          "StdErr",
+          "PrepareOutput",
+          "Complete"
         ],
         "type": "string"
       },
@@ -2338,8 +2338,8 @@
       "NewEnvironmentVisibilityV1": {
         "description": "Environment visibility. Required for creating a new environment",
         "enum": [
-          "global",
-          "private"
+          "Global",
+          "Private"
         ],
         "type": "string"
       },
@@ -2741,8 +2741,8 @@
       "OrganizationRoleV1": {
         "description": "Role of member in the organization.",
         "enum": [
-          "member",
-          "admin"
+          "Member",
+          "Admin"
         ],
         "type": "string"
       },
@@ -3501,9 +3501,9 @@
       "ProjectVisibilityV1": {
         "description": "Project visibility",
         "enum": [
-          "public",
-          "searchable",
-          "private"
+          "Public",
+          "Searchable",
+          "Private"
         ],
         "type": "string"
       },
