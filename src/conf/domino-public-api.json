@@ -90,6 +90,24 @@
       }
     },
     "schemas": {
+      "AIGatewayEnvelopeV1": {
+        "properties": {
+          "endpoints": {
+            "items": {
+              "$ref": "#/components/schemas/EndpointEnvelopeV1"
+            },
+            "type": "array"
+          },
+          "metadata": {
+            "$ref": "#/components/schemas/MetadataV1"
+          }
+        },
+        "required": [
+          "endpoints",
+          "metadata"
+        ],
+        "type": "object"
+      },
       "AsyncPredictionEnvelopeV1": {
         "properties": {
           "asyncPredictionId": {
@@ -162,6 +180,144 @@
           "projectID",
           "serviceKeyName",
           "serviceKeySecret"
+        ],
+        "type": "object"
+      },
+      "BillingTagEnvelopeV1": {
+        "properties": {
+          "billingTag": {
+            "$ref": "#/components/schemas/BillingTagWithStatusV1"
+          }
+        },
+        "required": [
+          "billingTag"
+        ],
+        "type": "object"
+      },
+      "BillingTagV1": {
+        "properties": {
+          "tag": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "tag"
+        ],
+        "type": "object"
+      },
+      "BillingTagWithStatusV1": {
+        "properties": {
+          "active": {
+            "type": "boolean"
+          },
+          "tag": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "tag",
+          "active"
+        ],
+        "type": "object"
+      },
+      "BillingTagsEnvelopeV1": {
+        "properties": {
+          "billingTags": {
+            "items": {
+              "$ref": "#/components/schemas/BillingTagV1"
+            },
+            "type": "array"
+          }
+        },
+        "required": [
+          "billingTags"
+        ],
+        "type": "object"
+      },
+      "BillingTagsModeEnvelopeV1": {
+        "properties": {
+          "mode": {
+            "$ref": "#/components/schemas/BillingTagsSettingModeV1"
+          }
+        },
+        "required": [
+          "mode"
+        ],
+        "type": "object"
+      },
+      "BillingTagsModeV1": {
+        "properties": {
+          "mode": {
+            "$ref": "#/components/schemas/BillingTagsSettingModeV1"
+          }
+        },
+        "required": [
+          "mode"
+        ],
+        "type": "object"
+      },
+      "BillingTagsNotificationsEnvelopeV1": {
+        "properties": {
+          "notifications": {
+            "$ref": "#/components/schemas/BillingTagsSettingNotificationsV1"
+          }
+        },
+        "required": [
+          "notifications"
+        ],
+        "type": "object"
+      },
+      "BillingTagsNotificationsV1": {
+        "properties": {
+          "notifications": {
+            "$ref": "#/components/schemas/BillingTagsSettingNotificationsV1"
+          }
+        },
+        "required": [
+          "notifications"
+        ],
+        "type": "object"
+      },
+      "BillingTagsSettingModeV1": {
+        "description": "Billing tags functionality mode",
+        "enum": [
+          "required",
+          "optional",
+          "disabled"
+        ],
+        "type": "string"
+      },
+      "BillingTagsSettingNotificationsV1": {
+        "description": "Billing tags notifications setting",
+        "type": "boolean"
+      },
+      "BillingTagsSettingsEnvelopeV1": {
+        "properties": {
+          "mode": {
+            "$ref": "#/components/schemas/BillingTagsSettingModeV1"
+          },
+          "notifications": {
+            "$ref": "#/components/schemas/BillingTagsSettingNotificationsV1"
+          }
+        },
+        "required": [
+          "mode",
+          "notifications"
+        ],
+        "type": "object"
+      },
+      "BillingTagsSettingsV1": {
+        "properties": {
+          "mode": {
+            "$ref": "#/components/schemas/BillingTagsSettingModeV1"
+          },
+          "notifications": {
+            "$ref": "#/components/schemas/BillingTagsSettingNotificationsV1"
+          }
+        },
+        "required": [
+          "mode",
+          "notifications"
         ],
         "type": "object"
       },
@@ -240,37 +396,6 @@
         ],
         "type": "object"
       },
-      "CopyProjectSpecBeta": {
-        "properties": {
-          "copyDatasets": {
-            "description": "Whether to copy the Project's datasets or not",
-            "type": "boolean"
-          },
-          "gitCodeRepoSpec": {
-            "$ref": "#/components/schemas/GitCodeRepoSpecBeta"
-          },
-          "importedGitReposCredentialId": {
-            "description": "The Domino ID of the PAT credential, which will be used to access the Imported Git Repos on the new project.",
-            "type": "string"
-          },
-          "name": {
-            "description": "The name of the new Domino Project.",
-            "type": "string"
-          },
-          "ownerId": {
-            "description": "The Domino ID of owner of the copied project.",
-            "type": "string"
-          },
-          "visibility": {
-            "$ref": "#/components/schemas/ProjectVisibilityV1",
-            "description": "The visibility of the new Project."
-          }
-        },
-        "required": [
-          "copyDatasets"
-        ],
-        "type": "object"
-      },
       "CopyProjectSpecV1": {
         "properties": {
           "copyDatasets": {
@@ -319,52 +444,40 @@
       "CostAllocationV1": {
         "properties": {
           "cpuCoreHours": {
-            "format": "double",
-            "type": "integer"
+            "type": "double"
           },
           "cpuCoreRequestAverage": {
-            "format": "double",
-            "type": "integer"
+            "type": "double"
           },
           "cpuCoreUsageAverage": {
-            "format": "double",
-            "type": "integer"
+            "type": "double"
           },
           "cpuCores": {
-            "format": "double",
-            "type": "integer"
+            "type": "double"
           },
           "cpuCost": {
-            "format": "double",
-            "type": "integer"
+            "type": "double"
           },
           "cpuCostAdjustment": {
-            "format": "double",
-            "type": "integer"
+            "type": "double"
           },
           "cpuEfficincy": {
-            "format": "double",
-            "type": "integer"
+            "type": "double"
           },
           "discount": {
-            "format": "double",
-            "type": "integer"
+            "type": "double"
           },
           "gpuCount": {
-            "format": "double",
-            "type": "integer"
+            "type": "double"
           },
           "gpuHours": {
-            "format": "double",
-            "type": "integer"
+            "type": "double"
           },
           "gpucost": {
-            "format": "double",
-            "type": "integer"
+            "type": "double"
           },
           "gpucostAdjustment": {
-            "format": "double",
-            "type": "integer"
+            "type": "double"
           },
           "labels": {
             "properties": {
@@ -402,12 +515,10 @@
             "type": "object"
           },
           "loadBalancerCost": {
-            "format": "double",
-            "type": "integer"
+            "type": "double"
           },
           "loadBalancerCostAdjustment": {
-            "format": "double",
-            "type": "integer"
+            "type": "double"
           },
           "name": {
             "type": "string"
@@ -418,31 +529,25 @@
           "pv": {
             "properties": {
               "pvByteHours": {
-                "format": "double",
-                "type": "integer"
+                "type": "double"
               },
               "pvBytes": {
-                "format": "double",
-                "type": "integer"
+                "type": "double"
               },
               "pvCost": {
-                "format": "double",
-                "type": "integer"
+                "type": "double"
               },
               "pvCostAdjustment": {
-                "format": "double",
-                "type": "integer"
+                "type": "double"
               },
               "pvs": {
                 "additionalProperties": {
                   "properties": {
                     "byteHours": {
-                      "format": "double",
-                      "type": "integer"
+                      "type": "double"
                     },
                     "cost": {
-                      "format": "double",
-                      "type": "integer"
+                      "type": "double"
                     }
                   },
                   "type": "object"
@@ -453,16 +558,13 @@
             "type": "object"
           },
           "ramCost": {
-            "format": "double",
-            "type": "integer"
+            "type": "double"
           },
           "ramCostAdjustment": {
-            "format": "double",
-            "type": "integer"
+            "type": "double"
           },
           "totalCost": {
-            "format": "double",
-            "type": "integer"
+            "type": "double"
           },
           "window": {
             "properties": {
@@ -470,8 +572,7 @@
                 "type": "string"
               },
               "minutes": {
-                "format": "double",
-                "type": "integer"
+                "type": "double"
               },
               "start": {
                 "type": "string"
@@ -499,12 +600,10 @@
       "CostAssetsV1": {
         "properties": {
           "cpuCost": {
-            "format": "double",
-            "type": "integer"
+            "type": "double"
           },
           "gpuCost": {
-            "format": "double",
-            "type": "integer"
+            "type": "double"
           },
           "labels": {
             "properties": {
@@ -547,18 +646,17 @@
             "type": "object"
           },
           "ramCost": {
-            "format": "double",
-            "type": "integer"
+            "type": "double"
           },
           "totalCost": {
-            "format": "double",
-            "type": "integer"
+            "type": "double"
           },
           "type": {
             "type": "string"
           },
           "window": {
-            "$ref": "#/components/schemas/CostAssetsV1Window"
+            "$ref": "#/components/schemas/CostAssetsV1Window",
+            "type": "object"
           }
         },
         "type": "object"
@@ -569,8 +667,7 @@
             "type": "string"
           },
           "minutes": {
-            "format": "double",
-            "type": "integer"
+            "type": "double"
           },
           "start": {
             "type": "string"
@@ -581,16 +678,15 @@
       "DataSourceAuditDataV1": {
         "properties": {
           "dataSourceId": {
-            "description": "ID of the datasource",
+            "description": "ID of the Data Source",
             "type": "string"
           },
           "dataSourceName": {
-            "description": "name of the datasource",
+            "description": "name of the Data Source",
             "type": "string"
           },
           "dataSourceType": {
-            "description": "type of the datasource",
-            "type": "string"
+            "$ref": "#/components/schemas/DataSourceTypeV1"
           },
           "eventKind": {
             "$ref": "#/components/schemas/DataSourceAuditEventKindV1"
@@ -621,7 +717,7 @@
         "type": "object"
       },
       "DataSourceAuditEventKindV1": {
-        "description": "Kinds of datasource audit events",
+        "description": "Kinds of Data Source audit events",
         "enum": [
           "AccessDataSource",
           "CreateDataSource",
@@ -640,6 +736,160 @@
         "description": "A map of string -> string",
         "example": {
           "foo": "bar"
+        },
+        "type": "object"
+      },
+      "DataSourceAuthTypeV1": {
+        "description": "The type of Data Source authentication",
+        "example": "AzureBasic",
+        "type": "string"
+      },
+      "DataSourceConfigV1": {
+        "additionalProperties": {
+          "type": "string"
+        },
+        "description": "A map of configuration name -> value",
+        "example": {
+          "host": "example-host.com"
+        },
+        "type": "object"
+      },
+      "DataSourceCredentialTypeV1": {
+        "description": "Whether the credentials is individual to a user or shared",
+        "enum": [
+          "Individual",
+          "Shared"
+        ],
+        "type": "string"
+      },
+      "DataSourceCredentialsV1": {
+        "properties": {
+          "secretCredentials": {
+            "additionalProperties": {
+              "type": "string"
+            },
+            "description": "Map of secret credentials fields -> value",
+            "type": "object"
+          },
+          "visibleCredentials": {
+            "additionalProperties": {
+              "type": "string"
+            },
+            "description": "Map of non-secret credentials fields -> value",
+            "type": "object"
+          }
+        },
+        "required": [
+          "visibleCredentials",
+          "secretCredentials"
+        ],
+        "type": "object"
+      },
+      "DataSourceEnvelopeV1": {
+        "properties": {
+          "authType": {
+            "$ref": "#/components/schemas/DataSourceAuthTypeV1"
+          },
+          "config": {
+            "$ref": "#/components/schemas/DataSourceConfigV1"
+          },
+          "credentialType": {
+            "$ref": "#/components/schemas/DataSourceCredentialTypeV1"
+          },
+          "dataSourceType": {
+            "$ref": "#/components/schemas/DataSourceTypeV1"
+          },
+          "description": {
+            "description": "Description of the Data Source",
+            "example": "My Data Source",
+            "type": "string"
+          },
+          "displayName": {
+            "description": "Data Source display name",
+            "example": "Azure Data Lake Store",
+            "type": "string"
+          },
+          "id": {
+            "description": "ID of the Data Source",
+            "example": "62604702b7e5d347dbe7a909",
+            "type": "string"
+          },
+          "lastUpdated": {
+            "description": "ISO 8601 formatted time of when the Data Source was last updated",
+            "example": "2022-04-23T18:25:43.511Z",
+            "format": "date-time",
+            "type": "string"
+          },
+          "name": {
+            "description": "User given name of the Data Source",
+            "example": "data-source-name",
+            "type": "string"
+          },
+          "ownerId": {
+            "description": "ID of the Data Source owner",
+            "example": "62604702b7e5d347dbe7a909",
+            "type": "string"
+          },
+          "ownerUsername": {
+            "description": "Username of the owner of the Data Source",
+            "example": "owner-username",
+            "type": "string"
+          },
+          "permissions": {
+            "$ref": "#/components/schemas/DataSourcePermissionsV1"
+          }
+        },
+        "required": [
+          "id",
+          "name",
+          "ownerId",
+          "ownerUsername",
+          "dataSourceType",
+          "authType",
+          "credentialType",
+          "config",
+          "permissions",
+          "lastUpdated",
+          "displayName"
+        ],
+        "type": "object"
+      },
+      "DataSourcePermissionsV1": {
+        "properties": {
+          "isEveryone": {
+            "description": "If the Data Source is accessible by everyone",
+            "type": "boolean"
+          },
+          "userAndOrganizationIds": {
+            "description": "User and Organization IDs that can access this Data Source",
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          }
+        },
+        "required": [
+          "isEveryone",
+          "userAndOrganizationIds"
+        ],
+        "type": "object"
+      },
+      "DataSourceTypeV1": {
+        "description": "The configuration type of the Data Source",
+        "example": "ADLSConfig",
+        "type": "string"
+      },
+      "DataSourceUpdateV1": {
+        "properties": {
+          "config": {
+            "$ref": "#/components/schemas/DataSourceConfigV1"
+          },
+          "credentials": {
+            "$ref": "#/components/schemas/DataSourceCredentialsV1"
+          },
+          "permissions": {
+            "$ref": "#/components/schemas/DataSourcePermissionsV1"
+          }
         },
         "type": "object"
       },
@@ -996,29 +1246,6 @@
         ],
         "type": "object"
       },
-      "DeepCopyGitRepoSpecBeta": {
-        "description": "Data which specifies what the copied repository will look like.",
-        "properties": {
-          "isPrivate": {
-            "description": "Whether or not the new code repo should be private.",
-            "type": "boolean"
-          },
-          "newRepoName": {
-            "description": "The name of the new repository.",
-            "type": "string"
-          },
-          "newRepoOwnerName": {
-            "description": "The name of the user who will own the new repository in the git service provider.",
-            "type": "string"
-          }
-        },
-        "required": [
-          "newRepoName",
-          "newRepoOwnerName",
-          "isPrivate"
-        ],
-        "type": "object"
-      },
       "DeepCopyGitRepoSpecV1": {
         "description": "Data which specifies what the copied repository will look like.",
         "properties": {
@@ -1072,6 +1299,67 @@
         "required": [
           "name",
           "value"
+        ],
+        "type": "object"
+      },
+      "EndpointEnvelopeV1": {
+        "properties": {
+          "endpointId": {
+            "description": "ID of the endpoint",
+            "example": "62604702b7e5d347dbe7a909",
+            "type": "string"
+          },
+          "endpointName": {
+            "description": "Valid name of the endpoint",
+            "example": "completions",
+            "type": "string"
+          },
+          "endpointType": {
+            "description": "Type of the endpoint",
+            "example": "llm/v1/completions",
+            "type": "string"
+          },
+          "modelConfig": {
+            "$ref": "#/components/schemas/ModelConfigV1"
+          },
+          "modelName": {
+            "description": "Name of the model",
+            "example": "gpt-4",
+            "type": "string"
+          },
+          "modelProvider": {
+            "description": "Provider of the model",
+            "example": "openai",
+            "type": "string"
+          }
+        },
+        "required": [
+          "endpointId",
+          "endpointName",
+          "endpointType",
+          "modelProvider",
+          "modelName",
+          "modelConfig"
+        ],
+        "type": "object"
+      },
+      "EndpointPermissionsDtoV1": {
+        "properties": {
+          "isEveryoneAllowed": {
+            "description": "If the endpoint is accessible by everyone",
+            "type": "boolean"
+          },
+          "userIds": {
+            "description": "User IDs that can access this endpoint",
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          }
+        },
+        "required": [
+          "isEveryoneAllowed",
+          "userIds"
         ],
         "type": "object"
       },
@@ -1382,25 +1670,6 @@
         ],
         "type": "object"
       },
-      "GitCodeRepoSpecBeta": {
-        "description": "Details needed in order to copy the code repository of a Git-backed project.",
-        "properties": {
-          "credentialId": {
-            "description": "The Domino ID of the PAT credential, which will be used to copy and/or read from the code repository on the new project.",
-            "type": "string"
-          },
-          "deepCopy": {
-            "$ref": "#/components/schemas/DeepCopyGitRepoSpecBeta"
-          },
-          "referenceCopy": {
-            "$ref": "#/components/schemas/ReferenceCopyGitRepoSpecV1"
-          }
-        },
-        "required": [
-          "credentialId"
-        ],
-        "type": "object"
-      },
       "GitCodeRepoSpecV1": {
         "description": "Details needed in order to copy the code repository of a Git-backed project.",
         "properties": {
@@ -1519,16 +1788,346 @@
             "description": "Id of Goal to link to Job.",
             "example": "62313cfd7a0af0281c01a6a6",
             "type": "string"
+          }
+        },
+        "required": [
+          "goalId"
+        ],
+        "type": "object"
+      },
+      "HardwareTierCapacityV1": {
+        "description": "Current capacity information for a hardware tier. Note: Not necessary on requests to update a hardware tier.",
+        "properties": {
+          "availableCapacityWithoutLaunching": {
+            "type": "integer"
           },
-          "projectId": {
-            "description": "Id of project resources belong to.",
-            "example": "62313d377a0af0281c01a6a8",
+          "capacityLevel": {
+            "enum": [
+              "CanExecuteWithCurrentInstances",
+              "RequiresLaunchingInstance",
+              "Full",
+              "Unknown"
+            ],
+            "type": "string"
+          },
+          "executingRuns": {
+            "type": "integer"
+          },
+          "maxAvailableCapacity": {
+            "type": "integer"
+          },
+          "maxConcurrentRuns": {
+            "type": "integer"
+          },
+          "maxNumberOfExecutors": {
+            "type": "integer"
+          },
+          "numberOfExecutors": {
+            "type": "integer"
+          },
+          "queuedRuns": {
+            "type": "integer"
+          }
+        },
+        "required": [
+          "numberOfExecutors",
+          "maxNumberOfExecutors",
+          "executingRuns",
+          "queuedRuns",
+          "maxConcurrentRuns",
+          "availableCapacityWithoutLaunching",
+          "maxAvailableCapacity",
+          "capacityLevel"
+        ],
+        "type": "object"
+      },
+      "HardwareTierComputeClusterRestrictionsV1": {
+        "description": "Details about specific compute clusters a hardware tier is restricted to",
+        "properties": {
+          "restrictToDask": {
+            "type": "boolean"
+          },
+          "restrictToMpi": {
+            "type": "boolean"
+          },
+          "restrictToRay": {
+            "type": "boolean"
+          },
+          "restrictToSpark": {
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "restrictToSpark",
+          "restrictToRay",
+          "restrictToDask",
+          "restrictToMpi"
+        ],
+        "type": "object"
+      },
+      "HardwareTierEnvelopeV1": {
+        "properties": {
+          "hardwareTier": {
+            "$ref": "#/components/schemas/HardwareTierV1"
+          },
+          "metadata": {
+            "$ref": "#/components/schemas/MetadataV1"
+          }
+        },
+        "required": [
+          "hardwareTier",
+          "metadata"
+        ],
+        "type": "object"
+      },
+      "HardwareTierFlagsV1": {
+        "description": "Boolean flags for a hardware tier",
+        "properties": {
+          "isArchived": {
+            "type": "boolean"
+          },
+          "isDataAnalystTier": {
+            "type": "boolean"
+          },
+          "isDefault": {
+            "type": "boolean"
+          },
+          "isDefaultForModelApi": {
+            "type": "boolean"
+          },
+          "isGlobal": {
+            "type": "boolean"
+          },
+          "isModelApiTier": {
+            "type": "boolean"
+          },
+          "isVisible": {
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "isDefault",
+          "isVisible",
+          "isGlobal",
+          "isArchived",
+          "isDataAnalystTier"
+        ],
+        "type": "object"
+      },
+      "HardwareTierGpuConfigurationV1": {
+        "description": "Gpu configuration for a hardware tier",
+        "properties": {
+          "gpuKey": {
+            "type": "string"
+          },
+          "numberOfGpus": {
+            "type": "integer"
+          }
+        },
+        "required": [
+          "numberOfGpus",
+          "gpuKey"
+        ],
+        "type": "object"
+      },
+      "HardwareTierOverProvisioningV1": {
+        "description": "Over provisioning settings for a hardware tier",
+        "properties": {
+          "daysOfWeek": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "fromTime": {
+            "type": "string"
+          },
+          "instances": {
+            "type": "integer"
+          },
+          "schedulingEnabled": {
+            "type": "boolean"
+          },
+          "timezone": {
+            "type": "string"
+          },
+          "toTime": {
             "type": "string"
           }
         },
         "required": [
-          "goalId",
-          "projectId"
+          "instances",
+          "schedulingEnabled",
+          "daysOfWeek",
+          "timezone",
+          "fromTime",
+          "toTime"
+        ],
+        "type": "object"
+      },
+      "HardwareTierPodCustomizationV1": {
+        "description": "Custom fields for hardwareTier",
+        "properties": {
+          "additionalAnnotations": {
+            "additionalProperties": {
+              "type": "string"
+            },
+            "type": "object"
+          },
+          "additionalLabels": {
+            "additionalProperties": {
+              "type": "string"
+            },
+            "type": "object"
+          },
+          "additionalLimits": {
+            "additionalProperties": {
+              "type": "string"
+            },
+            "type": "object"
+          },
+          "additionalRequests": {
+            "additionalProperties": {
+              "type": "string"
+            },
+            "type": "object"
+          },
+          "capabilities": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "hugepages": {
+            "additionalProperties": {
+              "type": "string"
+            },
+            "type": "object"
+          }
+        },
+        "type": "object"
+      },
+      "HardwareTierResourcesV1": {
+        "description": "Compute resources for a hardware tier",
+        "properties": {
+          "allowSharedMemoryToExceedDefault": {
+            "type": "boolean"
+          },
+          "cores": {
+            "example": 1,
+            "format": "double",
+            "type": "number"
+          },
+          "coresLimit": {
+            "format": "double",
+            "type": "number"
+          },
+          "memory": {
+            "$ref": "#/components/schemas/InformationV1"
+          },
+          "memoryLimit": {
+            "$ref": "#/components/schemas/InformationV1"
+          },
+          "memorySwapLimit": {
+            "$ref": "#/components/schemas/InformationV1"
+          },
+          "sharedMemoryLimit": {
+            "$ref": "#/components/schemas/InformationV1"
+          }
+        },
+        "required": [
+          "cores",
+          "memory",
+          "allowSharedMemoryToExceedDefault"
+        ],
+        "type": "object"
+      },
+      "HardwareTierV1": {
+        "properties": {
+          "availabilityZones": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "capacity": {
+            "$ref": "#/components/schemas/HardwareTierCapacityV1"
+          },
+          "centsPerMinute": {
+            "description": "Cost per minute of using this hardware tier as defined by an Admin.",
+            "format": "double",
+            "type": "number"
+          },
+          "computeClusterRestrictions": {
+            "$ref": "#/components/schemas/HardwareTierComputeClusterRestrictionsV1"
+          },
+          "creationTime": {
+            "description": "When the hardware tier was created",
+            "example": "2022-03-12T02:13:44.467Z",
+            "format": "date-time",
+            "type": "string"
+          },
+          "dataPlaneId": {
+            "type": "string"
+          },
+          "flags": {
+            "$ref": "#/components/schemas/HardwareTierFlagsV1"
+          },
+          "gpuConfiguration": {
+            "$ref": "#/components/schemas/HardwareTierGpuConfigurationV1"
+          },
+          "id": {
+            "example": "small-k8s",
+            "type": "string"
+          },
+          "maxSimultaneousExecutions": {
+            "type": "integer"
+          },
+          "metadata": {
+            "additionalProperties": {
+              "type": "string"
+            },
+            "type": "object"
+          },
+          "name": {
+            "example": "My-HardwareTier",
+            "type": "string"
+          },
+          "nodePool": {
+            "type": "string"
+          },
+          "overProvisioning": {
+            "$ref": "#/components/schemas/HardwareTierOverProvisioningV1"
+          },
+          "podCustomization": {
+            "$ref": "#/components/schemas/HardwareTierPodCustomizationV1"
+          },
+          "resources": {
+            "$ref": "#/components/schemas/HardwareTierResourcesV1"
+          },
+          "tags": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "updateTime": {
+            "description": "When the hardwareTier was last updated",
+            "example": "2022-03-12T02:13:44.467Z",
+            "format": "date-time",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "name",
+          "resources",
+          "flags",
+          "centsPerMinute",
+          "creationTime",
+          "updateTime",
+          "podCustomization",
+          "metadata"
         ],
         "type": "object"
       },
@@ -1550,6 +2149,28 @@
         "required": [
           "status",
           "version"
+        ],
+        "type": "object"
+      },
+      "InformationV1": {
+        "properties": {
+          "units": {
+            "enum": [
+              "MB",
+              "MiB",
+              "GB",
+              "GiB"
+            ],
+            "type": "string"
+          },
+          "value": {
+            "format": "double",
+            "type": "number"
+          }
+        },
+        "required": [
+          "value",
+          "units"
         ],
         "type": "object"
       },
@@ -2122,6 +2743,16 @@
         ],
         "type": "object"
       },
+      "ModelConfigV1": {
+        "additionalProperties": {
+          "type": "string"
+        },
+        "description": "Configuration for the model",
+        "example": {
+          "openai": "58utu49034093nc9cc9n"
+        },
+        "type": "object"
+      },
       "MountedGitRepoV1": {
         "properties": {
           "endingBranch": {
@@ -2206,6 +2837,62 @@
         ],
         "type": "object"
       },
+      "NewBillingTagsV1": {
+        "properties": {
+          "billingTags": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          }
+        },
+        "required": [
+          "billingTags"
+        ],
+        "type": "object"
+      },
+      "NewDataSourceV1": {
+        "properties": {
+          "authType": {
+            "$ref": "#/components/schemas/DataSourceAuthTypeV1"
+          },
+          "config": {
+            "$ref": "#/components/schemas/DataSourceConfigV1"
+          },
+          "credentialType": {
+            "$ref": "#/components/schemas/DataSourceCredentialTypeV1"
+          },
+          "credentials": {
+            "$ref": "#/components/schemas/DataSourceCredentialsV1"
+          },
+          "dataSourceType": {
+            "$ref": "#/components/schemas/DataSourceTypeV1"
+          },
+          "description": {
+            "description": "Description of the Data Source",
+            "example": "My Data Source",
+            "type": "string"
+          },
+          "name": {
+            "description": "User given name of the Data Source",
+            "example": "data-source-name",
+            "type": "string"
+          },
+          "permissions": {
+            "$ref": "#/components/schemas/DataSourcePermissionsV1"
+          }
+        },
+        "required": [
+          "name",
+          "dataSourceType",
+          "authType",
+          "credentialType",
+          "credentials",
+          "config",
+          "permissions"
+        ],
+        "type": "object"
+      },
       "NewDatasetRwV1": {
         "properties": {
           "description": {
@@ -2234,6 +2921,45 @@
         },
         "required": [
           "name"
+        ],
+        "type": "object"
+      },
+      "NewEndpointV1": {
+        "properties": {
+          "endpointName": {
+            "description": "Valid name of the endpoint",
+            "example": "completions",
+            "type": "string"
+          },
+          "endpointPermissions": {
+            "$ref": "#/components/schemas/EndpointPermissionsDtoV1"
+          },
+          "endpointType": {
+            "description": "Type of the endpoint",
+            "example": "llm/v1/completions",
+            "type": "string"
+          },
+          "modelConfig": {
+            "$ref": "#/components/schemas/ModelConfigV1"
+          },
+          "modelName": {
+            "description": "Name of the model",
+            "example": "gpt-4",
+            "type": "string"
+          },
+          "modelProvider": {
+            "description": "Provider of the model",
+            "example": "openai",
+            "type": "string"
+          }
+        },
+        "required": [
+          "endpointName",
+          "endpointType",
+          "endpointPermissions",
+          "modelProvider",
+          "modelName",
+          "modelConfig"
         ],
         "type": "object"
       },
@@ -2342,6 +3068,97 @@
           "Private"
         ],
         "type": "string"
+      },
+      "NewHardwareTierFlagsV1": {
+        "description": "Boolean flags for creating a new hardware tier",
+        "properties": {
+          "isDataAnalystTier": {
+            "default": false,
+            "type": "boolean"
+          },
+          "isDefault": {
+            "default": false,
+            "type": "boolean"
+          },
+          "isDefaultForModelApi": {
+            "type": "boolean"
+          },
+          "isGlobal": {
+            "default": true,
+            "type": "boolean"
+          },
+          "isModelApiTier": {
+            "type": "boolean"
+          },
+          "isVisible": {
+            "default": true,
+            "type": "boolean"
+          }
+        },
+        "type": "object"
+      },
+      "NewHardwareTierV1": {
+        "properties": {
+          "availabilityZones": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "centsPerMinute": {
+            "description": "Cost per minute of using this hardware tier as defined by an Admin.",
+            "format": "double",
+            "type": "number"
+          },
+          "computeClusterRestrictions": {
+            "$ref": "#/components/schemas/HardwareTierComputeClusterRestrictionsV1"
+          },
+          "dataPlaneId": {
+            "type": "string"
+          },
+          "flags": {
+            "$ref": "#/components/schemas/NewHardwareTierFlagsV1"
+          },
+          "gpuConfiguration": {
+            "$ref": "#/components/schemas/HardwareTierGpuConfigurationV1"
+          },
+          "id": {
+            "example": "small-k8s",
+            "type": "string"
+          },
+          "maxSimultaneousExecutions": {
+            "type": "integer"
+          },
+          "name": {
+            "example": "My-HardwareTier",
+            "type": "string"
+          },
+          "nodePool": {
+            "type": "string"
+          },
+          "overProvisioning": {
+            "$ref": "#/components/schemas/HardwareTierOverProvisioningV1"
+          },
+          "podCustomization": {
+            "$ref": "#/components/schemas/HardwareTierPodCustomizationV1"
+          },
+          "resources": {
+            "$ref": "#/components/schemas/HardwareTierResourcesV1"
+          },
+          "tags": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          }
+        },
+        "required": [
+          "id",
+          "name",
+          "resources",
+          "nodePool"
+        ],
+        "type": "object"
       },
       "NewJobV1": {
         "properties": {
@@ -2778,6 +3595,24 @@
         ],
         "type": "object"
       },
+      "PaginatedDataSourceEnvelopeV1": {
+        "properties": {
+          "dataSources": {
+            "items": {
+              "$ref": "#/components/schemas/DataSourceEnvelopeV1"
+            },
+            "type": "array"
+          },
+          "metadata": {
+            "$ref": "#/components/schemas/PaginatedMetadataV1"
+          }
+        },
+        "required": [
+          "dataSources",
+          "metadata"
+        ],
+        "type": "object"
+      },
       "PaginatedDatasetRwEnvelopeV1": {
         "properties": {
           "datasets": {
@@ -2882,6 +3717,24 @@
         },
         "required": [
           "goals",
+          "metadata"
+        ],
+        "type": "object"
+      },
+      "PaginatedHardwareTierEnvelopeV1": {
+        "properties": {
+          "hardwareTiers": {
+            "items": {
+              "$ref": "#/components/schemas/HardwareTierV1"
+            },
+            "type": "array"
+          },
+          "metadata": {
+            "$ref": "#/components/schemas/PaginatedMetadataV1"
+          }
+        },
+        "required": [
+          "hardwareTiers",
           "metadata"
         ],
         "type": "object"
@@ -3666,8 +4519,8 @@
         },
         "description": "A map of key -> value",
         "example": {
-          "key": "foo",
-          "value": 1
+          "key": 1,
+          "key2": 100.4
         },
         "type": "object"
       },
@@ -3703,6 +4556,7 @@
         "type": "object"
       },
       "RegisteredModelRequestingUserAccessV1": {
+        "description": "Describes the operations that the requesting user has permission to do with this model.",
         "properties": {
           "canEditModel": {
             "description": "True if the requesting user can update this model",
@@ -3856,8 +4710,8 @@
         },
         "description": "A map of key -> value",
         "example": {
-          "key": "foo",
-          "value": "bar"
+          "key": "value",
+          "key2": "anothervalue"
         },
         "type": "object"
       },
@@ -3898,8 +4752,7 @@
             "$ref": "#/components/schemas/RegisteredModelProjectSummaryV1"
           },
           "requestingUserAccess": {
-            "$ref": "#/components/schemas/RegisteredModelRequestingUserAccessV1",
-            "description": "Describes the operations that the requesting user has permission to do with this model."
+            "$ref": "#/components/schemas/RegisteredModelRequestingUserAccessV1"
           },
           "tags": {
             "$ref": "#/components/schemas/RegisteredModelTagsV1"
@@ -4625,6 +5478,50 @@
         ],
         "type": "object"
       },
+      "UpdatedEndpointPermissionsV1": {
+        "properties": {
+          "isEveryoneAllowed": {
+            "description": "If the endpoint is accessible by everyone",
+            "type": "boolean"
+          },
+          "userIds": {
+            "description": "User IDs that can access this endpoint",
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          }
+        },
+        "type": "object"
+      },
+      "UpdatedEndpointV1": {
+        "properties": {
+          "endpointName": {
+            "description": "Valid name of the endpoint",
+            "example": "completions-1",
+            "type": "string"
+          },
+          "endpointType": {
+            "description": "Type of the endpoint",
+            "example": "llm/v1/completions",
+            "type": "string"
+          },
+          "modelConfig": {
+            "$ref": "#/components/schemas/ModelConfigV1"
+          },
+          "modelName": {
+            "description": "Name of the model",
+            "example": "gpt-3.5",
+            "type": "string"
+          },
+          "modelProvider": {
+            "description": "Provider of the model",
+            "example": "openai",
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
       "UpdatedRegisteredModelReviewV1": {
         "properties": {
           "notes": {
@@ -4761,10 +5658,351 @@
   "info": {
     "description": "Domino Public API Endpoints",
     "title": "Domino Public API",
-    "version": "5.9.1"
+    "version": "5.10.1"
   },
   "openapi": "3.0.3",
   "paths": {
+    "/api/aigateway/v1/endpoints": {
+      "get": {
+        "description": "Get all active LLM endpoints accessible by the user",
+        "operationId": "getAllGatewayEndpoints",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AIGatewayEnvelopeV1"
+                }
+              }
+            },
+            "description": "Success"
+          },
+          "400": {
+            "$ref": "#/components/responses/400"
+          },
+          "401": {
+            "$ref": "#/components/responses/401"
+          },
+          "403": {
+            "$ref": "#/components/responses/403"
+          },
+          "404": {
+            "$ref": "#/components/responses/404"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
+          }
+        },
+        "summary": "Get all active LLM endpoints accessible by the user",
+        "tags": [
+          "AIGateway"
+        ]
+      },
+      "post": {
+        "description": "Create a new a endpoint",
+        "operationId": "createGatewayEndpoint",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/NewEndpointV1"
+              }
+            }
+          },
+          "description": "Details of the new endpoint to create",
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EndpointEnvelopeV1"
+                }
+              }
+            },
+            "description": "Success"
+          },
+          "400": {
+            "$ref": "#/components/responses/400"
+          },
+          "401": {
+            "$ref": "#/components/responses/401"
+          },
+          "403": {
+            "$ref": "#/components/responses/403"
+          },
+          "404": {
+            "$ref": "#/components/responses/404"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
+          }
+        },
+        "summary": "Create a new endpoint",
+        "tags": [
+          "AIGateway"
+        ]
+      }
+    },
+    "/api/aigateway/v1/endpoints/{endpointName}": {
+      "delete": {
+        "description": "Delete a endpoint by name",
+        "operationId": "deleteGatewayEndpointByName",
+        "parameters": [
+          {
+            "description": "Name of the endpoint to delete",
+            "in": "path",
+            "name": "endpointName",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Deleted"
+          },
+          "400": {
+            "$ref": "#/components/responses/400"
+          },
+          "401": {
+            "$ref": "#/components/responses/401"
+          },
+          "403": {
+            "$ref": "#/components/responses/403"
+          },
+          "404": {
+            "$ref": "#/components/responses/404"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
+          }
+        },
+        "summary": "Delete a endpoint by name",
+        "tags": [
+          "AIGateway"
+        ]
+      },
+      "get": {
+        "description": "Get a endpoint by name (returns endpoint if user has access and endpoint is active)",
+        "operationId": "getGatewayEndpointByName",
+        "parameters": [
+          {
+            "description": "Name of the endpoint to get",
+            "in": "path",
+            "name": "endpointName",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "description": "Number of input tokens sent to the endpoint",
+            "in": "query",
+            "name": "numInputTokens",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EndpointEnvelopeV1"
+                }
+              }
+            },
+            "description": "Success"
+          },
+          "400": {
+            "$ref": "#/components/responses/400"
+          },
+          "401": {
+            "$ref": "#/components/responses/401"
+          },
+          "403": {
+            "$ref": "#/components/responses/403"
+          },
+          "404": {
+            "$ref": "#/components/responses/404"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
+          }
+        },
+        "summary": "Get a endpoint by name",
+        "tags": [
+          "AIGateway"
+        ]
+      },
+      "patch": {
+        "description": "Update a endpoint by name (change endpoint name, endpoint type, model name, model provider, or model config)",
+        "operationId": "updateGatewayEndpointByName",
+        "parameters": [
+          {
+            "description": "Name of the endpoint to update details for",
+            "in": "path",
+            "name": "endpointName",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdatedEndpointV1"
+              }
+            }
+          },
+          "description": "Updated endpoint details",
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EndpointEnvelopeV1"
+                }
+              }
+            },
+            "description": "Success"
+          },
+          "400": {
+            "$ref": "#/components/responses/400"
+          },
+          "401": {
+            "$ref": "#/components/responses/401"
+          },
+          "403": {
+            "$ref": "#/components/responses/403"
+          },
+          "404": {
+            "$ref": "#/components/responses/404"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
+          }
+        },
+        "summary": "Update a endpoint by name",
+        "tags": [
+          "AIGateway"
+        ]
+      }
+    },
+    "/api/aigateway/v1/endpoints/{endpointName}/permissions": {
+      "get": {
+        "description": "Get permissions for a endpoint by name",
+        "operationId": "getGatewayEndpointPermissionsByName",
+        "parameters": [
+          {
+            "description": "Name of the endpoint to get permissions for",
+            "in": "path",
+            "name": "endpointName",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EndpointPermissionsDtoV1"
+                }
+              }
+            },
+            "description": "Success"
+          },
+          "400": {
+            "$ref": "#/components/responses/400"
+          },
+          "401": {
+            "$ref": "#/components/responses/401"
+          },
+          "403": {
+            "$ref": "#/components/responses/403"
+          },
+          "404": {
+            "$ref": "#/components/responses/404"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
+          }
+        },
+        "summary": "Get permissions for a endpoint by name",
+        "tags": [
+          "AIGateway"
+        ]
+      },
+      "patch": {
+        "description": "Update permissions for a endpoint by name (add or remove user IDs, or change isEveryoneAllowed)",
+        "operationId": "updateGatewayEndpointPermissionsByName",
+        "parameters": [
+          {
+            "description": "Name of the endpoint to update permissions for",
+            "in": "path",
+            "name": "endpointName",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdatedEndpointPermissionsV1"
+              }
+            }
+          },
+          "description": "Updated endpoint permissions",
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EndpointPermissionsDtoV1"
+                }
+              }
+            },
+            "description": "Success"
+          },
+          "400": {
+            "$ref": "#/components/responses/400"
+          },
+          "401": {
+            "$ref": "#/components/responses/401"
+          },
+          "403": {
+            "$ref": "#/components/responses/403"
+          },
+          "404": {
+            "$ref": "#/components/responses/404"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
+          }
+        },
+        "summary": "Update permissions for a endpoint by name",
+        "tags": [
+          "AIGateway"
+        ]
+      }
+    },
     "/api/cost/v1/allocation": {
       "get": {
         "description": "Retrieve cost allocation",
@@ -4997,6 +6235,525 @@
           }
         },
         "summary": "Get the asset cost over a time window",
+        "tags": [
+          "Cost"
+        ]
+      }
+    },
+    "/api/cost/v1/athenaConfigs": {
+      "put": {
+        "description": "Set AWS Billing API Configuration",
+        "operationId": "setAthenaConfigs",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AthenaBillingConfigsV1"
+              }
+            }
+          },
+          "description": "AWS Billing API Config",
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AthenaBillingConfigsV1"
+                }
+              }
+            },
+            "description": "Success"
+          },
+          "400": {
+            "$ref": "#/components/responses/400"
+          },
+          "401": {
+            "$ref": "#/components/responses/401"
+          },
+          "403": {
+            "$ref": "#/components/responses/403"
+          },
+          "404": {
+            "$ref": "#/components/responses/404"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
+          }
+        },
+        "summary": "Set AWS Billing API Configuration",
+        "tags": [
+          "Cost"
+        ]
+      }
+    },
+    "/api/cost/v1/billingtagSettings": {
+      "/api/cost/v1/billingtagSettings/mode": {
+        "get": {
+          "description": "Get mode setting of the billing tags",
+          "operationId": "getBillingTagMode",
+          "responses": {
+            "200": {
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/BillingTagsModeEnvelopeV1"
+                  }
+                }
+              },
+              "description": "Success"
+            },
+            "400": {
+              "$ref": "#/components/responses/400"
+            },
+            "401": {
+              "$ref": "#/components/responses/401"
+            },
+            "403": {
+              "$ref": "#/components/responses/403"
+            },
+            "404": {
+              "$ref": "#/components/responses/404"
+            },
+            "500": {
+              "$ref": "#/components/responses/500"
+            }
+          },
+          "summary": "Get mode setting of the billing tags",
+          "tags": [
+            "BillingTagSettings"
+          ]
+        },
+        "put": {
+          "description": "Update mode setting of the billing tags",
+          "operationId": "updateBillingTagMode",
+          "requestBody": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BillingTagsModeV1"
+                }
+              }
+            },
+            "required": true
+          },
+          "responses": {
+            "200": {
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/BillingTagsModeEnvelopeV1"
+                  }
+                }
+              },
+              "description": "Success"
+            },
+            "400": {
+              "$ref": "#/components/responses/400"
+            },
+            "401": {
+              "$ref": "#/components/responses/401"
+            },
+            "403": {
+              "$ref": "#/components/responses/403"
+            },
+            "404": {
+              "$ref": "#/components/responses/404"
+            },
+            "500": {
+              "$ref": "#/components/responses/500"
+            }
+          },
+          "summary": "Update mode setting of the billing tags",
+          "tags": [
+            "BillingTagSettings"
+          ]
+        }
+      },
+      "/api/cost/v1/billingtagSettings/notifications": {
+        "get": {
+          "description": "Get notifications setting of the billing tags",
+          "operationId": "getBillingTagNotification",
+          "responses": {
+            "200": {
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/BillingTagsNotificationsEnvelopeV1"
+                  }
+                }
+              },
+              "description": "Success"
+            },
+            "400": {
+              "$ref": "#/components/responses/400"
+            },
+            "401": {
+              "$ref": "#/components/responses/401"
+            },
+            "403": {
+              "$ref": "#/components/responses/403"
+            },
+            "404": {
+              "$ref": "#/components/responses/404"
+            },
+            "500": {
+              "$ref": "#/components/responses/500"
+            }
+          },
+          "summary": "Get notifications setting of the billing tags",
+          "tags": [
+            "BillingTagSettings"
+          ]
+        },
+        "put": {
+          "description": "Update notifications setting of the billing tags",
+          "operationId": "updateBillingTagNotification",
+          "requestBody": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BillingTagsNotificationsV1"
+                }
+              }
+            },
+            "required": true
+          },
+          "responses": {
+            "200": {
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/BillingTagsNotificationsEnvelopeV1"
+                  }
+                }
+              },
+              "description": "Success"
+            },
+            "400": {
+              "$ref": "#/components/responses/400"
+            },
+            "401": {
+              "$ref": "#/components/responses/401"
+            },
+            "403": {
+              "$ref": "#/components/responses/403"
+            },
+            "404": {
+              "$ref": "#/components/responses/404"
+            },
+            "500": {
+              "$ref": "#/components/responses/500"
+            }
+          },
+          "summary": "Update notifications setting of the billing tags",
+          "tags": [
+            "BillingTagSettings"
+          ]
+        }
+      },
+      "get": {
+        "description": "Get  billing tags setting",
+        "operationId": "getBillingTagSettings",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BillingTagsSettingsEnvelopeV1"
+                }
+              }
+            },
+            "description": "Success"
+          },
+          "400": {
+            "$ref": "#/components/responses/400"
+          },
+          "401": {
+            "$ref": "#/components/responses/401"
+          },
+          "403": {
+            "$ref": "#/components/responses/403"
+          },
+          "404": {
+            "$ref": "#/components/responses/404"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
+          }
+        },
+        "summary": "Get  billing tags setting",
+        "tags": [
+          "BillingTagSettings"
+        ]
+      },
+      "put": {
+        "description": "Update billing tags setting",
+        "operationId": "updateBillingTagSettings",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/BillingTagsSettingsV1"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BillingTagsSettingsEnvelopeV1"
+                }
+              }
+            },
+            "description": "Success"
+          },
+          "400": {
+            "$ref": "#/components/responses/400"
+          },
+          "401": {
+            "$ref": "#/components/responses/401"
+          },
+          "403": {
+            "$ref": "#/components/responses/403"
+          },
+          "404": {
+            "$ref": "#/components/responses/404"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
+          }
+        },
+        "summary": "Update billing tags setting",
+        "tags": [
+          "BillingTagSettings"
+        ]
+      }
+    },
+    "/api/cost/v1/billingtags": {
+      "get": {
+        "description": "Get billing codes that a user can see.",
+        "operationId": "getBillingTags",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BillingTagsEnvelopeV1"
+                }
+              }
+            },
+            "description": "Success"
+          },
+          "400": {
+            "$ref": "#/components/responses/400"
+          },
+          "401": {
+            "$ref": "#/components/responses/401"
+          },
+          "403": {
+            "$ref": "#/components/responses/403"
+          },
+          "404": {
+            "$ref": "#/components/responses/404"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
+          }
+        },
+        "summary": "Get usable billing codes",
+        "tags": [
+          "BillingTag"
+        ]
+      },
+      "post": {
+        "description": "Upsert billing codes.",
+        "operationId": "upsertBillingTags",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/NewBillingTagsV1"
+              }
+            }
+          },
+          "description": "Billing codes to upsert",
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BillingTagsEnvelopeV1"
+                }
+              }
+            },
+            "description": "Success"
+          },
+          "400": {
+            "$ref": "#/components/responses/400"
+          },
+          "401": {
+            "$ref": "#/components/responses/401"
+          },
+          "403": {
+            "$ref": "#/components/responses/403"
+          },
+          "404": {
+            "$ref": "#/components/responses/404"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
+          }
+        },
+        "summary": "Upsert billing codes",
+        "tags": [
+          "BillingTag"
+        ]
+      }
+    },
+    "/api/cost/v1/billingtags/{tag}": {
+      "delete": {
+        "description": "Deactivate a  billing tag.",
+        "operationId": "deactivateBillingTag",
+        "parameters": [
+          {
+            "description": "tag of the  billing tag to archive",
+            "in": "path",
+            "name": "tag",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BillingTagEnvelopeV1"
+                }
+              }
+            },
+            "description": "Success"
+          },
+          "400": {
+            "$ref": "#/components/responses/400"
+          },
+          "401": {
+            "$ref": "#/components/responses/401"
+          },
+          "403": {
+            "$ref": "#/components/responses/403"
+          },
+          "404": {
+            "$ref": "#/components/responses/404"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
+          }
+        },
+        "summary": "Deactivate billing tag",
+        "tags": [
+          "BillingTag"
+        ]
+      },
+      "get": {
+        "description": "Get billing tag by tag name.",
+        "operationId": "getBillingTagByName",
+        "parameters": [
+          {
+            "description": "tag of the  billing tag to archive",
+            "in": "path",
+            "name": "tag",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BillingTagEnvelopeV1"
+                }
+              }
+            },
+            "description": "Success"
+          },
+          "400": {
+            "$ref": "#/components/responses/400"
+          },
+          "401": {
+            "$ref": "#/components/responses/401"
+          },
+          "403": {
+            "$ref": "#/components/responses/403"
+          },
+          "404": {
+            "$ref": "#/components/responses/404"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
+          }
+        },
+        "summary": "Get billing tag by tag name",
+        "tags": [
+          "BillingTag"
+        ]
+      }
+    },
+    "/api/cost/v1/licenseKey": {
+      "put": {
+        "description": "Add kubecost license key",
+        "operationId": "addKubecostLicenseKey",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/KubecostLicenseV1"
+              }
+            }
+          },
+          "description": "Kubecost License Key",
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/KubecostLicenseResponseV1"
+                }
+              }
+            },
+            "description": "Success"
+          },
+          "400": {
+            "$ref": "#/components/responses/400"
+          },
+          "401": {
+            "$ref": "#/components/responses/401"
+          },
+          "403": {
+            "$ref": "#/components/responses/403"
+          },
+          "404": {
+            "$ref": "#/components/responses/404"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
+          }
+        },
+        "summary": "Add kubecost license key",
         "tags": [
           "Cost"
         ]
@@ -5805,11 +7562,11 @@
     },
     "/api/datasource/v1/audit": {
       "get": {
-        "description": "Gets data source audit data given filter input parameters",
+        "description": "Gets Data Source audit data given filter input parameters",
         "operationId": "getDataSourceAuditData",
         "parameters": [
           {
-            "description": "Datasource IDs to query audit data for",
+            "description": "Data Source IDs to query audit data for",
             "in": "query",
             "name": "dataSourceIds",
             "required": false,
@@ -5821,7 +7578,7 @@
             }
           },
           {
-            "description": "Datasource names to query audit data for",
+            "description": "Data Source names to query audit data for",
             "in": "query",
             "name": "dataSourceNames",
             "required": false,
@@ -5895,7 +7652,278 @@
             "$ref": "#/components/responses/500"
           }
         },
-        "summary": "Get DataSource Audit Data",
+        "summary": "Get Data Source Audit Data",
+        "tags": [
+          "DataSource"
+        ]
+      }
+    },
+    "/api/datasource/v1/datasources": {
+      "get": {
+        "description": "Get Data Sources that a user has access to based on Data Source permissions and input filters",
+        "operationId": "getAccessibleAndActiveDataSources",
+        "parameters": [
+          {
+            "description": "Names of the Data Sources to get",
+            "in": "query",
+            "name": "dataSourceNames",
+            "required": false,
+            "schema": {
+              "items": {
+                "type": "string"
+              },
+              "type": "array"
+            }
+          },
+          {
+            "description": "How many Data Sources from the start to skip, sorted by descending ID order. Defaults to 0",
+            "in": "query",
+            "name": "offset",
+            "required": false,
+            "schema": {
+              "default": 0,
+              "type": "integer"
+            }
+          },
+          {
+            "description": "Maximum number of Data Sources to fetch. Defaults to 10",
+            "in": "query",
+            "name": "limit",
+            "required": false,
+            "schema": {
+              "default": 10,
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PaginatedDataSourceEnvelopeV1"
+                }
+              }
+            },
+            "description": "Success"
+          },
+          "400": {
+            "$ref": "#/components/responses/400"
+          },
+          "401": {
+            "$ref": "#/components/responses/401"
+          },
+          "403": {
+            "$ref": "#/components/responses/403"
+          },
+          "404": {
+            "$ref": "#/components/responses/404"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
+          }
+        },
+        "summary": "Get all active Data Source the user has access to",
+        "tags": [
+          "DataSource"
+        ]
+      },
+      "post": {
+        "description": "Create a Data Source",
+        "operationId": "createDataSource",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/NewDataSourceV1"
+              }
+            }
+          },
+          "description": "Data Source to create",
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DataSourceEnvelopeV1"
+                }
+              }
+            },
+            "description": "Success"
+          },
+          "400": {
+            "$ref": "#/components/responses/400"
+          },
+          "401": {
+            "$ref": "#/components/responses/401"
+          },
+          "403": {
+            "$ref": "#/components/responses/403"
+          },
+          "404": {
+            "$ref": "#/components/responses/404"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
+          }
+        },
+        "summary": "Create a Data Source",
+        "tags": [
+          "DataSource"
+        ]
+      }
+    },
+    "/api/datasource/v1/datasources/{dataSourceId}": {
+      "delete": {
+        "description": "Delete Data Source with specified ID. Requires Data Source ownership privileges",
+        "operationId": "deleteDataSource",
+        "parameters": [
+          {
+            "description": "ID of Data Source to delete",
+            "example": "62604702b7e5d347dbe7a909",
+            "in": "path",
+            "name": "dataSourceId",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DataSourceEnvelopeV1"
+                }
+              }
+            },
+            "description": "Success"
+          },
+          "400": {
+            "$ref": "#/components/responses/400"
+          },
+          "401": {
+            "$ref": "#/components/responses/401"
+          },
+          "403": {
+            "$ref": "#/components/responses/403"
+          },
+          "404": {
+            "$ref": "#/components/responses/404"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
+          }
+        },
+        "summary": "Delete Data Source with specified ID",
+        "tags": [
+          "DataSource"
+        ]
+      },
+      "get": {
+        "description": "Gets Data Source by ID. Requires access to Data Source",
+        "operationId": "getDataSource",
+        "parameters": [
+          {
+            "description": "ID of Data Source to get",
+            "example": "62604702b7e5d347dbe7a909",
+            "in": "path",
+            "name": "dataSourceId",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DataSourceEnvelopeV1"
+                }
+              }
+            },
+            "description": "Success"
+          },
+          "400": {
+            "$ref": "#/components/responses/400"
+          },
+          "401": {
+            "$ref": "#/components/responses/401"
+          },
+          "403": {
+            "$ref": "#/components/responses/403"
+          },
+          "404": {
+            "$ref": "#/components/responses/404"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
+          }
+        },
+        "summary": "Get Data Source by ID",
+        "tags": [
+          "DataSource"
+        ]
+      },
+      "patch": {
+        "description": "Update Data Source with specified ID. If the current user is not an admin, then only their individual credentials are updated. Otherwise, the shared credentials are updated. If updating a Starburst-powered Data Source, please remember to restart the Starburst cluster in the UI for the changes to take effect. Requires Data Source management privileges",
+        "operationId": "updateDataSource",
+        "parameters": [
+          {
+            "description": "ID of Data Source to update",
+            "example": "62604702b7e5d347dbe7a909",
+            "in": "path",
+            "name": "dataSourceId",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/DataSourceUpdateV1"
+              }
+            }
+          },
+          "description": "Users and projects to add and remove",
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DataSourceEnvelopeV1"
+                }
+              }
+            },
+            "description": "Success"
+          },
+          "400": {
+            "$ref": "#/components/responses/400"
+          },
+          "401": {
+            "$ref": "#/components/responses/401"
+          },
+          "403": {
+            "$ref": "#/components/responses/403"
+          },
+          "404": {
+            "$ref": "#/components/responses/404"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
+          }
+        },
+        "summary": "Update Data Source with specified ID",
         "tags": [
           "DataSource"
         ]
@@ -6222,6 +8250,258 @@
         "summary": "Get an environment",
         "tags": [
           "Environments"
+        ]
+      }
+    },
+    "/api/hardwaretiers/v1/hardwaretiers": {
+      "get": {
+        "description": "Get all hardware tiers. Required permissions: `ViewHardwareTiers`",
+        "operationId": "getAllHardwareTiers",
+        "parameters": [
+          {
+            "description": "How many hardware tiers from the start to skip. Defaults to 0.",
+            "in": "query",
+            "name": "offset",
+            "required": false,
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "description": "How many hardware tiers to fetch. Defaults to 10.",
+            "in": "query",
+            "name": "limit",
+            "required": false,
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "description": "Whether to include archived hardware tiers. Defaults to false.",
+            "in": "query",
+            "name": "includeArchived",
+            "required": false,
+            "schema": {
+              "type": "boolean"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PaginatedHardwareTierEnvelopeV1"
+                }
+              }
+            },
+            "description": "Success"
+          },
+          "400": {
+            "$ref": "#/components/responses/400"
+          },
+          "401": {
+            "$ref": "#/components/responses/401"
+          },
+          "403": {
+            "$ref": "#/components/responses/403"
+          },
+          "404": {
+            "$ref": "#/components/responses/404"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
+          }
+        },
+        "summary": "Get all hardware tiers",
+        "tags": [
+          "HardwareTier"
+        ]
+      },
+      "post": {
+        "description": "Create a hardware tier. Required permissions: `ManageHardwareTiers`",
+        "operationId": "createHardwareTier",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/NewHardwareTierV1"
+              }
+            }
+          },
+          "description": "Hardware tier to create",
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HardwareTierEnvelopeV1"
+                }
+              }
+            },
+            "description": "Success"
+          },
+          "400": {
+            "$ref": "#/components/responses/400"
+          },
+          "401": {
+            "$ref": "#/components/responses/401"
+          },
+          "403": {
+            "$ref": "#/components/responses/403"
+          },
+          "404": {
+            "$ref": "#/components/responses/404"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
+          }
+        },
+        "summary": "Create a hardware tier",
+        "tags": [
+          "HardwareTier"
+        ]
+      },
+      "put": {
+        "description": "Update a hardware tier. Required permissions: `ManageHardwareTiers`",
+        "operationId": "updateHardwareTier",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/HardwareTierV1"
+              }
+            }
+          },
+          "description": "Updated hardware tier",
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HardwareTierEnvelopeV1"
+                }
+              }
+            },
+            "description": "Success"
+          },
+          "400": {
+            "$ref": "#/components/responses/400"
+          },
+          "401": {
+            "$ref": "#/components/responses/401"
+          },
+          "403": {
+            "$ref": "#/components/responses/403"
+          },
+          "404": {
+            "$ref": "#/components/responses/404"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
+          }
+        },
+        "summary": "Update a hardware tier",
+        "tags": [
+          "HardwareTier"
+        ]
+      }
+    },
+    "/api/hardwaretiers/v1/hardwaretiers/{hardwareTierId}": {
+      "delete": {
+        "description": "Archive a hardware tier by Id. Required permissions: `ManageHardwareTiers`",
+        "operationId": "archiveHardwareTier",
+        "parameters": [
+          {
+            "description": "Id of hardwareTier to archive",
+            "in": "path",
+            "name": "hardwareTierId",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HardwareTierEnvelopeV1"
+                }
+              }
+            },
+            "description": "Success"
+          },
+          "400": {
+            "$ref": "#/components/responses/400"
+          },
+          "401": {
+            "$ref": "#/components/responses/401"
+          },
+          "403": {
+            "$ref": "#/components/responses/403"
+          },
+          "404": {
+            "$ref": "#/components/responses/404"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
+          }
+        },
+        "summary": "Archive a hardware tier",
+        "tags": [
+          "HardwareTier"
+        ]
+      },
+      "get": {
+        "description": "Get a hardware tier by Id. Required permissions: `ViewHardwareTiers`",
+        "operationId": "getHardwareTierById",
+        "parameters": [
+          {
+            "description": "Id of hardwareTier to retrieve",
+            "in": "path",
+            "name": "hardwareTierId",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HardwareTierEnvelopeV1"
+                }
+              }
+            },
+            "description": "Success"
+          },
+          "400": {
+            "$ref": "#/components/responses/400"
+          },
+          "401": {
+            "$ref": "#/components/responses/401"
+          },
+          "403": {
+            "$ref": "#/components/responses/403"
+          },
+          "404": {
+            "$ref": "#/components/responses/404"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
+          }
+        },
+        "summary": "Get a hardware tier by Id",
+        "tags": [
+          "HardwareTier"
         ]
       }
     },
@@ -6618,15 +8898,6 @@
             "schema": {
               "type": "string"
             }
-          },
-          {
-            "description": "Id of project for the goal",
-            "in": "query",
-            "name": "projectId",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
           }
         ],
         "responses": {
@@ -6835,7 +9106,7 @@
     },
     "/api/metricAlerts/v1": {
       "post": {
-        "description": "Send a metric out of range alert for a monitored model. Required Permissions: None",
+        "description": "Send a metric out of range alert for a monitored model. Required Permissions: `ViewMonitoringResults`",
         "operationId": "sendMetricAlert",
         "requestBody": {
           "content": {
@@ -6876,7 +9147,7 @@
     },
     "/api/metricValues/v1": {
       "post": {
-        "description": "Log metric values. Required Permissions: None",
+        "description": "Log metric values. Required Permissions: `RegisterMonitoringDataset`",
         "operationId": "logMetricValues",
         "requestBody": {
           "content": {
@@ -6917,7 +9188,7 @@
     },
     "/api/metricValues/v1/{modelMonitoringId}/{metric}": {
       "get": {
-        "description": "Retrieve metric values. Required Permissions: None",
+        "description": "Retrieve metric values. Required Permissions: `UpdateMonitoringSettings`",
         "operationId": "retrieveMetricValues",
         "parameters": [
           {
@@ -7604,69 +9875,10 @@
         ]
       }
     },
-    "/api/projects/beta/projects/{projectId}/copy-project": {
-      "post": {
-        "description": "Create a new project by copying an existing project and providing optional overrides. Specify a git repository to link to the copied project or copy the original project's git repository for the copied project.",
-        "operationId": "copyProjectBeta",
-        "parameters": [
-          {
-            "description": "Project ID",
-            "in": "path",
-            "name": "projectId",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/CopyProjectSpecBeta"
-              }
-            }
-          },
-          "description": "Information needed in order to copy a project.",
-          "required": true
-        },
-        "responses": {
-          "200": {
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ProjectCopyResultEnvelopeV1"
-                }
-              }
-            },
-            "description": "Success"
-          },
-          "400": {
-            "$ref": "#/components/responses/400"
-          },
-          "401": {
-            "$ref": "#/components/responses/401"
-          },
-          "403": {
-            "$ref": "#/components/responses/403"
-          },
-          "404": {
-            "$ref": "#/components/responses/404"
-          },
-          "500": {
-            "$ref": "#/components/responses/500"
-          }
-        },
-        "summary": "Create a new project by copying an existing project and providing optional overrides. Deprecated.",
-        "tags": [
-          "Projects"
-        ]
-      }
-    },
     "/api/projects/beta/projects/{projectId}/files/{commitId}/{path}/content": {
       "get": {
         "description": "Return the raw contents of a file in a project at given commit.",
-        "operationId": "getProjectFileContents",
+        "operationId": "getProjectFileContentsDeprecated",
         "parameters": [
           {
             "description": "Id of the project to return files for",
@@ -7726,7 +9938,7 @@
             "$ref": "#/components/responses/500"
           }
         },
-        "summary": "Returns the contents of a file",
+        "summary": "Returns the contents of a file (deprecated, use v1 endpoint instead)",
         "tags": [
           "ProjectsFiles"
         ]
@@ -8058,6 +10270,75 @@
         "summary": "Create a new project by copying an existing project and providing optional overrides.",
         "tags": [
           "Projects"
+        ]
+      }
+    },
+    "/api/projects/v1/projects/{projectId}/files/{commitId}/{path}/content": {
+      "get": {
+        "description": "Return the raw contents of a file in a project at given commit.",
+        "operationId": "getProjectFileContents",
+        "parameters": [
+          {
+            "description": "Id of the project to return files for",
+            "in": "path",
+            "name": "projectId",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "description": "Id of a commit in the project repository to list files from",
+            "in": "path",
+            "name": "commitId",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "description": "Path in the project's repository to the file. It must be url-encoded and is case-sensitive.",
+            "example": "nested%2Ffolder%2Ffile.ext",
+            "in": "path",
+            "name": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "*/*": {
+                "schema": {
+                  "format": "binary",
+                  "type": "string"
+                }
+              }
+            },
+            "description": "Success. It returns a stream of data with the file content, specifying the appropriate\nmedia type based on the file extension in a best-effort basis.\n",
+            "x-domino-binary-stream": true
+          },
+          "400": {
+            "$ref": "#/components/responses/400"
+          },
+          "401": {
+            "$ref": "#/components/responses/401"
+          },
+          "403": {
+            "$ref": "#/components/responses/403"
+          },
+          "404": {
+            "$ref": "#/components/responses/404"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
+          }
+        },
+        "summary": "Returns the contents of a file",
+        "tags": [
+          "ProjectsFiles"
         ]
       }
     },
@@ -8786,7 +11067,7 @@
             }
           },
           {
-            "description": "List of columns for ordering search results, which can include model name and last updated timestamp with an optional ���DESC��� or ���ASC��� annotation, where ���ASC��� is the default. Tiebreaks are done by model name ASC.",
+            "description": "List of columns for ordering search results, which can include model name and last updated timestamp with an optional \"DESC\" or \"ASC\" annotation, where \"ASC\" is the default. Tiebreaks are done by model name ASC.",
             "in": "query",
             "name": "orderBy",
             "schema": {
@@ -9042,7 +11323,7 @@
             }
           },
           {
-            "description": "List of columns for ordering search results, which can include model name and last updated timestamp with an optional ���DESC��� or ���ASC��� annotation, where ���ASC��� is the default.",
+            "description": "List of columns for ordering search results, which can include model name and last updated timestamp with an optional \"DESC\" or \"ASC\" annotation, where \"ASC\" is the default.",
             "in": "query",
             "name": "orderBy",
             "schema": {
@@ -10151,102 +12432,6 @@
           "Users"
         ]
       }
-    },
-    "/athenaConfigs": {
-      "put": {
-        "description": "Set AWS Billing API Configuration",
-        "operationId": "setAthenaConfigs",
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/AthenaBillingConfigsV1"
-              }
-            }
-          },
-          "description": "AWS Billing API Config",
-          "required": true
-        },
-        "responses": {
-          "200": {
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/AthenaBillingConfigsV1"
-                }
-              }
-            },
-            "description": "Success"
-          },
-          "400": {
-            "$ref": "#/components/responses/400"
-          },
-          "401": {
-            "$ref": "#/components/responses/401"
-          },
-          "403": {
-            "$ref": "#/components/responses/403"
-          },
-          "404": {
-            "$ref": "#/components/responses/404"
-          },
-          "500": {
-            "$ref": "#/components/responses/500"
-          }
-        },
-        "summary": "Set AWS Billing API Configuration",
-        "tags": [
-          "Cost"
-        ]
-      }
-    },
-    "/licenseKey": {
-      "put": {
-        "description": "Add kubecost license key",
-        "operationId": "addKubecostLicenseKey",
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/KubecostLicenseV1"
-              }
-            }
-          },
-          "description": "Kubecost License Key",
-          "required": true
-        },
-        "responses": {
-          "200": {
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/KubecostLicenseResponseV1"
-                }
-              }
-            },
-            "description": "Success"
-          },
-          "400": {
-            "$ref": "#/components/responses/400"
-          },
-          "401": {
-            "$ref": "#/components/responses/401"
-          },
-          "403": {
-            "$ref": "#/components/responses/403"
-          },
-          "404": {
-            "$ref": "#/components/responses/404"
-          },
-          "500": {
-            "$ref": "#/components/responses/500"
-          }
-        },
-        "summary": "Add kubecost license key",
-        "tags": [
-          "Cost"
-        ]
-      }
     }
   },
   "security": [
@@ -10274,6 +12459,9 @@
       "name": "Environments"
     },
     {
+      "name": "HardwareTier"
+    },
+    {
       "name": "Jobs"
     },
     {
@@ -10283,7 +12471,10 @@
       "name": "Projects"
     },
     {
-      "name": "Registered Models"
+      "name": "RegisteredModels"
+    },
+    {
+      "name": "AIGateway"
     },
     {
       "name": "Users"
