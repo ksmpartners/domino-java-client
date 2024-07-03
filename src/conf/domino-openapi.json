@@ -393,7 +393,7 @@
             "type": "string"
           },
           "timestamp": {
-            "format": "epoch",
+            "format": "int64",
             "type": "integer"
           }
         },
@@ -428,7 +428,7 @@
       "domino.activity.api.ActivityPagination": {
         "properties": {
           "latestTimeStamp": {
-            "format": "epoch",
+            "format": "int64",
             "type": "integer"
           },
           "pageSize": {
@@ -3277,7 +3277,7 @@
             "type": "number"
           },
           "timestamp": {
-            "format": "epoch",
+            "format": "int64",
             "type": "integer"
           }
         },
@@ -3317,7 +3317,7 @@
             "$ref": "#/components/schemas/domino.common.modelproduct.AppResourceUsage"
           },
           "started": {
-            "format": "epoch",
+            "format": "int64",
             "type": "integer"
           },
           "status": {
@@ -3360,7 +3360,7 @@
             "type": "string"
           },
           "started": {
-            "format": "epoch",
+            "format": "int64",
             "type": "integer"
           },
           "status": {
@@ -3442,7 +3442,7 @@
             "type": "integer"
           },
           "timestamp": {
-            "format": "epoch",
+            "format": "int64",
             "type": "integer"
           }
         },
@@ -4396,7 +4396,7 @@
             "type": "integer"
           },
           "timestamp": {
-            "format": "epoch",
+            "format": "int64",
             "type": "integer"
           }
         },
@@ -4616,7 +4616,7 @@
             "type": "number"
           },
           "timestamp": {
-            "format": "epoch",
+            "format": "int64",
             "type": "integer"
           }
         },
@@ -5247,7 +5247,7 @@
             "type": "integer"
           },
           "timestamp": {
-            "format": "epoch",
+            "format": "int64",
             "type": "integer"
           }
         },
@@ -6316,7 +6316,7 @@
             "type": "string"
           },
           "lastTouched": {
-            "format": "epoch",
+            "format": "int64",
             "type": "integer"
           },
           "uploadKey": {
@@ -8748,7 +8748,7 @@
       "domino.environments.api.RevisionSummary": {
         "properties": {
           "created": {
-            "format": "epoch",
+            "format": "int64",
             "type": "integer"
           },
           "id": {
@@ -9518,7 +9518,7 @@
             "$ref": "#/components/schemas/domino.files.interface.CommentedBy"
           },
           "createdAt": {
-            "format": "epoch",
+            "format": "int64",
             "type": "integer"
           }
         },
@@ -12122,7 +12122,7 @@
             "$ref": "#/components/schemas/domino.jobs.interface.Commenter"
           },
           "created": {
-            "format": "epoch",
+            "format": "int64",
             "type": "integer"
           }
         },
@@ -12776,7 +12776,7 @@
             "type": "number"
           },
           "timestamp": {
-            "format": "epoch",
+            "format": "int64",
             "type": "integer"
           }
         },
@@ -12989,7 +12989,7 @@
             "type": "integer"
           },
           "jobStartTime": {
-            "format": "epoch",
+            "format": "int64",
             "type": "integer"
           },
           "jobStatus": {
@@ -13047,7 +13047,7 @@
             "type": "integer"
           },
           "timestamp": {
-            "format": "epoch",
+            "format": "int64",
             "type": "integer"
           }
         },
@@ -13187,7 +13187,7 @@
             "type": "string"
           },
           "lastModified": {
-            "format": "epoch",
+            "format": "int64",
             "type": "integer"
           },
           "size": {
@@ -13206,17 +13206,17 @@
       "domino.jobs.interface.StageTime": {
         "properties": {
           "completedTime": {
-            "format": "epoch",
+            "format": "int64",
             "nullable": true,
             "type": "integer"
           },
           "runStartTime": {
-            "format": "epoch",
+            "format": "int64",
             "nullable": true,
             "type": "integer"
           },
           "submissionTime": {
-            "format": "epoch",
+            "format": "int64",
             "type": "integer"
           }
         },
@@ -13241,7 +13241,7 @@
       "domino.jobs.interface.TagApplication": {
         "properties": {
           "createdAt": {
-            "format": "epoch",
+            "format": "int64",
             "type": "integer"
           },
           "createdBy": {
@@ -13387,7 +13387,7 @@
             "type": "string"
           },
           "timestamp": {
-            "format": "epoch",
+            "format": "int64",
             "type": "integer"
           }
         },
@@ -13436,7 +13436,7 @@
             "type": "string"
           },
           "timestamp": {
-            "format": "epoch",
+            "format": "int64",
             "type": "integer"
           }
         },
@@ -13928,7 +13928,7 @@
             "type": "integer"
           },
           "timestamp": {
-            "format": "epoch",
+            "format": "int64",
             "type": "integer"
           }
         },
@@ -13997,7 +13997,7 @@
             "type": "boolean"
           },
           "lastModified": {
-            "format": "epoch",
+            "format": "int64",
             "type": "integer"
           },
           "name": {
@@ -14047,7 +14047,7 @@
             "type": "integer"
           },
           "timestamp": {
-            "format": "epoch",
+            "format": "int64",
             "type": "integer"
           }
         },
@@ -14198,7 +14198,7 @@
       "domino.modelmanager.api.ModelExport": {
         "properties": {
           "created": {
-            "format": "epoch",
+            "format": "int64",
             "type": "integer"
           },
           "id": {
@@ -14302,7 +14302,7 @@
             "type": "string"
           },
           "created": {
-            "format": "epoch",
+            "format": "int64",
             "type": "integer"
           },
           "exportId": {
@@ -14540,7 +14540,7 @@
             "type": "string"
           },
           "created": {
-            "format": "epoch",
+            "format": "int64",
             "type": "integer"
           },
           "createdBy": {
@@ -17323,7 +17323,7 @@
             "type": "array"
           },
           "updatedAt": {
-            "format": "epoch",
+            "format": "int64",
             "type": "integer"
           }
         },
@@ -17368,7 +17368,7 @@
             "type": "string"
           },
           "updatedAt": {
-            "format": "epoch",
+            "format": "int64",
             "type": "integer"
           }
         },
@@ -17385,7 +17385,7 @@
       "domino.projectManagement.api.FullSyncStatus": {
         "properties": {
           "lastSyncInitiatedAt": {
-            "format": "epoch",
+            "format": "int64",
             "type": "integer"
           },
           "syncStatus": {
@@ -17439,7 +17439,7 @@
             "nullable": true
           },
           "created": {
-            "format": "epoch",
+            "format": "int64",
             "type": "integer"
           },
           "dominoEntity": {
@@ -17450,7 +17450,7 @@
             "$ref": "#/components/schemas/domino.projectManagement.api.PmId"
           },
           "updatedAt": {
-            "format": "epoch",
+            "format": "int64",
             "type": "integer"
           }
         },
@@ -17599,7 +17599,7 @@
             "type": "string"
           },
           "updatedAt": {
-            "format": "epoch",
+            "format": "int64",
             "type": "integer"
           }
         },
@@ -17967,7 +17967,7 @@
             "type": "string"
           },
           "lastUpdatedAt": {
-            "format": "epoch",
+            "format": "int64",
             "nullable": true,
             "type": "integer"
           },
@@ -18086,7 +18086,7 @@
             "type": "integer"
           },
           "timestamp": {
-            "format": "epoch",
+            "format": "int64",
             "type": "integer"
           },
           "usageCount": {
@@ -18122,7 +18122,7 @@
             "$ref": "#/components/schemas/domino.projects.api.ProjectStakeholder"
           },
           "timestamp": {
-            "format": "epoch",
+            "format": "int64",
             "type": "integer"
           }
         },
@@ -18210,11 +18210,11 @@
             "$ref": "#/components/schemas/domino.projects.api.Commenter"
           },
           "created": {
-            "format": "epoch",
+            "format": "int64",
             "type": "integer"
           },
           "updatedAt": {
-            "format": "epoch",
+            "format": "int64",
             "type": "integer"
           }
         },
@@ -18441,7 +18441,7 @@
             "$ref": "#/components/schemas/domino.projects.api.EntityLinkMetadata"
           },
           "timestamp": {
-            "format": "epoch",
+            "format": "int64",
             "type": "integer"
           }
         },
@@ -18924,7 +18924,7 @@
             "type": "string"
           },
           "createdAt": {
-            "format": "epoch",
+            "format": "int64",
             "type": "integer"
           },
           "createdBy": {
@@ -18949,17 +18949,17 @@
             "type": "boolean"
           },
           "lastDescriptionUpdatedAt": {
-            "format": "epoch",
+            "format": "int64",
             "nullable": true,
             "type": "integer"
           },
           "lastTitleUpdatedAt": {
-            "format": "epoch",
+            "format": "int64",
             "nullable": true,
             "type": "integer"
           },
           "lastUpdatedAt": {
-            "format": "epoch",
+            "format": "int64",
             "nullable": true,
             "type": "integer"
           },
@@ -18999,7 +18999,7 @@
             "type": "boolean"
           },
           "lastStageUpdatedAt": {
-            "format": "epoch",
+            "format": "int64",
             "type": "integer"
           },
           "stage": {
@@ -19342,7 +19342,7 @@
             "type": "number"
           },
           "createdOn": {
-            "format": "epoch",
+            "format": "int64",
             "type": "integer"
           },
           "duration": {
@@ -19350,7 +19350,7 @@
             "type": "integer"
           },
           "lastActivity": {
-            "format": "epoch",
+            "format": "int64",
             "nullable": true,
             "type": "integer"
           },
@@ -19583,7 +19583,7 @@
       "domino.projects.api.ProjectStage": {
         "properties": {
           "createdAt": {
-            "format": "epoch",
+            "format": "int64",
             "type": "integer"
           },
           "createdBy": {
@@ -20661,7 +20661,7 @@
       "domino.projects.web.AddBlockedAtComment": {
         "properties": {
           "blockedAt": {
-            "format": "epoch",
+            "format": "int64",
             "type": "integer"
           },
           "comment": {
@@ -22129,7 +22129,7 @@
       "domino.server.projectreleases.ProjectReleaseDto": {
         "properties": {
           "createdAt": {
-            "format": "epoch",
+            "format": "int64",
             "type": "integer"
           },
           "createdBy": {
@@ -24201,7 +24201,7 @@
             "$ref": "#/components/schemas/domino.workspaces.api.Commenter"
           },
           "created": {
-            "format": "epoch",
+            "format": "int64",
             "type": "integer"
           }
         },
@@ -24568,7 +24568,7 @@
             "type": "integer"
           },
           "timestamp": {
-            "format": "epoch",
+            "format": "int64",
             "type": "integer"
           }
         },
@@ -24684,7 +24684,7 @@
             "type": "string"
           },
           "lastModified": {
-            "format": "epoch",
+            "format": "int64",
             "type": "integer"
           },
           "size": {
@@ -24703,17 +24703,17 @@
       "domino.workspaces.api.StageTime": {
         "properties": {
           "completedTime": {
-            "format": "epoch",
+            "format": "int64",
             "nullable": true,
             "type": "integer"
           },
           "startTime": {
-            "format": "epoch",
+            "format": "int64",
             "nullable": true,
             "type": "integer"
           },
           "submissionTime": {
-            "format": "epoch",
+            "format": "int64",
             "type": "integer"
           }
         },
@@ -24971,7 +24971,7 @@
             "type": "number"
           },
           "timestamp": {
-            "format": "epoch",
+            "format": "int64",
             "type": "integer"
           }
         },
@@ -25114,7 +25114,7 @@
       "domino.workspaces.api.WorkspaceTag": {
         "properties": {
           "createdAt": {
-            "format": "epoch",
+            "format": "int64",
             "type": "integer"
           },
           "createdBy": {
@@ -25402,7 +25402,7 @@
             "type": "string"
           },
           "timestamp": {
-            "format": "epoch",
+            "format": "int64",
             "type": "integer"
           },
           "workspaceId": {
@@ -25440,7 +25440,7 @@
             "type": "string"
           },
           "timestamp": {
-            "format": "epoch",
+            "format": "int64",
             "type": "integer"
           },
           "workspaceId": {
