@@ -1,0 +1,118 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+        "description": "This API provides access to select Domino functions available in Domino's non-public API.\nTo authenticate your requests, include your API Key (which you can find on your account page) with the header X-Domino-Api-Key.\n",
+        "title": "Domino Data Lab API v4",
+        "version": "4.0.0"
+      },
+    "paths": {
+      "/projects/{projectId}/useableEnvironments": {
+        "get": {
+          "operationId": "getUseableEnvironments",
+          "parameters": [
+            {
+              "description": "Id of the project",
+              "in": "path",
+              "name": "projectId",
+              "required": true,
+              "schema": {
+                "pattern": "^[0-9a-f]{24}$",
+                "type": "string"
+              }
+            }
+          ],
+          "responses": {
+            "200": {
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/domino.projects.api.UseableProjectEnvironmentsDTO"
+                  }
+                }
+              },
+              "description": "success"
+            },
+            "403": {
+              "$ref": "#/components/responses/Forbidden"
+            },
+            "404": {
+              "$ref": "#/components/responses/NotFound"
+            },
+            "500": {
+              "$ref": "#/components/responses/InternalError"
+            }
+          },
+          "summary": "gets the list of Environments that this Project can use",
+          "tags": [
+            "Projects"
+          ]
+        }
+      }
+    },
+    "components": {
+      "schemas": {
+        "domino.projects.api.UseableProjectEnvironmentsDTO": {
+          "type": "object",
+          "properties": {
+            "environments": {
+              "type": "array",
+              "items": {
+                "$ref": "#/components/schemas/Environment"
+              }
+            }
+          }
+        },
+        "Environment": {
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "string"
+            },
+            "name": {
+              "type": "string"
+            },
+            "description": {
+              "type": "string"
+            }
+          }
+        }
+      },
+      "responses": {
+        "Forbidden": {
+          "description": "Forbidden"
+        },
+        "NotFound": {
+          "description": "Not Found"
+        },
+        "InternalError": {
+          "description": "Internal Server Error"
+        }
+      },
+      "securitySchemes": {
+        "BearerAuthentication": {
+          "in": "header",
+          "name": "Authorization",
+          "type": "apiKey"
+        },
+        "DominoApiKey": {
+          "in": "header",
+          "name": "X-Domino-Api-Key",
+          "type": "apiKey"
+        }
+      }
+    },
+    "security": [
+        {
+          "BearerAuthentication": []
+        },
+        {
+          "DominoApiKey": []
+        }
+      ],
+    "servers": [
+        {
+          "url": "/v4"
+        }
+      ],
+    "tags": []    
+  }
