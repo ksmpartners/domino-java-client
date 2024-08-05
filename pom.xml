@@ -133,7 +133,7 @@
                             <goal>generate</goal>
                         </goals>
                         <configuration>
-                            <inputSpec>${project.basedir}/src/conf/domino-openapi.json</inputSpec>
+                            <inputSpec>${project.basedir}/src/conf/slim-api.json</inputSpec>
                             <skipValidateSpec>true</skipValidateSpec>
                             <skipIfSpecIsUnchanged>true</skipIfSpecIsUnchanged>
                             <generatorName>java</generatorName>
