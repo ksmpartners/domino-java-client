@@ -60679,10 +60679,14 @@
         "parameters": [],
         "responses": {
           "200": {
-            "description": "success",
-            "schema": {
-              "type": "boolean"
-            }
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "boolean"
+                }
+              }
+            },
+            "description": "success"
           },
           "400": {
             "$ref": "#/components/responses/BadRequest"
@@ -60715,15 +60719,21 @@
             "in": "header",
             "name": "X-Domino-Api-Key",
             "required": false,
-            "type": "string"
+            "schema": {
+              "type": "string"
+            }
           }
         ],
         "responses": {
           "200": {
-            "description": "success",
-            "schema": {
-              "$ref": "#/components/schemas/domino.common.user.LiteUserResponseDTO"
-            }
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/domino.common.user.LiteUserResponseDTO"
+                }
+              }
+            },
+            "description": "success"
           },
           "400": {
             "$ref": "#/components/responses/BadRequest"
@@ -60788,7 +60798,6 @@
             }
           },
           {
-            "default": "created",
             "description": "Specify sort criteria (optional, incompatible with defaultSort=true)",
             "in": "query",
             "name": "sort",
@@ -60807,7 +60816,6 @@
             }
           },
           {
-            "default": "desc",
             "description": "Specify sort direction (optional, incompatible with defaultSort=true)",
             "in": "query",
             "name": "dir",
@@ -60822,7 +60830,6 @@
             }
           },
           {
-            "default": false,
             "description": "If true, use the frontend's default sorting and return 400 if either 'sort' or 'dir' are set.",
             "in": "query",
             "name": "defaultSort",
@@ -61266,13 +61273,17 @@
         },
         "responses": {
           "202": {
-            "description": "Request accepted, building of model API image continues offline",
-            "schema": {
-              "items": {
-                "$ref": "#/components/schemas/domino.modelmanager.web.BuildModelImageApiResponse"
-              },
-              "type": "array"
-            }
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/domino.modelmanager.web.BuildModelImageApiResponse"
+                  },
+                  "type": "array"
+                }
+              }
+            },
+            "description": "Request accepted, building of model API image continues offline"
           },
           "400": {
             "$ref": "#/components/responses/BadRequest"
@@ -61342,7 +61353,7 @@
     },
     "/v4/models/{exportId}/getExportLogs": {
       "get": {
-        "operationId": "getExportVersionLogs",
+        "operationId": "getModelExportVersionLogs",
         "parameters": [
           {
             "in": "path",
@@ -61423,13 +61434,17 @@
         },
         "responses": {
           "202": {
-            "description": "Request accepted, exporting of model API image continues offline",
-            "schema": {
-              "items": {
-                "$ref": "#/components/schemas/domino.modelmanager.web.ModelExportVersionStatusApiResponse"
-              },
-              "type": "array"
-            }
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/domino.modelmanager.web.ModelExportVersionStatusApiResponse"
+                  },
+                  "type": "array"
+                }
+              }
+            },
+            "description": "Request accepted, exporting of model API image continues offline"
           },
           "400": {
             "$ref": "#/components/responses/BadRequest"
@@ -61486,13 +61501,17 @@
         },
         "responses": {
           "202": {
-            "description": "Request accepted, exporting of model API image continues offline",
-            "schema": {
-              "items": {
-                "$ref": "#/components/schemas/domino.modelmanager.web.ModelExportVersionStatusApiResponse"
-              },
-              "type": "array"
-            }
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/domino.modelmanager.web.ModelExportVersionStatusApiResponse"
+                  },
+                  "type": "array"
+                }
+              }
+            },
+            "description": "Request accepted, exporting of model API image continues offline"
           },
           "400": {
             "$ref": "#/components/responses/BadRequest"
@@ -61515,7 +61534,7 @@
     },
     "/v4/models/{modelId}/{modelVersionId}/exportImageForSnowflake": {
       "post": {
-        "operationId": "exportImageForSnowflake",
+        "operationId": "exportModelImageForSnowflake",
         "parameters": [
           {
             "in": "path",
@@ -61549,13 +61568,17 @@
         },
         "responses": {
           "202": {
-            "description": "Request accepted, exporting of model API image continues offline",
-            "schema": {
-              "items": {
-                "$ref": "#/components/schemas/domino.modelmanager.web.ModelExportVersionStatusApiResponse"
-              },
-              "type": "array"
-            }
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/domino.modelmanager.web.ModelExportVersionStatusApiResponse"
+                  },
+                  "type": "array"
+                }
+              }
+            },
+            "description": "Request accepted, exporting of model API image continues offline"
           },
           "400": {
             "$ref": "#/components/responses/BadRequest"
@@ -61612,13 +61635,17 @@
         },
         "responses": {
           "202": {
-            "description": "Request accepted, exporting of model API image continues offline",
-            "schema": {
-              "items": {
-                "$ref": "#/components/schemas/domino.modelmanager.web.ModelExportVersionStatusApiResponse"
-              },
-              "type": "array"
-            }
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/domino.modelmanager.web.ModelExportVersionStatusApiResponse"
+                  },
+                  "type": "array"
+                }
+              }
+            },
+            "description": "Request accepted, exporting of model API image continues offline"
           },
           "400": {
             "$ref": "#/components/responses/BadRequest"
@@ -61641,7 +61668,7 @@
     },
     "/v4/models/{modelId}/{modelVersionId}/getBuildLogs": {
       "get": {
-        "operationId": "getBuildLogs",
+        "operationId": "getModelBuildLogs",
         "parameters": [
           {
             "in": "path",
@@ -62109,7 +62136,7 @@
     },
     "/workspace/events": {
       "get": {
-        "operationId": "notFound",
+        "operationId": "listWorkspaceEvents",
         "responses": {
           "200": {
             "content": {
@@ -62144,7 +62171,7 @@
     "/workspace/getGlobalSettings": {
       "get": {
         "operationId": "getGlobalSettings",
-        "parameters": null,
+        "parameters": [],
         "responses": {
           "200": {
             "content": {
@@ -62964,7 +62991,7 @@
     },
     "/workspace/project/{projectId}/workspace/{workspaceId}/getWritableProjectMounts": {
       "get": {
-        "operationId": "getWritableProjectMounts",
+        "operationId": "listWritableProjectMounts",
         "parameters": [
           {
             "description": "project id",
@@ -63220,7 +63247,7 @@
     },
     "/workspace/project/{projectId}/workspace/{workspaceId}/updateTitle": {
       "post": {
-        "operationId": "updateWorkspaceTitle",
+        "operationId": "updateProjectWorkspaceTitle",
         "parameters": [
           {
             "description": "Id of the project",
@@ -63760,7 +63787,7 @@
     },
     "/workspace/{executionId}/{clusterType}/hostAndPort": {
       "get": {
-        "operationId": "getComputeClusterHostAndPort",
+        "operationId": "getWorkspaceComputeClusterHostAndPort",
         "parameters": [
           {
             "description": "ID of the execution",
@@ -63856,7 +63883,7 @@
     },
     "/workspace/{projectId}/{clusterType}/defaultComputeClusterSettings": {
       "get": {
-        "operationId": "getDefaultComputeClusterSettings",
+        "operationId": "getWorkspaceDefaultComputeClusterSettings",
         "parameters": [
           {
             "description": "ID of the project",
@@ -63866,8 +63893,7 @@
             "schema": {
               "pattern": "^[0-9a-f]{24}$",
               "type": "string"
-            },
-            "type": "domino.common.DominoId"
+            }
           },
           {
             "description": "Type of the cluster to get settings for",
@@ -63942,7 +63968,7 @@
               "default": 10000,
               "format": "int32",
               "nullable": true,
-              "type": "number"
+              "type": "integer"
             }
           },
           {
@@ -63953,7 +63979,7 @@
             "schema": {
               "default": 0,
               "format": "int32",
-              "type": "number"
+              "type": "integer"
             }
           },
           {
@@ -64033,7 +64059,7 @@
               "default": 10000,
               "format": "int32",
               "nullable": true,
-              "type": "number"
+              "type": "integer"
             }
           },
           {
@@ -64044,7 +64070,7 @@
             "schema": {
               "default": 0,
               "format": "int32",
-              "type": "number"
+              "type": "integer"
             }
           },
           {
@@ -64777,7 +64803,7 @@
     },
     "/workspace/{workspaceSessionId}/computeClusterDetails": {
       "get": {
-        "operationId": "getComputeClusterDetails",
+        "operationId": "getWorkspaceComputeClusterDetails",
         "parameters": [
           {
             "description": "ID of the Project",
@@ -64832,7 +64858,7 @@
     },
     "/workspace/{workspaceSessionId}/computeClusterFileSync": {
       "post": {
-        "operationId": "syncFilesToComputeCluster",
+        "operationId": "syncWorkspaceFilesToComputeCluster",
         "parameters": [
           {
             "description": "ID of the Project",
@@ -64887,7 +64913,7 @@
     },
     "/workspace/{workspaceSessionId}/computeClusterFileSyncStatus": {
       "get": {
-        "operationId": "getComputeClusterFileSyncStatus",
+        "operationId": "getWorkspaceComputeClusterFileSyncStatus",
         "parameters": [
           {
             "description": "ID of the Project",
@@ -64942,7 +64968,7 @@
     },
     "/workspace/{workspaceSessionId}/computeClusterStatus": {
       "get": {
-        "operationId": "getComputeClusterStatus",
+        "operationId": "getWorkspaceComputeClusterStatus",
         "parameters": [
           {
             "description": "ID of the Project",
@@ -64997,7 +65023,7 @@
     },
     "/workspace/{workspaceSessionId}/executionCheckpointStatuses": {
       "get": {
-        "operationId": "getExecutionCheckpointReport",
+        "operationId": "getExecutionCheckpointStatuses",
         "parameters": [
           {
             "description": "ID of the Project",
@@ -65168,7 +65194,7 @@
     },
     "/workspace/{workspaceSessionId}/usage": {
       "get": {
-        "operationId": "getResourceUsage",
+        "operationId": "getWorkspaceSessionResourceUsage",
         "parameters": [
           {
             "description": "projectId associated with the workspace",
@@ -65393,7 +65419,7 @@
     },
     "/workspaces/events": {
       "get": {
-        "operationId": "notFound",
+        "operationId": "getWorkspaceEvents",
         "responses": {
           "200": {
             "content": {
@@ -65527,7 +65553,7 @@
     },
     "/workspaces/project/{projectId}/environment/{environmentId}/availableTools": {
       "get": {
-        "operationId": "getAvailableToolsForEnvironment",
+        "operationId": "getAvailableToolsForEnvironmentInWorkspace",
         "parameters": [
           {
             "description": "ID of the Project",
@@ -65997,7 +66023,7 @@
     },
     "/workspaces/{workspaceId}/allComments": {
       "get": {
-        "operationId": "getAllComments",
+        "operationId": "getAllWorkspaceComments",
         "parameters": [
           {
             "description": "ID of the workspace",
@@ -66157,7 +66183,7 @@
     },
     "/workspaces/{workspaceId}/comment/{threadId}": {
       "delete": {
-        "operationId": "archiveComment",
+        "operationId": "archiveCommentFromThread",
         "parameters": [
           {
             "description": "ID of the workspace",
@@ -66222,7 +66248,7 @@
     },
     "/workspaces/{workspaceId}/comments": {
       "get": {
-        "operationId": "getComments",
+        "operationId": "getWorkspaceComments",
         "parameters": [
           {
             "description": "ID of the workspace",
@@ -66267,7 +66293,7 @@
     },
     "/workspaces/{workspaceId}/executionCheckpointStatuses": {
       "get": {
-        "operationId": "getExecutionCheckpointStatuses",
+        "operationId": "getWorkspaceExecutionCheckpointStatuses",
         "parameters": [
           {
             "description": "ID of the workspace",
@@ -66445,7 +66471,7 @@
     },
     "/workspaces/{workspaceId}/logs": {
       "get": {
-        "operationId": "getLogs",
+        "operationId": "getWorkspaceLogs",
         "parameters": [
           {
             "description": "ID of the workspace",
@@ -66591,7 +66617,7 @@
     },
     "/workspaces/{workspaceId}/realTimeLogs": {
       "get": {
-        "operationId": "getRealTimeLogs",
+        "operationId": "getWorkspaceRealTimeLogs",
         "parameters": [
           {
             "description": "ID of the workspace",
@@ -66685,7 +66711,7 @@
     },
     "/workspaces/{workspaceId}/resourceStatuses": {
       "get": {
-        "operationId": "getWorkspaceRepositoryStatus",
+        "operationId": "getWorkspaceRepositoryResourceStatus",
         "parameters": [
           {
             "description": "ID of the Project",
@@ -66740,7 +66766,7 @@
     },
     "/workspaces/{workspaceId}/resultFile/comments": {
       "get": {
-        "operationId": "getResultFileComments",
+        "operationId": "getWorkspaceResultFileComments",
         "parameters": [
           {
             "description": "ID of the workspace",
@@ -66858,7 +66884,7 @@
     },
     "/workspaces/{workspaceId}/runtimeExecutionDetails": {
       "get": {
-        "operationId": "getRuntimeExecutionDetails",
+        "operationId": "getWorkspaceRuntimeExecutionDetails",
         "parameters": [
           {
             "description": "ProjectId for the workspace",
@@ -67228,7 +67254,7 @@
     },
     "/workspaces/{workspaceId}/usage": {
       "get": {
-        "operationId": "getResourceUsage",
+        "operationId": "getWorkspaceResourceUsage",
         "parameters": [
           {
             "description": "ProjectId associated with the workspace",
