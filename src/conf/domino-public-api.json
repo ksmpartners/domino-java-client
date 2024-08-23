@@ -378,10 +378,10 @@
       "ClusterTypeV1": {
         "description": "Type of compute cluster",
         "enum": [
-          "Dask",
-          "Mpi",
-          "Ray",
-          "Spark"
+          "dask",
+          "mpi",
+          "ray",
+          "spark"
         ],
         "type": "string"
       },
@@ -1205,40 +1205,52 @@
       "CostAllocationV1": {
         "properties": {
           "cpuCoreHours": {
-            "type": "double"
+            "format": "double",
+            "type": "number"
           },
           "cpuCoreRequestAverage": {
-            "type": "double"
+            "format": "double",
+            "type": "number"
           },
           "cpuCoreUsageAverage": {
-            "type": "double"
+            "format": "double",
+            "type": "number"
           },
           "cpuCores": {
-            "type": "double"
+            "format": "double",
+            "type": "number"
           },
           "cpuCost": {
-            "type": "double"
+            "format": "double",
+            "type": "number"
           },
           "cpuCostAdjustment": {
-            "type": "double"
+            "format": "double",
+            "type": "number"
           },
           "cpuEfficincy": {
-            "type": "double"
+            "format": "double",
+            "type": "number"
           },
           "discount": {
-            "type": "double"
+            "format": "double",
+            "type": "number"
           },
           "gpuCost": {
-            "type": "double"
+            "format": "double",
+            "type": "number"
           },
           "gpuCostAdjustment": {
-            "type": "double"
+            "format": "double",
+            "type": "number"
           },
           "gpuCount": {
-            "type": "double"
+            "format": "double",
+            "type": "number"
           },
           "gpuHours": {
-            "type": "double"
+            "format": "double",
+            "type": "number"
           },
           "labels": {
             "properties": {
@@ -1279,10 +1291,12 @@
             "type": "object"
           },
           "loadBalancerCost": {
-            "type": "double"
+            "format": "double",
+            "type": "number"
           },
           "loadBalancerCostAdjustment": {
-            "type": "double"
+            "format": "double",
+            "type": "number"
           },
           "name": {
             "type": "string"
@@ -1293,25 +1307,31 @@
           "pv": {
             "properties": {
               "pvByteHours": {
-                "type": "double"
+                "format": "double",
+                "type": "number"
               },
               "pvBytes": {
-                "type": "double"
+                "format": "double",
+                "type": "number"
               },
               "pvCost": {
-                "type": "double"
+                "format": "double",
+                "type": "number"
               },
               "pvCostAdjustment": {
-                "type": "double"
+                "format": "double",
+                "type": "number"
               },
               "pvs": {
                 "additionalProperties": {
                   "properties": {
                     "byteHours": {
-                      "type": "double"
+                      "format": "double",
+                      "type": "number"
                     },
                     "cost": {
-                      "type": "double"
+                      "format": "double",
+                      "type": "number"
                     }
                   },
                   "type": "object"
@@ -1322,13 +1342,16 @@
             "type": "object"
           },
           "ramCost": {
-            "type": "double"
+            "format": "double",
+            "type": "number"
           },
           "ramCostAdjustment": {
-            "type": "double"
+            "format": "double",
+            "type": "number"
           },
           "totalCost": {
-            "type": "double"
+            "format": "double",
+            "type": "number"
           },
           "window": {
             "properties": {
@@ -1336,7 +1359,8 @@
                 "type": "string"
               },
               "minutes": {
-                "type": "double"
+                "format": "double",
+                "type": "number"
               },
               "start": {
                 "type": "string"
@@ -1364,10 +1388,12 @@
       "CostAssetsV1": {
         "properties": {
           "cpuCost": {
-            "type": "double"
+            "format": "double",
+            "type": "number"
           },
           "gpuCost": {
-            "type": "double"
+            "format": "double",
+            "type": "number"
           },
           "labels": {
             "properties": {
@@ -1410,16 +1436,20 @@
             "type": "object"
           },
           "ramCost": {
-            "type": "double"
+            "format": "double",
+            "type": "number"
           },
           "totalCost": {
-            "type": "double"
+            "format": "double",
+            "type": "number"
           },
           "type": {
             "type": "string"
           },
           "window": {
-            "$ref": "#/components/schemas/CostAssetsV1Window",
+            "schema": {
+              "$ref": "#/components/schemas/CostAssetsV1Window"
+            },
             "type": "object"
           }
         },
@@ -1431,7 +1461,8 @@
             "type": "string"
           },
           "minutes": {
-            "type": "double"
+            "format": "double",
+            "type": "number"
           },
           "start": {
             "type": "string"
@@ -2189,8 +2220,8 @@
       "EnvironmentOwnerTypeV1": {
         "description": "Type of owner for an Environment. Environments can either be owned by a normal user or by an Organization.",
         "enum": [
-          "Individual",
-          "Organization"
+          "individual",
+          "organization"
         ],
         "type": "string"
       },
@@ -2220,14 +2251,14 @@
       "EnvironmentRevisionBuildStatusV1": {
         "description": "Status of the build for an Environment Revision.",
         "enum": [
-          "Queued",
-          "Starting",
-          "Pulling",
-          "Building",
-          "Pushing",
-          "Succeeded",
-          "Failed",
-          "Killed"
+          "queued",
+          "starting",
+          "pulling",
+          "building",
+          "pushing",
+          "succeeded",
+          "failed",
+          "killed"
         ],
         "type": "string"
       },
@@ -2421,9 +2452,9 @@
       "EnvironmentVisibilityV1": {
         "description": "Visiblity of an environment. Private Environments are only visible to the creating user, whereas Organization owned Environments can be seen by all Org members.",
         "enum": [
-          "Global",
-          "Private",
-          "Organization"
+          "global",
+          "private",
+          "organization"
         ],
         "type": "string"
       },
@@ -2558,23 +2589,23 @@
       },
       "GitReferenceTypeV1": {
         "enum": [
-          "Head",
-          "Branch",
-          "Tag",
-          "Commit"
+          "head",
+          "branch",
+          "tag",
+          "commit"
         ],
         "type": "string"
       },
       "GitServiceProviderV1": {
         "description": "Git service provider",
         "enum": [
-          "Bitbucket",
-          "BitbucketServer",
-          "Github",
-          "GithubEnterprise",
-          "GitLab",
-          "GitLabEnterprise",
-          "Unknown"
+          "bitbucket",
+          "bitbucketServer",
+          "github",
+          "githubEnterprise",
+          "gitLab",
+          "gitLabEnterprise",
+          "unknown"
         ],
         "type": "string"
       },
@@ -3383,10 +3414,10 @@
       "LogTypeV1": {
         "description": "Type of log. Complete includes all log types.",
         "enum": [
-          "StdOut",
-          "StdErr",
-          "PrepareOutput",
-          "Complete"
+          "stdOut",
+          "stdErr",
+          "prepareOutput",
+          "complete"
         ],
         "type": "string"
       },
@@ -5019,8 +5050,8 @@
       "NewEnvironmentVisibilityV1": {
         "description": "Environment visibility. Required for creating a new environment",
         "enum": [
-          "Global",
-          "Private"
+          "global",
+          "private"
         ],
         "type": "string"
       },
@@ -5548,8 +5579,8 @@
       "OrganizationRoleV1": {
         "description": "Role of member in the organization.",
         "enum": [
-          "Member",
-          "Admin"
+          "member",
+          "admin"
         ],
         "type": "string"
       },
@@ -6387,9 +6418,9 @@
       "ProjectVisibilityV1": {
         "description": "Project visibility",
         "enum": [
-          "Public",
-          "Searchable",
-          "Private"
+          "public",
+          "searchable",
+          "private"
         ],
         "type": "string"
       },
@@ -7879,7 +7910,7 @@
   "info": {
     "description": "Domino Public API Endpoints",
     "title": "Domino Public API",
-    "version": "5.11.1"
+    "version": "0.0.0"
   },
   "openapi": "3.0.3",
   "paths": {
@@ -9219,171 +9250,171 @@
         ]
       }
     },
+    "/api/cost/v1/billingtagSettings/mode": {
+      "get": {
+        "description": "Get mode setting of the billing tags",
+        "operationId": "getBillingTagMode",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BillingTagsModeEnvelopeV1"
+                }
+              }
+            },
+            "description": "Success"
+          },
+          "400": {
+            "$ref": "#/components/responses/400"
+          },
+          "401": {
+            "$ref": "#/components/responses/401"
+          },
+          "403": {
+            "$ref": "#/components/responses/403"
+          },
+          "404": {
+            "$ref": "#/components/responses/404"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
+          }
+        },
+        "summary": "Get mode setting of the billing tags",
+        "tags": [
+          "BillingTagSettings"
+        ]
+      },
+      "put": {
+        "description": "Update mode setting of the billing tags",
+        "operationId": "updateBillingTagMode",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/BillingTagsModeV1"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BillingTagsModeEnvelopeV1"
+                }
+              }
+            },
+            "description": "Success"
+          },
+          "400": {
+            "$ref": "#/components/responses/400"
+          },
+          "401": {
+            "$ref": "#/components/responses/401"
+          },
+          "403": {
+            "$ref": "#/components/responses/403"
+          },
+          "404": {
+            "$ref": "#/components/responses/404"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
+          }
+        },
+        "summary": "Update mode setting of the billing tags",
+        "tags": [
+          "BillingTagSettings"
+        ]
+      }
+    },
+    "/api/cost/v1/billingtagSettings/notifications": {
+      "get": {
+        "description": "Get notifications setting of the billing tags",
+        "operationId": "getBillingTagNotification",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BillingTagsNotificationsEnvelopeV1"
+                }
+              }
+            },
+            "description": "Success"
+          },
+          "400": {
+            "$ref": "#/components/responses/400"
+          },
+          "401": {
+            "$ref": "#/components/responses/401"
+          },
+          "403": {
+            "$ref": "#/components/responses/403"
+          },
+          "404": {
+            "$ref": "#/components/responses/404"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
+          }
+        },
+        "summary": "Get notifications setting of the billing tags",
+        "tags": [
+          "BillingTagSettings"
+        ]
+      },
+      "put": {
+        "description": "Update notifications setting of the billing tags",
+        "operationId": "updateBillingTagNotification",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/BillingTagsNotificationsV1"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BillingTagsNotificationsEnvelopeV1"
+                }
+              }
+            },
+            "description": "Success"
+          },
+          "400": {
+            "$ref": "#/components/responses/400"
+          },
+          "401": {
+            "$ref": "#/components/responses/401"
+          },
+          "403": {
+            "$ref": "#/components/responses/403"
+          },
+          "404": {
+            "$ref": "#/components/responses/404"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
+          }
+        },
+        "summary": "Update notifications setting of the billing tags",
+        "tags": [
+          "BillingTagSettings"
+        ]
+      }
+    },
     "/api/cost/v1/billingtagSettings": {
-      "/api/cost/v1/billingtagSettings/mode": {
-        "get": {
-          "description": "Get mode setting of the billing tags",
-          "operationId": "getBillingTagMode",
-          "responses": {
-            "200": {
-              "content": {
-                "application/json": {
-                  "schema": {
-                    "$ref": "#/components/schemas/BillingTagsModeEnvelopeV1"
-                  }
-                }
-              },
-              "description": "Success"
-            },
-            "400": {
-              "$ref": "#/components/responses/400"
-            },
-            "401": {
-              "$ref": "#/components/responses/401"
-            },
-            "403": {
-              "$ref": "#/components/responses/403"
-            },
-            "404": {
-              "$ref": "#/components/responses/404"
-            },
-            "500": {
-              "$ref": "#/components/responses/500"
-            }
-          },
-          "summary": "Get mode setting of the billing tags",
-          "tags": [
-            "BillingTagSettings"
-          ]
-        },
-        "put": {
-          "description": "Update mode setting of the billing tags",
-          "operationId": "updateBillingTagMode",
-          "requestBody": {
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/BillingTagsModeV1"
-                }
-              }
-            },
-            "required": true
-          },
-          "responses": {
-            "200": {
-              "content": {
-                "application/json": {
-                  "schema": {
-                    "$ref": "#/components/schemas/BillingTagsModeEnvelopeV1"
-                  }
-                }
-              },
-              "description": "Success"
-            },
-            "400": {
-              "$ref": "#/components/responses/400"
-            },
-            "401": {
-              "$ref": "#/components/responses/401"
-            },
-            "403": {
-              "$ref": "#/components/responses/403"
-            },
-            "404": {
-              "$ref": "#/components/responses/404"
-            },
-            "500": {
-              "$ref": "#/components/responses/500"
-            }
-          },
-          "summary": "Update mode setting of the billing tags",
-          "tags": [
-            "BillingTagSettings"
-          ]
-        }
-      },
-      "/api/cost/v1/billingtagSettings/notifications": {
-        "get": {
-          "description": "Get notifications setting of the billing tags",
-          "operationId": "getBillingTagNotification",
-          "responses": {
-            "200": {
-              "content": {
-                "application/json": {
-                  "schema": {
-                    "$ref": "#/components/schemas/BillingTagsNotificationsEnvelopeV1"
-                  }
-                }
-              },
-              "description": "Success"
-            },
-            "400": {
-              "$ref": "#/components/responses/400"
-            },
-            "401": {
-              "$ref": "#/components/responses/401"
-            },
-            "403": {
-              "$ref": "#/components/responses/403"
-            },
-            "404": {
-              "$ref": "#/components/responses/404"
-            },
-            "500": {
-              "$ref": "#/components/responses/500"
-            }
-          },
-          "summary": "Get notifications setting of the billing tags",
-          "tags": [
-            "BillingTagSettings"
-          ]
-        },
-        "put": {
-          "description": "Update notifications setting of the billing tags",
-          "operationId": "updateBillingTagNotification",
-          "requestBody": {
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/BillingTagsNotificationsV1"
-                }
-              }
-            },
-            "required": true
-          },
-          "responses": {
-            "200": {
-              "content": {
-                "application/json": {
-                  "schema": {
-                    "$ref": "#/components/schemas/BillingTagsNotificationsEnvelopeV1"
-                  }
-                }
-              },
-              "description": "Success"
-            },
-            "400": {
-              "$ref": "#/components/responses/400"
-            },
-            "401": {
-              "$ref": "#/components/responses/401"
-            },
-            "403": {
-              "$ref": "#/components/responses/403"
-            },
-            "404": {
-              "$ref": "#/components/responses/404"
-            },
-            "500": {
-              "$ref": "#/components/responses/500"
-            }
-          },
-          "summary": "Update notifications setting of the billing tags",
-          "tags": [
-            "BillingTagSettings"
-          ]
-        }
-      },
       "get": {
         "description": "Get  billing tags setting",
         "operationId": "getBillingTagSettings",
@@ -9468,7 +9499,7 @@
     "/api/cost/v1/billingtags": {
       "get": {
         "description": "Get billing codes that a user can see.",
-        "operationId": "getBillingTags",
+        "operationId": "getActiveBillingTags",
         "responses": {
           "200": {
             "content": {
