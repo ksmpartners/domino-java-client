@@ -31,6 +31,16 @@
         },
         "description": "An internal error prevented the server from performing this action"
       },
+      "ModelProductErrorResponse": {
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/domino.nucleus.modelproduct.models.ModelProductError"
+            }
+          }
+        },
+        "description": ""
+      },
       "NotFound": {
         "content": {
           "application/json": {
@@ -2356,7 +2366,12 @@
             "type": "integer"
           },
           "roleBasedCounts": {
-            "type": "collection.immutable.map[string,int]"
+            "additionalProperties": {
+              "format": "int32",
+              "type": "integer"
+            },
+            "nullable": true,
+            "type": "object"
           }
         },
         "required": [
@@ -20716,7 +20731,11 @@
             "type": "string"
           },
           "resolutionDecisions": {
-            "type": "collection.immutable.map[string,domino.projects.api.resolutiondecision.value]"
+            "additionalProperties": {
+              "type": "string"
+            },
+            "nullable": true,
+            "type": "object"
           }
         },
         "required": [
@@ -21291,33 +21310,10 @@
           "summary"
         ]
       },
-      "domino.projects.api.repositories.responses.GetRepoFilesApiResponse": {
-        "properties": {
-          "files": {
-            "items": {
-              "type": "string"
-            },
-            "type": "array"
-          }
-        },
-        "required": [
-          "files"
-        ]
-      },
-      "domino.projects.api.repositories.responses.GitApiResponseWrapper[domino.gitproviders.api.GetOwnersApiResponse]": {
+      "domino.projects.api.repositories.responses.GitApiResponseWrapper": {
         "properties": {
           "data": {
             "$ref": "#/components/schemas/domino.gitproviders.api.GetOwnersApiResponse"
-          }
-        },
-        "required": [
-          "data"
-        ]
-      },
-      "domino.projects.api.repositories.responses.GitApiResponseWrapper[domino.projects.api.repositories.responses.GetRepoFilesApiResponse]": {
-        "properties": {
-          "data": {
-            "$ref": "#/components/schemas/domino.projects.api.repositories.responses.GetRepoFilesApiResponse"
           }
         },
         "required": [
@@ -28727,7 +28723,8 @@
             "content": {
               "application/octet-stream": {
                 "schema": {
-                  "type": "binary"
+                  "format": "binary",
+                  "type": "string"
                 }
               }
             },
@@ -39625,9 +39622,6 @@
                 "asc",
                 "desc"
               ],
-              "items": {
-                "type": "string"
-              },
               "nullable": true,
               "type": "string"
             }
@@ -42076,7 +42070,7 @@
             "name": "commitId",
             "required": false,
             "schema": {
-              "type": "org.eclipse.jgit.lib.ObjectId"
+              "type": "string"
             }
           }
         ],
@@ -42150,7 +42144,7 @@
             "name": "commitId",
             "required": false,
             "schema": {
-              "type": "org.eclipse.jgit.lib.ObjectId"
+              "type": "string"
             }
           }
         ],
@@ -44357,10 +44351,14 @@
         ],
         "responses": {
           "200": {
-            "description": "success",
-            "schema": {
-              "$ref": "#/components/schemas/domino.jobs.interface.ArtifactsInfoDto"
-            }
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/domino.jobs.interface.ArtifactsInfoDto"
+                }
+              }
+            },
+            "description": "success"
           },
           "400": {
             "$ref": "#/components/responses/BadRequest"
@@ -44511,10 +44509,14 @@
         ],
         "responses": {
           "200": {
-            "description": "success",
-            "schema": {
-              "$ref": "#/components/schemas/domino.jobs.interface.CodeInfoDto"
-            }
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/domino.jobs.interface.CodeInfoDto"
+                }
+              }
+            },
+            "description": "success"
           },
           "400": {
             "$ref": "#/components/responses/BadRequest"
@@ -46163,7 +46165,6 @@
             }
           },
           {
-            "default": 10,
             "description": "Number of environments, revisions per environment, and edvs to retrieve",
             "in": "query",
             "name": "pageSize",
@@ -46571,7 +46572,7 @@
     },
     "/mlflow/execution/{executionId}/provenanceCheckpoints": {
       "get": {
-        "operationId": "getProvenanceCheckpointsForExecution",
+        "operationId": "getMlflowProvenanceCheckpointsForExecution",
         "parameters": [
           {
             "description": "Id of execution to retrieve checkpoints for for",
@@ -47756,13 +47757,17 @@
         },
         "responses": {
           "200": {
-            "description": "success",
-            "schema": {
-              "items": {
-                "$ref": "#/components/schemas/domino.modelmanager.api.responses.ModelPermissionForMonitoringApiResponse"
-              },
-              "type": "array"
-            }
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/domino.modelmanager.api.responses.ModelPermissionForMonitoringApiResponse"
+                  },
+                  "type": "array"
+                }
+              }
+            },
+            "description": "success"
           },
           "400": {
             "$ref": "#/components/responses/BadRequest"
@@ -52020,7 +52025,7 @@
     },
     "/projectManagement/{projectId}/createGoal": {
       "post": {
-        "operationId": "createProjectGoal",
+        "operationId": "createProjectMgmtGoal",
         "parameters": [
           {
             "in": "path",
@@ -52883,7 +52888,6 @@
             }
           },
           {
-            "default": 0,
             "description": "The index of the start of the page, where checkpointProjectId is index 0",
             "in": "query",
             "name": "offset",
@@ -52895,7 +52899,6 @@
             }
           },
           {
-            "default": 10,
             "description": "The size of the page to return",
             "in": "query",
             "name": "pageSize",
@@ -52927,7 +52930,6 @@
             }
           },
           {
-            "default": "name",
             "description": "A field to sort the projects on",
             "in": "query",
             "name": "sortBy",
@@ -52939,7 +52941,6 @@
             }
           },
           {
-            "default": "desc",
             "description": "Whether to sort in ascending or descending order",
             "in": "query",
             "name": "sortOrder",
@@ -52951,7 +52952,6 @@
             }
           },
           {
-            "default": false,
             "description": "determine whether to only return projects with missing tag",
             "in": "query",
             "name": "missingBillingTagOnly",
@@ -54367,7 +54367,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "type": "String"
+                  "type": "string"
                 }
               }
             },
@@ -56433,7 +56433,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/domino.projects.api.repositories.responses.GitApiResponseWrapper[domino.projects.api.repositories.responses.GetRepoFilesApiResponse]"
+                  "$ref": "#/components/schemas/domino.projects.api.repositories.responses.GitApiResponseWrapper"
                 }
               }
             },
@@ -57197,6 +57197,10 @@
                     "type": "string"
                   }
                 },
+                "required": [
+                  "kerberosMode",
+                  "upfile"
+                ],
                 "type": "object"
               }
             }
@@ -60257,7 +60261,9 @@
           "200": {
             "content": {
               "application/json": {
-                "$ref": "#/components/schemas/domino.admin.interface.ServiceAccountTokenMetadataAndToken"
+                "schema": {
+                  "$ref": "#/components/schemas/domino.admin.interface.ServiceAccountTokenMetadataAndToken"
+                }
               }
             },
             "description": "success"
@@ -65081,7 +65087,7 @@
     },
     "/workspace/{workspaceSessionId}/gpuUsage": {
       "get": {
-        "operationId": "getGpuResourceUsage",
+        "operationId": "getWorkspaceGpuResourceUsage",
         "parameters": [
           {
             "description": "ID of the workspace session",
@@ -66829,7 +66835,7 @@
     },
     "/workspaces/{workspaceId}/results": {
       "get": {
-        "operationId": "getResults",
+        "operationId": "getWorkspaceResults",
         "parameters": [
           {
             "description": "ProjectId associated with the workspace",
