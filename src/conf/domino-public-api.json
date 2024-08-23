@@ -90,6 +90,54 @@
       }
     },
     "schemas": {
+      "AIGatewayAuditDataV1": {
+        "properties": {
+          "endpointId": {
+            "description": "Endpoint ID",
+            "type": "string"
+          },
+          "endpointType": {
+            "description": "Endpoint type",
+            "type": "string"
+          },
+          "eventKind": {
+            "description": "Event kind",
+            "type": "string"
+          },
+          "metadata": {
+            "$ref": "#/components/schemas/AIGatewayAuditMetadataV1"
+          },
+          "performedBy": {
+            "description": "ID of user who performed the event",
+            "type": "string"
+          },
+          "timestamp": {
+            "description": "timestamp of when event was performed",
+            "example": "1996-07-19T03:13:44.467Z",
+            "format": "date-time",
+            "type": "string"
+          }
+        },
+        "required": [
+          "endpointId",
+          "endpointType",
+          "eventKind",
+          "metadata",
+          "performedBy",
+          "timestamp"
+        ],
+        "type": "object"
+      },
+      "AIGatewayAuditMetadataV1": {
+        "additionalProperties": {
+          "type": "string"
+        },
+        "description": "A map of string -> string",
+        "example": {
+          "foo": "bar"
+        },
+        "type": "object"
+      },
       "AIGatewayEnvelopeV1": {
         "properties": {
           "endpoints": {
@@ -99,7 +147,7 @@
             "type": "array"
           },
           "metadata": {
-            "$ref": "#/components/schemas/MetadataV1"
+            "$ref": "#/components/schemas/PaginatedMetadataV1"
           }
         },
         "required": [
@@ -195,8 +243,10 @@
         "type": "object"
       },
       "BillingTagV1": {
+        "description": "Billing Tag to assign to projects for cost aggregation",
         "properties": {
           "tag": {
+            "description": "The tag to be assigned to projects.",
             "type": "string"
           }
         },
@@ -212,10 +262,14 @@
           },
           "tag": {
             "type": "string"
+          },
+          "tagId": {
+            "type": "string"
           }
         },
         "required": [
           "tag",
+          "tagId",
           "active"
         ],
         "type": "object"
@@ -324,10 +378,10 @@
       "ClusterTypeV1": {
         "description": "Type of compute cluster",
         "enum": [
-          "Dask",
-          "Mpi",
-          "Ray",
-          "Spark"
+          "dask",
+          "mpi",
+          "ray",
+          "spark"
         ],
         "type": "string"
       },
@@ -396,8 +450,715 @@
         ],
         "type": "object"
       },
+      "ComputeProvider": {
+        "allOf": [
+          {
+            "properties": {
+              "id": {
+                "description": "UUID for the Compute Provider",
+                "type": "string"
+              }
+            },
+            "required": [
+              "id"
+            ]
+          },
+          {
+            "$ref": "#/components/schemas/ComputeProviderCreation"
+          }
+        ]
+      },
+      "ComputeProviderCreation": {
+        "description": "Compute Provider",
+        "properties": {
+          "computeProviderTypeId": {
+            "description": "ID of the Compute Provider Type this Compute Provider belongs to",
+            "type": "string"
+          },
+          "configuration": {
+            "$ref": "#/components/schemas/SchemaValues",
+            "description": "Configuration of this Compute Provider following the schema in its Compute Provider Type",
+            "example": {
+              "accessId": "1234",
+              "account": "dmo-team-sandbox",
+              "ecrUrl": "https://account.dkr.ecr.us-west-2.amazonaws.com",
+              "region": "us-west-2",
+              "sagemakerS3ModelsBucket": "mycompany-prod-models",
+              "secretAccessKey": "5432"
+            }
+          },
+          "displayName": {
+            "description": "Display name for the Compute Provider",
+            "example": "Production",
+            "type": "string"
+          },
+          "name": {
+            "description": "Internal name for the Compute Provider",
+            "example": "production",
+            "type": "string"
+          }
+        },
+        "required": [
+          "name",
+          "displayName",
+          "computeProviderTypeId",
+          "configuration"
+        ],
+        "type": "object"
+      },
+      "ComputeProviderType": {
+        "description": "Compute Provider Type",
+        "properties": {
+          "computeProviderConfigurationSchema": {
+            "$ref": "#/components/schemas/SchemaDefinition",
+            "description": "Schema for the configuration of compute providers of this type",
+            "example": [
+              {
+                "description": "AWS Account",
+                "name": "account",
+                "title": "Account",
+                "type": "text"
+              },
+              {
+                "description": "Access Key",
+                "name": "accessId",
+                "title": "Access ID",
+                "type": "text"
+              },
+              {
+                "description": "Secret Access Key",
+                "name": "secretAccessKey",
+                "title": "Secret Access Key",
+                "type": "secret"
+              },
+              {
+                "description": "Region",
+                "name": "region",
+                "optional": true,
+                "title": "Region",
+                "type": "text"
+              },
+              {
+                "description": "Amazon Elastic Container Registry URL for model images",
+                "name": "ecrUrl",
+                "title": "ECR URL",
+                "type": "text"
+              },
+              {
+                "description": "S3 bucket for storing model artifacts",
+                "name": "sagemakerS3ModelsBucket",
+                "title": "Sagemaker S3 Models Bucket",
+                "type": "text"
+              }
+            ]
+          },
+          "computeTierConfigurationSchema": {
+            "$ref": "#/components/schemas/SchemaDefinition",
+            "description": "Schema for the configuration of compute tiers belonging to this compute provider type",
+            "example": [
+              {
+                "description": "AWS compute instance type",
+                "name": "instanceType",
+                "title": "Instance Type",
+                "type": "text"
+              }
+            ]
+          },
+          "dataPlaneId": {
+            "description": "ID of the data plane where the operator is deployed",
+            "type": "string"
+          },
+          "displayName": {
+            "description": "Display name for the Compute Provider Type",
+            "example": "Amazon Web Services",
+            "type": "string"
+          },
+          "id": {
+            "description": "UUID for the Compute Provider Type",
+            "type": "string"
+          },
+          "logoUrl": {
+            "description": "Url to pull logo image from",
+            "type": "string"
+          },
+          "modelDeploymentConfigurationSchema": {
+            "$ref": "#/components/schemas/SchemaDefinition",
+            "description": "Schema for the configuration of model deployments belonging to this compute provider type",
+            "example": [
+              {
+                "description": "Turn on Explainer",
+                "name": "enableExplanations",
+                "optional": true,
+                "title": "Enable Explanations",
+                "type": "boolean"
+              }
+            ]
+          },
+          "modelDeploymentStateSchema": {
+            "$ref": "#/components/schemas/SchemaDefinition",
+            "description": "Schema for the values provided by the operator for observability for a model deployment belonging to this compute provider type",
+            "example": [
+              {
+                "description": "ARN of currently deployed Sagemaker endpoint",
+                "name": "endpointArn",
+                "title": "Sagemaker Endpoint ARN",
+                "type": "text"
+              },
+              {
+                "description": "URL of currently deployed Sagemaker endpoint",
+                "name": "enpointUrl",
+                "title": "Sagemaker Endpoint URL",
+                "type": "text"
+              },
+              {
+                "name": "endpoinModelContainerLogsGroup",
+                "title": "Sagemaker Endpoint Logs Group",
+                "type": "text"
+              }
+            ]
+          },
+          "modelDeploymentSupportedModelSources": {
+            "description": "Model sources supported by Domino",
+            "example": [
+              "MODELREGISTRY"
+            ],
+            "items": {
+              "$ref": "#/components/schemas/SupportedSource"
+            },
+            "type": "array"
+          },
+          "modelDeploymentTypes": {
+            "description": "Supported types of endpoints by model deployments belonging to this compute provider type",
+            "properties": {
+              "asyncEndpoint": {
+                "$ref": "#/components/schemas/ModelDeploymentTypeSchema",
+                "example": {
+                  "deploymentConfiguration": [],
+                  "examplePayload": {
+                    "path_to_input": "s3://my-bucket/model-input.csv"
+                  },
+                  "modelConfiguration": [],
+                  "operations": [
+                    "CREATE",
+                    "UPDATE",
+                    "DELETE",
+                    "STATUS"
+                  ],
+                  "stateSchema": []
+                }
+              },
+              "syncEndpoint": {
+                "$ref": "#/components/schemas/ModelDeploymentTypeSchema",
+                "example": {
+                  "deploymentConfiguration": [
+                    {
+                      "default": false,
+                      "description": "Inference responses can be HTTP streams",
+                      "name": "streaming",
+                      "title": "Streaming Inference",
+                      "type": "Boolean"
+                    }
+                  ],
+                  "examplePayload": {
+                    "data": {
+                      "start": 1,
+                      "stop": 10
+                    }
+                  },
+                  "modelConfiguration": [
+                    {
+                      "default": true,
+                      "description": "AWS option to dynamically allocate compute resources depending on load and enable scale to zero",
+                      "name": "serverless",
+                      "title": "Serverless",
+                      "type": "Boolean"
+                    }
+                  ],
+                  "operations": [
+                    "CREATE",
+                    "UPDATE",
+                    "DELETE",
+                    "STATUS"
+                  ],
+                  "stateSchema": []
+                }
+              }
+            },
+            "type": "object"
+          },
+          "modelDetailsConfigurationSchema": {
+            "$ref": "#/components/schemas/SchemaDefinition",
+            "description": "Schema for the configuration of a model endpoint belonging to this compute provider type",
+            "example": [
+              {
+                "description": "Minimum number of model instances",
+                "name": "minInstances",
+                "title": "Min Instances",
+                "type": "int"
+              },
+              {
+                "description": "Maximum number of model instances",
+                "name": "maxInstances",
+                "title": "Max Instances",
+                "type": "int"
+              },
+              {
+                "description": "Number of model instances can scale up and down depending on load, defaults to true",
+                "name": "autoscaling",
+                "optional": true,
+                "title": "Scale automaticaly",
+                "type": "boolean"
+              },
+              {
+                "description": "AWS Strategy for applying updates to the endpoint, defaults to \"blue_green_all_at_once\"",
+                "name": "updateStrategy",
+                "optional": true,
+                "title": "Update Strategy",
+                "type": "text"
+              }
+            ]
+          },
+          "modelDetailsStateSchema": {
+            "$ref": "#/components/schemas/SchemaDefinition",
+            "description": "Schema for the values provided by the operator for observability for a model endpoint belonging to this compute provider type",
+            "example": [
+              {
+                "description": "Current number of model instances",
+                "name": "instances",
+                "title": "Current Instances",
+                "type": "int"
+              },
+              {
+                "description": "URL of currently deployed model image in ECR",
+                "name": "modelImageEcrUrl",
+                "title": "Current Model Image ECR URL",
+                "type": "text"
+              },
+              {
+                "description": "URL of currently deployed model artifacts in S3",
+                "name": "modelArtifactsS3Url",
+                "title": "Current Model Artifacts S3 URL",
+                "type": "text"
+              },
+              {
+                "description": "URL of currently deployed Sagemaker model",
+                "name": "modelArn",
+                "title": "Current Sagemaker Model ARN",
+                "type": "text"
+              },
+              {
+                "description": "Pct of traffic routing to previous model configuration",
+                "name": "blueTrafficPct",
+                "title": "Blue Traffic (%)",
+                "type": "text"
+              },
+              {
+                "description": "Pct of traffic routing to current model configuration",
+                "name": "greenTrafficPct",
+                "title": "Green Traffic (%)",
+                "type": "text"
+              }
+            ]
+          },
+          "name": {
+            "description": "Internal name for the Compute Provider Type",
+            "example": "aws",
+            "type": "string"
+          },
+          "operatorVersion": {
+            "description": "Version of the operator",
+            "example": "1.0.2",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "name",
+          "displayName",
+          "operatorVersion",
+          "dataPlaneId",
+          "computeProviderConfigurationSchema",
+          "computeTierConfigurationSchema",
+          "modelDeploymentSupportedModelSources",
+          "modelDeploymentConfigurationSchema",
+          "modelDeploymentStateSchema",
+          "modelDeploymentTypes",
+          "modelDetailsConfigurationSchema",
+          "modelDetailsStateSchema"
+        ],
+        "type": "object"
+      },
+      "ComputeTier": {
+        "allOf": [
+          {
+            "properties": {
+              "id": {
+                "description": "UUID for the Compute Tier",
+                "type": "string"
+              }
+            },
+            "required": [
+              "id"
+            ]
+          },
+          {
+            "$ref": "#/components/schemas/ComputeTierCreation"
+          }
+        ]
+      },
+      "ComputeTierCreation": {
+        "description": "Compute Tier",
+        "properties": {
+          "computeProviderId": {
+            "description": "ID of the Compute Provider this Compute Tier belongs to",
+            "type": "string"
+          },
+          "configuration": {
+            "$ref": "#/components/schemas/SchemaValues",
+            "description": "Configuration of this Compute Tier following the schema in its Compute Provider Type",
+            "example": [
+              {
+                "instanceType": "g4.xlarge"
+              }
+            ]
+          },
+          "description": {
+            "description": "Description for the Compute Tier",
+            "type": "string"
+          },
+          "displayName": {
+            "description": "Display name for the Compute Tier",
+            "example": "Large GPU",
+            "type": "string"
+          },
+          "modelDeploymentConfigurationConstraints": {
+            "description": "Constraints or overrides of configurations of Model Deployments belonging to this Compute Tier",
+            "items": {
+              "$ref": "#/components/schemas/ConstraintSchemaDefinition"
+            },
+            "type": "array"
+          },
+          "name": {
+            "description": "Internal name for the Compute Tier",
+            "example": "gpu_large",
+            "type": "string"
+          },
+          "userAndOrganizationIds": {
+            "description": "User and Organization IDs that can use this compute tier",
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          }
+        },
+        "required": [
+          "name",
+          "displayName",
+          "computeProviderId",
+          "configuration",
+          "modelDeploymentConfigurationConstraints",
+          "userAndOrganizationIds"
+        ],
+        "type": "object"
+      },
+      "ComputeTierFullConfiguration": {
+        "properties": {
+          "computeProviderConfiguration": {
+            "items": {
+              "$ref": "#/components/schemas/DefinedSchemaValue"
+            },
+            "type": "array"
+          },
+          "computeProviderId": {
+            "description": "UUID for the Compute Provider",
+            "type": "string"
+          },
+          "computeProviderName": {
+            "description": "Display name of the Compute Provider this Compute Tier belongs to",
+            "type": "string"
+          },
+          "computeProviderTypeId": {
+            "description": "UUID for the Compute Provider Type",
+            "type": "string"
+          },
+          "computeTierConfiguration": {
+            "items": {
+              "$ref": "#/components/schemas/DefinedSchemaValue"
+            },
+            "type": "array"
+          },
+          "dataPlaneId": {
+            "description": "ID of the data plane where the operator is deployed",
+            "type": "string"
+          },
+          "displayName": {
+            "description": "Display name for the Compute Tier",
+            "example": "Production",
+            "type": "string"
+          },
+          "id": {
+            "description": "UUID for the Compute Tier",
+            "type": "string"
+          },
+          "modelDeploymentConfigurationSchema": {
+            "$ref": "#/components/schemas/SchemaDefinition",
+            "description": "Schema for the configuration of model deployments belonging to this compute provider type",
+            "example": [
+              {
+                "description": "Turn on Explainer",
+                "name": "enableExplanations",
+                "optional": true,
+                "title": "Enable Explanations",
+                "type": "boolean"
+              }
+            ]
+          },
+          "modelDeploymentStateSchema": {
+            "$ref": "#/components/schemas/SchemaDefinition",
+            "description": "Schema for the values provided by the operator for observability for a model deployment belonging to this compute provider type",
+            "example": [
+              {
+                "description": "ARN of currently deployed Sagemaker endpoint",
+                "name": "endpointArn",
+                "title": "Sagemaker Endpoint ARN",
+                "type": "text"
+              },
+              {
+                "description": "URL of currently deployed Sagemaker endpoint",
+                "name": "enpointUrl",
+                "title": "Sagemaker Endpoint URL",
+                "type": "text"
+              },
+              {
+                "name": "endpointModelContainerLogsGroup",
+                "title": "Sagemaker Endpoint Logs Group",
+                "type": "text"
+              }
+            ]
+          },
+          "modelDeploymentSupportedModelSources": {
+            "description": "Model sources supported by Domino",
+            "example": [
+              "MODELREGISTRY"
+            ],
+            "items": {
+              "$ref": "#/components/schemas/SupportedSource"
+            },
+            "type": "array"
+          },
+          "modelDeploymentTypes": {
+            "description": "Supported types of endpoints by model deployments belonging to this compute provider type",
+            "properties": {
+              "asyncEndpoint": {
+                "$ref": "#/components/schemas/ModelDeploymentTypeSchema",
+                "example": {
+                  "deploymentConfiguration": [],
+                  "examplePayload": {
+                    "path_to_input": "s3://my-bucket/model-input.csv"
+                  },
+                  "modelConfiguration": [],
+                  "operations": [
+                    "CREATE",
+                    "UPDATE",
+                    "DELETE",
+                    "STATUS"
+                  ],
+                  "stateSchema": []
+                }
+              },
+              "syncEndpoint": {
+                "$ref": "#/components/schemas/ModelDeploymentTypeSchema",
+                "example": {
+                  "deploymentConfiguration": [
+                    {
+                      "default": false,
+                      "description": "Inference responses can be HTTP streams",
+                      "name": "streaming",
+                      "title": "Streaming Inference",
+                      "type": "Boolean"
+                    }
+                  ],
+                  "examplePayload": {
+                    "data": {
+                      "start": 1,
+                      "stop": 10
+                    }
+                  },
+                  "modelConfiguration": [
+                    {
+                      "default": true,
+                      "description": "AWS option to dynamically allocate compute resources depending on load and enable scale to zero",
+                      "name": "serverless",
+                      "title": "Serverless",
+                      "type": "Boolean"
+                    }
+                  ],
+                  "operations": [
+                    "CREATE",
+                    "UPDATE",
+                    "DELETE",
+                    "STATUS"
+                  ],
+                  "stateSchema": []
+                }
+              }
+            },
+            "type": "object"
+          },
+          "modelDetailsConfigurationSchema": {
+            "$ref": "#/components/schemas/SchemaDefinition",
+            "description": "Schema for the configuration of a model endpoint belonging to this compute provider type",
+            "example": [
+              {
+                "description": "Minimum number of model instances",
+                "name": "minInstances",
+                "title": "Min Instances",
+                "type": "int"
+              },
+              {
+                "description": "Maximum number of model instances",
+                "name": "maxInstances",
+                "title": "Max Instances",
+                "type": "int"
+              },
+              {
+                "description": "Number of model instances can scale up and down depending on load, defaults to true",
+                "name": "autoscaling",
+                "optional": true,
+                "title": "Scale automaticaly",
+                "type": "boolean"
+              },
+              {
+                "description": "AWS Strategy for applying updates to the endpoint, defaults to \"blue_green_all_at_once\"",
+                "name": "updateStrategy",
+                "optional": true,
+                "title": "Update Strategy",
+                "type": "text"
+              }
+            ]
+          },
+          "modelDetailsStateSchema": {
+            "$ref": "#/components/schemas/SchemaDefinition",
+            "description": "Schema for the values provided by the operator for observability for a model endpoint belonging to this compute provider type",
+            "example": [
+              {
+                "description": "Current number of model instances",
+                "name": "instances",
+                "title": "Current Instances",
+                "type": "int"
+              },
+              {
+                "description": "URL of currently deployed model image in ECR",
+                "name": "modelImageEcrUrl",
+                "title": "Current Model Image ECR URL",
+                "type": "text"
+              },
+              {
+                "description": "URL of currently deployed model artifacts in S3",
+                "name": "modelArtifactsS3Url",
+                "title": "Current Model Artifacts S3 URL",
+                "type": "text"
+              },
+              {
+                "description": "URL of currently deployed Sagemaker model",
+                "name": "modelArn",
+                "title": "Current Sagemaker Model ARN",
+                "type": "text"
+              },
+              {
+                "description": "Pct of traffic routing to previous model configuration",
+                "name": "blueTrafficPct",
+                "title": "Blue Traffic (%)",
+                "type": "text"
+              },
+              {
+                "description": "Pct of traffic routing to current model configuration",
+                "name": "greenTrafficPct",
+                "title": "Green Traffic (%)",
+                "type": "text"
+              }
+            ]
+          }
+        },
+        "required": [
+          "id",
+          "displayName",
+          "computeProviderName",
+          "computeProviderTypeId",
+          "computeProviderId",
+          "dataPlaneId",
+          "computeTierConfiguration",
+          "computeProviderConfiguration",
+          "modelDeploymentSupportedModelSources",
+          "modelDeploymentConfigurationSchema",
+          "modelDeploymentStateSchema",
+          "modelDeploymentTypes",
+          "modelDetailsConfigurationSchema",
+          "modelDetailsStateSchema"
+        ],
+        "type": "object"
+      },
+      "ConstraintSchemaDefinition": {
+        "properties": {
+          "default": {
+            "$ref": "#/components/schemas/GenericFieldValueType",
+            "description": "Default value for the property",
+            "example": 4
+          },
+          "length": {
+            "description": "Maximum length (for text & secret fields)",
+            "example": 100,
+            "type": "integer"
+          },
+          "max": {
+            "description": "Maximum value (for numeric fields)",
+            "example": 1024,
+            "type": "number"
+          },
+          "min": {
+            "description": "Minimum value (for numeric fields)",
+            "example": 0,
+            "type": "number"
+          },
+          "name": {
+            "description": "Internal name of the property",
+            "example": "numInstances",
+            "type": "string"
+          },
+          "override": {
+            "$ref": "#/components/schemas/GenericFieldValueType",
+            "description": "Overriden value for the property, a user cannot select a value for this property",
+            "example": 4
+          },
+          "regex": {
+            "description": "Validation expression for text fields",
+            "example": "^AKIA[A-Z0-9]{16}$",
+            "type": "string"
+          },
+          "values": {
+            "description": "List of selectable values for text fields",
+            "example": [
+              "red",
+              "green",
+              "blue",
+              "yellow"
+            ],
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          }
+        },
+        "required": [
+          "name"
+        ],
+        "type": "object"
+      },
       "CopyProjectSpecV1": {
         "properties": {
+          "billingTag": {
+            "$ref": "#/components/schemas/BillingTagV1"
+          },
           "copyDatasets": {
             "description": "Whether to copy the Project's datasets or not",
             "type": "boolean"
@@ -444,43 +1205,58 @@
       "CostAllocationV1": {
         "properties": {
           "cpuCoreHours": {
-            "type": "double"
+            "format": "double",
+            "type": "number"
           },
           "cpuCoreRequestAverage": {
-            "type": "double"
+            "format": "double",
+            "type": "number"
           },
           "cpuCoreUsageAverage": {
-            "type": "double"
+            "format": "double",
+            "type": "number"
           },
           "cpuCores": {
-            "type": "double"
+            "format": "double",
+            "type": "number"
           },
           "cpuCost": {
-            "type": "double"
+            "format": "double",
+            "type": "number"
           },
           "cpuCostAdjustment": {
-            "type": "double"
+            "format": "double",
+            "type": "number"
           },
           "cpuEfficincy": {
-            "type": "double"
+            "format": "double",
+            "type": "number"
           },
           "discount": {
-            "type": "double"
+            "format": "double",
+            "type": "number"
+          },
+          "gpuCost": {
+            "format": "double",
+            "type": "number"
+          },
+          "gpuCostAdjustment": {
+            "format": "double",
+            "type": "number"
           },
           "gpuCount": {
-            "type": "double"
+            "format": "double",
+            "type": "number"
           },
           "gpuHours": {
-            "type": "double"
-          },
-          "gpucost": {
-            "type": "double"
-          },
-          "gpucostAdjustment": {
-            "type": "double"
+            "format": "double",
+            "type": "number"
           },
           "labels": {
             "properties": {
+              "billing_tag": {
+                "type": "string"
+              },
               "organization_id": {
                 "type": "string"
               },
@@ -515,10 +1291,12 @@
             "type": "object"
           },
           "loadBalancerCost": {
-            "type": "double"
+            "format": "double",
+            "type": "number"
           },
           "loadBalancerCostAdjustment": {
-            "type": "double"
+            "format": "double",
+            "type": "number"
           },
           "name": {
             "type": "string"
@@ -529,25 +1307,31 @@
           "pv": {
             "properties": {
               "pvByteHours": {
-                "type": "double"
+                "format": "double",
+                "type": "number"
               },
               "pvBytes": {
-                "type": "double"
+                "format": "double",
+                "type": "number"
               },
               "pvCost": {
-                "type": "double"
+                "format": "double",
+                "type": "number"
               },
               "pvCostAdjustment": {
-                "type": "double"
+                "format": "double",
+                "type": "number"
               },
               "pvs": {
                 "additionalProperties": {
                   "properties": {
                     "byteHours": {
-                      "type": "double"
+                      "format": "double",
+                      "type": "number"
                     },
                     "cost": {
-                      "type": "double"
+                      "format": "double",
+                      "type": "number"
                     }
                   },
                   "type": "object"
@@ -558,13 +1342,16 @@
             "type": "object"
           },
           "ramCost": {
-            "type": "double"
+            "format": "double",
+            "type": "number"
           },
           "ramCostAdjustment": {
-            "type": "double"
+            "format": "double",
+            "type": "number"
           },
           "totalCost": {
-            "type": "double"
+            "format": "double",
+            "type": "number"
           },
           "window": {
             "properties": {
@@ -572,7 +1359,8 @@
                 "type": "string"
               },
               "minutes": {
-                "type": "double"
+                "format": "double",
+                "type": "number"
               },
               "start": {
                 "type": "string"
@@ -600,10 +1388,12 @@
       "CostAssetsV1": {
         "properties": {
           "cpuCost": {
-            "type": "double"
+            "format": "double",
+            "type": "number"
           },
           "gpuCost": {
-            "type": "double"
+            "format": "double",
+            "type": "number"
           },
           "labels": {
             "properties": {
@@ -646,16 +1436,20 @@
             "type": "object"
           },
           "ramCost": {
-            "type": "double"
+            "format": "double",
+            "type": "number"
           },
           "totalCost": {
-            "type": "double"
+            "format": "double",
+            "type": "number"
           },
           "type": {
             "type": "string"
           },
           "window": {
-            "$ref": "#/components/schemas/CostAssetsV1Window",
+            "schema": {
+              "$ref": "#/components/schemas/CostAssetsV1Window"
+            },
             "type": "object"
           }
         },
@@ -667,7 +1461,8 @@
             "type": "string"
           },
           "minutes": {
-            "type": "double"
+            "format": "double",
+            "type": "number"
           },
           "start": {
             "type": "string"
@@ -695,7 +1490,7 @@
             "$ref": "#/components/schemas/DataSourceAuditMetadataV1"
           },
           "performedBy": {
-            "description": "username of user who performed the event",
+            "description": "ID of user who performed the event",
             "type": "string"
           },
           "timestamp": {
@@ -1268,6 +2063,43 @@
         ],
         "type": "object"
       },
+      "DefinedSchemaValue": {
+        "properties": {
+          "description": {
+            "description": "Description for the property",
+            "example": "Number of CPUs requested",
+            "type": "string"
+          },
+          "group": {
+            "description": "Name of group where other fields of the same group will be displayed",
+            "type": "string"
+          },
+          "name": {
+            "description": "Internal name of the property",
+            "example": "cpu",
+            "type": "string"
+          },
+          "title": {
+            "description": "Label for the property",
+            "example": "Number of CPUs",
+            "type": "string"
+          },
+          "type": {
+            "$ref": "#/components/schemas/SchemaValueDataType"
+          },
+          "value": {
+            "$ref": "#/components/schemas/GenericFieldValueType",
+            "description": "Value of the property or secret path for stored secrets",
+            "example": 4
+          }
+        },
+        "required": [
+          "name",
+          "title",
+          "type"
+        ],
+        "type": "object"
+      },
       "DeleteEnvelopeV1": {
         "properties": {
           "metadata": {
@@ -1304,6 +2136,12 @@
       },
       "EndpointEnvelopeV1": {
         "properties": {
+          "creationDate": {
+            "description": "ISO 8601 formatted time of when the Endpoint was created",
+            "example": "2022-04-23T18:25:43.511Z",
+            "format": "date-time",
+            "type": "string"
+          },
           "endpointId": {
             "description": "ID of the endpoint",
             "example": "62604702b7e5d347dbe7a909",
@@ -1339,7 +2177,8 @@
           "endpointType",
           "modelProvider",
           "modelName",
-          "modelConfig"
+          "modelConfig",
+          "creationDate"
         ],
         "type": "object"
       },
@@ -1381,8 +2220,8 @@
       "EnvironmentOwnerTypeV1": {
         "description": "Type of owner for an Environment. Environments can either be owned by a normal user or by an Organization.",
         "enum": [
-          "Individual",
-          "Organization"
+          "individual",
+          "organization"
         ],
         "type": "string"
       },
@@ -1412,14 +2251,14 @@
       "EnvironmentRevisionBuildStatusV1": {
         "description": "Status of the build for an Environment Revision.",
         "enum": [
-          "Queued",
-          "Starting",
-          "Pulling",
-          "Building",
-          "Pushing",
-          "Succeeded",
-          "Failed",
-          "Killed"
+          "queued",
+          "starting",
+          "pulling",
+          "building",
+          "pushing",
+          "succeeded",
+          "failed",
+          "killed"
         ],
         "type": "string"
       },
@@ -1613,9 +2452,9 @@
       "EnvironmentVisibilityV1": {
         "description": "Visiblity of an environment. Private Environments are only visible to the creating user, whereas Organization owned Environments can be seen by all Org members.",
         "enum": [
-          "Global",
-          "Private",
-          "Organization"
+          "global",
+          "private",
+          "organization"
         ],
         "type": "string"
       },
@@ -1669,6 +2508,9 @@
           "errors"
         ],
         "type": "object"
+      },
+      "GenericFieldValueType": {
+        "type": "string"
       },
       "GitCodeRepoSpecV1": {
         "description": "Details needed in order to copy the code repository of a Git-backed project.",
@@ -1747,23 +2589,23 @@
       },
       "GitReferenceTypeV1": {
         "enum": [
-          "Head",
-          "Branch",
-          "Tag",
-          "Commit"
+          "head",
+          "branch",
+          "tag",
+          "commit"
         ],
         "type": "string"
       },
       "GitServiceProviderV1": {
         "description": "Git service provider",
         "enum": [
-          "Bitbucket",
-          "BitbucketServer",
-          "Github",
-          "GithubEnterprise",
-          "GitLab",
-          "GitLabEnterprise",
-          "Unknown"
+          "bitbucket",
+          "bitbucketServer",
+          "github",
+          "githubEnterprise",
+          "gitLab",
+          "gitLabEnterprise",
+          "unknown"
         ],
         "type": "string"
       },
@@ -2572,10 +3414,10 @@
       "LogTypeV1": {
         "description": "Type of log. Complete includes all log types.",
         "enum": [
-          "StdOut",
-          "StdErr",
-          "PrepareOutput",
-          "Complete"
+          "stdOut",
+          "stdErr",
+          "prepareOutput",
+          "complete"
         ],
         "type": "string"
       },
@@ -2743,15 +3585,1159 @@
         ],
         "type": "object"
       },
+      "ModelApi": {
+        "properties": {
+          "access": {
+            "$ref": "#/components/schemas/ModelApiAccessConfiguration"
+          },
+          "activeVersion": {
+            "$ref": "#/components/schemas/ModelApiVersionSummary"
+          },
+          "collaborators": {
+            "description": "The collaborators of the Model API.",
+            "items": {
+              "$ref": "#/components/schemas/ModelApiCollaboratorRole"
+            },
+            "nullable": false,
+            "type": "array"
+          },
+          "description": {
+            "description": "The description of the Model API.",
+            "nullable": false,
+            "type": "string"
+          },
+          "environmentId": {
+            "description": "The id of the environment the Model API is deployed to.",
+            "nullable": false,
+            "type": "string"
+          },
+          "hardwareTierId": {
+            "description": "The id of the hardware tier the Model API is deployed with.",
+            "nullable": true,
+            "type": "string"
+          },
+          "healthCheck": {
+            "$ref": "#/components/schemas/ModelApiHealthCheckConfiguration"
+          },
+          "id": {
+            "description": "The id of the Model API.",
+            "nullable": false,
+            "type": "string"
+          },
+          "isArchived": {
+            "description": "Whether the Model API is archived.",
+            "nullable": false,
+            "type": "boolean"
+          },
+          "isAsync": {
+            "description": "Whether the Model API is async.",
+            "nullable": false,
+            "type": "boolean"
+          },
+          "metadata": {
+            "$ref": "#/components/schemas/ModelApiMetadata"
+          },
+          "name": {
+            "description": "The name of the Model API.",
+            "nullable": false,
+            "type": "string"
+          },
+          "overrideRequestTimeoutSecs": {
+            "description": "The request timeout configuration of the Model API.",
+            "nullable": true,
+            "type": "integer"
+          },
+          "replicas": {
+            "description": "The number of replicas of the Model API.",
+            "nullable": false,
+            "type": "integer"
+          },
+          "resourceQuotaId": {
+            "description": "The id of the resource quota the Model API is deployed with.",
+            "nullable": true,
+            "type": "string"
+          },
+          "routingMode": {
+            "description": "The routing mode of the Model API.",
+            "nullable": false,
+            "type": "string"
+          },
+          "strictNodeAntiAffinity": {
+            "description": "Whether the Model API has strict node anti affinity.",
+            "nullable": false,
+            "type": "boolean"
+          },
+          "volumes": {
+            "description": "The volumes of the Model API.",
+            "items": {
+              "$ref": "#/components/schemas/ModelApiVolume"
+            },
+            "nullable": false,
+            "type": "array"
+          }
+        },
+        "required": [
+          "id",
+          "name",
+          "description",
+          "isArchived",
+          "environmentId",
+          "replicas",
+          "routingMode",
+          "isAsync",
+          "strictNodeAntiAffinity",
+          "access",
+          "healthCheck",
+          "collaborators",
+          "volumes",
+          "metadata"
+        ]
+      },
+      "ModelApiAccessConfiguration": {
+        "properties": {
+          "accessTokens": {
+            "description": "The access tokens of the Model API.",
+            "items": {
+              "$ref": "#/components/schemas/ModelApiAccessToken"
+            },
+            "nullable": false,
+            "type": "array"
+          },
+          "isPublic": {
+            "description": "Whether the Model API is public.",
+            "nullable": false,
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "isPublic",
+          "accessTokens"
+        ]
+      },
+      "ModelApiAccessToken": {
+        "properties": {
+          "created": {
+            "description": "The creation date for the access token.",
+            "nullable": false,
+            "type": "number"
+          },
+          "createdBy": {
+            "description": "The id of the user that created the access token.",
+            "nullable": false,
+            "type": "string"
+          },
+          "id": {
+            "description": "The id of the access token.",
+            "nullable": false,
+            "type": "string"
+          },
+          "lastGenerated": {
+            "description": "The date the access token was last generated.",
+            "nullable": false,
+            "type": "number"
+          },
+          "lastGeneratedBy": {
+            "description": "The id of the user that last generated the access token.",
+            "nullable": false,
+            "type": "string"
+          },
+          "name": {
+            "description": "The name of the access token.",
+            "nullable": false,
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "created",
+          "createdBy",
+          "lastGenerated",
+          "lastGeneratedBy"
+        ]
+      },
+      "ModelApiAccessTokenCreationRequest": {
+        "properties": {
+          "name": {
+            "description": "The name of the access token to create.",
+            "nullable": false,
+            "type": "string"
+          }
+        }
+      },
+      "ModelApiCollaboratorRole": {
+        "properties": {
+          "collaborator": {
+            "description": "The reference of the collaborator.",
+            "nullable": false,
+            "type": "string"
+          },
+          "role": {
+            "description": "The role of the collaborator.",
+            "nullable": false,
+            "type": "string"
+          }
+        },
+        "required": [
+          "collaborator",
+          "role"
+        ]
+      },
+      "ModelApiCreationRequest": {
+        "properties": {
+          "description": {
+            "description": "The description of the Model API to create.",
+            "nullable": false,
+            "type": "string"
+          },
+          "environmentId": {
+            "description": "The id of the environment the Model API to create should be deployed to.",
+            "nullable": false,
+            "type": "string"
+          },
+          "environmentVariables": {
+            "description": "The environment variables of the Model API to create.",
+            "items": {
+              "$ref": "#/components/schemas/ModelApiEnvironmentVariable"
+            },
+            "type": "array"
+          },
+          "hardwareTierId": {
+            "description": "The id of the hardware tier the Model API to create should be deployed with.",
+            "nullable": true,
+            "type": "string"
+          },
+          "isAsync": {
+            "description": "Whether the Model API to create should be async.",
+            "nullable": false,
+            "type": "boolean"
+          },
+          "name": {
+            "description": "The name of the Model API to create.",
+            "nullable": false,
+            "type": "string"
+          },
+          "replicas": {
+            "description": "The number of replicas of the Model API should be created with.",
+            "nullable": false,
+            "type": "integer"
+          },
+          "resourceQuotaId": {
+            "description": "The id of the resource quota the Model API to create should be deployed with.",
+            "nullable": true,
+            "type": "string"
+          },
+          "strictNodeAntiAffinity": {
+            "description": "Whether the Model API to create should have strict node anti affinity.",
+            "nullable": false,
+            "type": "boolean"
+          },
+          "version": {
+            "$ref": "#/components/schemas/ModelApiVersionCreationRequest"
+          }
+        },
+        "required": [
+          "name",
+          "description",
+          "environmentId",
+          "isAsync",
+          "strictNodeAntiAffinity",
+          "environmentVariables",
+          "version"
+        ]
+      },
+      "ModelApiEnvironmentVariable": {
+        "properties": {
+          "key": {
+            "description": "The name of the environment variable.",
+            "nullable": false,
+            "type": "string"
+          },
+          "value": {
+            "description": "The value of the environment variable.",
+            "nullable": false,
+            "type": "string"
+          }
+        },
+        "required": [
+          "key",
+          "value"
+        ]
+      },
+      "ModelApiHealthCheckConfiguration": {
+        "properties": {
+          "failureThreshold": {
+            "description": "The threshold of health check failures for the Model API.",
+            "nullable": false,
+            "type": "integer"
+          },
+          "initialDelaySeconds": {
+            "description": "The initial delay of the health check for the Model API.",
+            "nullable": false,
+            "type": "integer"
+          },
+          "periodSeconds": {
+            "description": "The health check period for the Model API.",
+            "nullable": false,
+            "type": "integer"
+          },
+          "timeoutSeconds": {
+            "description": "The health check timeout for the Model API.",
+            "nullable": false,
+            "type": "integer"
+          }
+        },
+        "required": [
+          "failureThreshold",
+          "initialDelaySeconds",
+          "periodSeconds",
+          "timeoutSeconds"
+        ]
+      },
+      "ModelApiMetadata": {
+        "properties": {
+          "created": {
+            "description": "The date when the Model API was created.",
+            "nullable": false,
+            "type": "number"
+          },
+          "createdBy": {
+            "description": "The id of the user that created the Model API.",
+            "nullable": false,
+            "type": "string"
+          },
+          "lastModified": {
+            "description": "The date when the Model API was last modified.",
+            "nullable": false,
+            "type": "number"
+          }
+        },
+        "required": [
+          "created",
+          "createdBy",
+          "lastModified"
+        ]
+      },
+      "ModelApiPaginatedList": {
+        "properties": {
+          "items": {
+            "description": "The Model APIs in the paginated list.",
+            "items": {
+              "$ref": "#/components/schemas/ModelApi"
+            },
+            "type": "array"
+          },
+          "metadata": {
+            "$ref": "#/components/schemas/PaginatedMetadataV1"
+          }
+        },
+        "required": [
+          "items",
+          "metadata"
+        ]
+      },
+      "ModelApiSource": {
+        "properties": {
+          "excludeFiles": {
+            "description": "The files excluded from the Model API.",
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "file": {
+            "description": "The name of the source file of the model served by the Model API.",
+            "nullable": false,
+            "type": "string"
+          },
+          "function": {
+            "description": "The function used to call the model served by the Model API.",
+            "nullable": false,
+            "type": "string"
+          },
+          "registeredModelName": {
+            "description": "The name of the registered model served by the Model API.",
+            "nullable": false,
+            "type": "string"
+          },
+          "registeredModelVersion": {
+            "description": "The version of the registered model served by the Model API.",
+            "nullable": false,
+            "type": "integer"
+          },
+          "type": {
+            "description": "The type of source of the Model API.",
+            "enum": [
+              "File",
+              "Registry"
+            ],
+            "nullable": false,
+            "type": "string"
+          }
+        },
+        "required": [
+          "type"
+        ]
+      },
+      "ModelApiUpdateRequest": {
+        "properties": {
+          "description": {
+            "description": "The new description for the Model API.",
+            "type": "string"
+          },
+          "environmentId": {
+            "description": "The id of the new environment to deploy the Model API with.",
+            "nullable": false,
+            "type": "string"
+          },
+          "hardwareTierId": {
+            "description": "The id of the new hardware tier to deploy the Model API with.",
+            "nullable": true,
+            "type": "string"
+          },
+          "name": {
+            "description": "The new name for the Model API.",
+            "nullable": false,
+            "type": "string"
+          },
+          "replicas": {
+            "description": "The new number of replicas of the Model API.",
+            "nullable": false,
+            "type": "integer"
+          },
+          "resourceQuotaId": {
+            "description": "The id of the new resource quota to deploy the Model API with.",
+            "nullable": true,
+            "type": "string"
+          }
+        },
+        "required": [
+          "name",
+          "description",
+          "replicas",
+          "environmentId"
+        ]
+      },
+      "ModelApiVersion": {
+        "properties": {
+          "commitId": {
+            "description": "The id of the commit of the Model API Version.",
+            "nullable": false,
+            "type": "string"
+          },
+          "dataPlaneId": {
+            "description": "The id of the data plane the Model API Version is deployed to.",
+            "nullable": false,
+            "type": "string"
+          },
+          "deployment": {
+            "$ref": "#/components/schemas/ModelApiVersionDeployment"
+          },
+          "description": {
+            "description": "The description of the Model API Version.",
+            "nullable": false,
+            "type": "string"
+          },
+          "environmentRevisionId": {
+            "description": "The id of the environment revision the Model API Version is deployed on.",
+            "nullable": false,
+            "type": "string"
+          },
+          "id": {
+            "description": "The id of the Model API Version.",
+            "nullable": false,
+            "type": "string"
+          },
+          "labels": {
+            "description": "The labels of the Model API Version.",
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "logHttpRequestResponse": {
+            "description": "Whether the Model API Version should log the HTTP requests and responses.",
+            "nullable": false,
+            "type": "boolean"
+          },
+          "metadata": {
+            "$ref": "#/components/schemas/ModelApiVersionMetadata"
+          },
+          "modelApiId": {
+            "description": "The id of the Model API the version belongs to.",
+            "nullable": false,
+            "type": "string"
+          },
+          "monitoringEnabled": {
+            "description": "Whether monitoring is enabled for the Mode API Version.",
+            "nullable": false,
+            "type": "boolean"
+          },
+          "number": {
+            "description": "The version number of the Model API Version.",
+            "nullable": false,
+            "type": "integer"
+          },
+          "predictionDatasetResourceId": {
+            "description": "The id of the prediction dataset used by the Model API Version.",
+            "nullable": true,
+            "type": "string"
+          },
+          "projectId": {
+            "description": "The id of the project the Model API Version belongs to.",
+            "nullable": false,
+            "type": "string"
+          },
+          "provenanceCheckpointId": {
+            "description": "The id of the provenance checkpoint of the Model API Version.",
+            "nullable": true,
+            "type": "string"
+          },
+          "recordInvocation": {
+            "description": "Whether the Model API Version should record invocations.",
+            "nullable": false,
+            "type": "boolean"
+          },
+          "source": {
+            "$ref": "#/components/schemas/ModelApiSource"
+          }
+        },
+        "required": [
+          "id",
+          "modelApiId",
+          "projectId",
+          "source",
+          "commitId",
+          "dataPlaneId",
+          "environmentRevisionId",
+          "logHttpRequestResponse",
+          "monitoringEnabled",
+          "recordInvocation",
+          "labels",
+          "metadata"
+        ]
+      },
+      "ModelApiVersionBuildLogs": {
+        "properties": {
+          "logs": {
+            "description": "The build logs.",
+            "items": {
+              "$ref": "#/components/schemas/ModelApiVersionLogLine"
+            },
+            "nullable": false,
+            "type": "array"
+          },
+          "status": {
+            "description": "The status of the build.",
+            "nullable": false,
+            "type": "string"
+          }
+        }
+      },
+      "ModelApiVersionCreationRequest": {
+        "properties": {
+          "commitId": {
+            "description": "The id of the commit id of the Model API Version to create.",
+            "nullable": false,
+            "type": "string"
+          },
+          "description": {
+            "description": "The description for the Model API Version to create.",
+            "nullable": false,
+            "type": "string"
+          },
+          "environmentId": {
+            "description": "The id of the environment to deploy the Model API Version with.",
+            "nullable": false,
+            "type": "string"
+          },
+          "logHttpRequestResponse": {
+            "description": "Whether the Model API Version to create should log HTTP requests and responses.",
+            "nullable": false,
+            "type": "boolean"
+          },
+          "monitoringEnabled": {
+            "description": "Whether the Model API Version to create should have monitoring enabled.",
+            "nullable": false,
+            "type": "boolean"
+          },
+          "predictionDatasetResourceId": {
+            "description": "The id of the prediction dataset to be used by the Model API Version to create.",
+            "nullable": true,
+            "type": "string"
+          },
+          "projectId": {
+            "description": "The id of the project the Model API Version to create should belong to.",
+            "nullable": false,
+            "type": "string"
+          },
+          "provenanceCheckpointId": {
+            "description": "The id of the provenance checkpoint of the Model API Version to create.",
+            "nullable": false,
+            "type": "string"
+          },
+          "recordInvocation": {
+            "description": "Whether the Model API Version to create should record invocations.",
+            "nullable": false,
+            "type": "boolean"
+          },
+          "shouldDeploy": {
+            "description": "Whether the Model API Version to create should be deployed.",
+            "nullable": false,
+            "type": "boolean"
+          },
+          "source": {
+            "$ref": "#/components/schemas/ModelApiSource"
+          }
+        },
+        "required": [
+          "projectId",
+          "source",
+          "logHttpRequestResponse",
+          "monitoringEnabled"
+        ]
+      },
+      "ModelApiVersionDeployment": {
+        "properties": {
+          "isPending": {
+            "description": "Whether the Model API Version deployment is pending.",
+            "nullable": false,
+            "type": "boolean"
+          },
+          "status": {
+            "description": "The status of the Model API Version deployment.",
+            "nullable": false,
+            "type": "string"
+          }
+        },
+        "required": [
+          "status",
+          "isPending"
+        ]
+      },
+      "ModelApiVersionDeploymentLogs": {
+        "properties": {
+          "logs": {
+            "description": "The deployment logs.",
+            "items": {
+              "$ref": "#/components/schemas/ModelApiVersionLogLine"
+            },
+            "nullable": false,
+            "type": "array"
+          },
+          "status": {
+            "description": "The status of the deployment.",
+            "nullable": false,
+            "type": "string"
+          }
+        }
+      },
+      "ModelApiVersionExportLogs": {
+        "properties": {
+          "logs": {
+            "description": "The export logs.",
+            "items": {
+              "$ref": "#/components/schemas/ModelApiVersionLogLine"
+            },
+            "nullable": false,
+            "type": "array"
+          },
+          "sinceTimeNano": {
+            "description": "The start date of the logs.",
+            "nullable": false,
+            "type": "integer"
+          },
+          "status": {
+            "description": "The status of the export.",
+            "nullable": false,
+            "type": "string"
+          }
+        }
+      },
+      "ModelApiVersionInstanceLogs": {
+        "properties": {
+          "containerName": {
+            "description": "The name of the container the Model API Version is deployed to.",
+            "type": "string"
+          },
+          "logs": {
+            "description": "The instance logs.",
+            "items": {
+              "$ref": "#/components/schemas/ModelApiVersionLogLine"
+            },
+            "nullable": false,
+            "type": "array"
+          },
+          "podName": {
+            "description": "The name of the pod the Model API Version is deployed to.",
+            "type": "string"
+          },
+          "sinceTimeNano": {
+            "description": "The start date of the logs.",
+            "nullable": false,
+            "type": "integer"
+          },
+          "status": {
+            "description": "The status of the instance.",
+            "nullable": false,
+            "type": "string"
+          }
+        }
+      },
+      "ModelApiVersionLogLine": {
+        "properties": {
+          "log": {
+            "description": "The content of the log line.",
+            "nullable": false,
+            "type": "string"
+          },
+          "streamType": {
+            "description": "The type of stream the log line is sourced from.",
+            "nullable": false,
+            "type": "string"
+          },
+          "tags": {
+            "description": "The tags of the log line.",
+            "items": {
+              "$ref": "#/components/schemas/ModelApiVersionLogTag"
+            },
+            "type": "array"
+          },
+          "timeNano": {
+            "description": "The time in nanoseconds of the log line.",
+            "nullable": false,
+            "type": "integer"
+          },
+          "timestamp": {
+            "description": "The timestamp of the log line.",
+            "nullable": false,
+            "type": "integer"
+          }
+        }
+      },
+      "ModelApiVersionLogTag": {
+        "properties": {
+          "key": {
+            "description": "The name of the log tag.",
+            "nullable": false,
+            "type": "string"
+          },
+          "value": {
+            "description": "The value of the log tag.",
+            "nullable": false,
+            "type": "string"
+          }
+        }
+      },
+      "ModelApiVersionMetadata": {
+        "properties": {
+          "created": {
+            "description": "The date when the Model API was created Version.",
+            "nullable": false,
+            "type": "number"
+          },
+          "createdBy": {
+            "description": "The id of the user that created the Model API Version.",
+            "nullable": false,
+            "type": "string"
+          },
+          "summary": {
+            "description": "The summary of the Model API Version.",
+            "nullable": true,
+            "type": "string"
+          }
+        },
+        "required": [
+          "created",
+          "createdBy"
+        ]
+      },
+      "ModelApiVersionProductionLabel": {
+        "properties": {
+          "isProd": {
+            "description": "Whether the Model API Version should be the production version.",
+            "nullable": false,
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "isProd"
+        ]
+      },
+      "ModelApiVersionSummary": {
+        "properties": {
+          "dataPlaneId": {
+            "description": "The id of the data plane the Model API Version is deployed to.",
+            "nullable": false,
+            "type": "string"
+          },
+          "deployment": {
+            "$ref": "#/components/schemas/ModelApiVersionDeployment"
+          },
+          "id": {
+            "description": "The id of the Model API Version.",
+            "nullable": false,
+            "type": "string"
+          },
+          "number": {
+            "description": "The version number of the Model API Version.",
+            "nullable": false,
+            "type": "integer"
+          }
+        },
+        "required": [
+          "id",
+          "dataPlaneId"
+        ]
+      },
+      "ModelApiVersionTargetState": {
+        "properties": {
+          "isRunning": {
+            "description": "Whether the Model API Version should be running.",
+            "nullable": false,
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "isRunning"
+        ]
+      },
+      "ModelApiVolume": {
+        "properties": {
+          "mountPath": {
+            "description": "The mount path of the volume.",
+            "nullable": false,
+            "type": "string"
+          },
+          "name": {
+            "description": "The name of the volume.",
+            "nullable": false,
+            "type": "string"
+          },
+          "readOnly": {
+            "description": "Whether the volume is read only.",
+            "nullable": false,
+            "type": "boolean"
+          },
+          "volumeType": {
+            "description": "The type of volume.",
+            "nullable": false,
+            "type": "string"
+          }
+        },
+        "required": [
+          "name",
+          "mountPath",
+          "volumeType",
+          "readOnly"
+        ]
+      },
       "ModelConfigV1": {
         "additionalProperties": {
           "type": "string"
         },
         "description": "Configuration for the model",
         "example": {
-          "openai": "58utu49034093nc9cc9n"
+          "openai_api_key": "58utu49034093nc9cc9n"
         },
         "type": "object"
+      },
+      "ModelDeployment": {
+        "allOf": [
+          {
+            "properties": {
+              "computeTierId": {
+                "example": "ABC-123",
+                "nullable": false,
+                "type": "string"
+              },
+              "configuration": {
+                "$ref": "#/components/schemas/SchemaValues",
+                "description": "Configuration of this Model Deployment."
+              },
+              "deploymentType": {
+                "$ref": "#/components/schemas/ModelDeploymentType"
+              },
+              "id": {
+                "description": "The id of the Model Deployment.",
+                "example": "614e40a7-0509-4cae-89af-55e2097b817d",
+                "nullable": false,
+                "type": "string"
+              },
+              "models": {
+                "description": "Models associated with this Model Deployment.",
+                "example": [
+                  {
+                    "name": "model"
+                  },
+                  {
+                    "compute_tier_id": 3456
+                  }
+                ],
+                "items": {
+                  "$ref": "#/components/schemas/ModelDetail"
+                },
+                "type": "array"
+              },
+              "name": {
+                "example": "Income Classifier Deployment",
+                "nullable": false,
+                "type": "string"
+              },
+              "operatorState": {
+                "additionalProperties": {
+                  "$ref": "#/components/schemas/GenericFieldValueType"
+                },
+                "properties": {
+                  "models": {
+                    "items": {
+                      "$ref": "#/components/schemas/RemoteModelDetail"
+                    },
+                    "type": "array"
+                  }
+                },
+                "type": "object"
+              },
+              "operatorStatus": {
+                "additionalProperties": {
+                  "properties": {
+                    "operation": {
+                      "$ref": "#/components/schemas/OperationType"
+                    },
+                    "steps": {
+                      "items": {
+                        "$ref": "#/components/schemas/OperationStatusStep"
+                      },
+                      "type": "array"
+                    }
+                  },
+                  "type": "object"
+                },
+                "type": "object"
+              },
+              "remoteMetrics": {
+                "items": {
+                  "$ref": "#/components/schemas/RemoteMetric"
+                },
+                "type": "array"
+              },
+              "remoteState": {
+                "properties": {
+                  "endpointState": {
+                    "additionalProperties": {
+                      "$ref": "#/components/schemas/GenericFieldValueType"
+                    },
+                    "type": "object"
+                  },
+                  "models": {
+                    "items": {
+                      "$ref": "#/components/schemas/RemoteModelDetail"
+                    },
+                    "type": "array"
+                  }
+                },
+                "required": [
+                  "models",
+                  "endpointState"
+                ],
+                "type": "object"
+              },
+              "remoteUpdateTimestamp": {
+                "example": "2023-07-16T19:20:30.45Z",
+                "format": "date-time",
+                "type": "string"
+              },
+              "version": {
+                "example": 23,
+                "nullable": false,
+                "type": "integer"
+              }
+            },
+            "required": [
+              "id",
+              "name",
+              "version",
+              "computeTierId",
+              "models",
+              "configuration",
+              "deploymentType"
+            ]
+          },
+          {
+            "$ref": "#/components/schemas/ModelDeploymentCreation"
+          }
+        ]
+      },
+      "ModelDeploymentCreation": {
+        "description": "Model Deployment",
+        "properties": {
+          "computeTierId": {
+            "example": "ABC-123",
+            "nullable": false,
+            "type": "string"
+          },
+          "configuration": {
+            "$ref": "#/components/schemas/SchemaValues",
+            "description": "Configuration of this Model Deployment."
+          },
+          "deploymentType": {
+            "$ref": "#/components/schemas/ModelDeploymentType"
+          },
+          "models": {
+            "description": "A list of models associated with this Model Deployment.",
+            "items": {
+              "$ref": "#/components/schemas/ModelDetail"
+            },
+            "nullable": false,
+            "type": "array"
+          },
+          "name": {
+            "description": "The Model Deployment name.",
+            "example": "Income Classifier Deployment",
+            "nullable": false,
+            "type": "string"
+          }
+        },
+        "required": [
+          "name",
+          "computeTierId",
+          "models",
+          "configuration",
+          "deploymentType"
+        ],
+        "type": "object"
+      },
+      "ModelDeploymentPaginatedList": {
+        "properties": {
+          "items": {
+            "description": "The Model Deployments in the paginated list.",
+            "items": {
+              "$ref": "#/components/schemas/ModelDeployment"
+            },
+            "type": "array"
+          },
+          "metadata": {
+            "$ref": "#/components/schemas/PaginatedMetadataV1"
+          }
+        },
+        "required": [
+          "items",
+          "metadata"
+        ]
+      },
+      "ModelDeploymentType": {
+        "properties": {
+          "deploymentType": {
+            "enum": [
+              "SYNC",
+              "ASYNC"
+            ],
+            "example": "SYNC",
+            "type": "string"
+          }
+        }
+      },
+      "ModelDeploymentTypeSchema": {
+        "properties": {
+          "deploymentConfigurationSchema": {
+            "$ref": "#/components/schemas/SchemaDefinition"
+          },
+          "deploymentStateSchema": {
+            "$ref": "#/components/schemas/SchemaDefinition"
+          },
+          "examplePayload": {
+            "type": "object"
+          },
+          "modelConfigurationSchema": {
+            "$ref": "#/components/schemas/SchemaDefinition"
+          },
+          "modelStateSchema": {
+            "$ref": "#/components/schemas/SchemaDefinition"
+          },
+          "operations": {
+            "items": {
+              "$ref": "#/components/schemas/OperationType"
+            },
+            "type": "array"
+          }
+        },
+        "required": [
+          "operations",
+          "deploymentConfigurationSchema",
+          "modelConfigurationSchema",
+          "deploymentStateSchema",
+          "modelStateSchema"
+        ],
+        "type": "object"
+      },
+      "ModelDetail": {
+        "properties": {
+          "configuration": {
+            "$ref": "#/components/schemas/SchemaValues",
+            "description": "Configuration of this Model.",
+            "example": [
+              {
+                "min_instances": 1
+              },
+              {
+                "max_instances": 4
+              },
+              {
+                "autoscaling": true
+              },
+              {
+                "update_strategy": "blue_green_linear"
+              }
+            ]
+          },
+          "environmentId": {
+            "description": "The id of the Domino environment.",
+            "type": "string"
+          },
+          "name": {
+            "example": "XYZ Model",
+            "nullable": false,
+            "type": "string"
+          },
+          "source": {
+            "$ref": "#/components/schemas/ModelDetailSource"
+          }
+        },
+        "required": [
+          "name",
+          "environmentId",
+          "source",
+          "configuration"
+        ]
+      },
+      "ModelDetailSource": {
+        "description": "Model Deployment Model Detail Source",
+        "properties": {
+          "registeredModelName": {
+            "description": "The name of the registered model served by this source.",
+            "example": "Growth Forecasting Model",
+            "nullable": false,
+            "type": "string"
+          },
+          "registeredModelType": {
+            "description": "The type of this model source.",
+            "enum": [
+              "MODELREGISTRY"
+            ],
+            "example": "MODELREGISTRY",
+            "type": "string"
+          },
+          "registeredModelVersion": {
+            "description": "The version of the registered model served by this source.",
+            "example": 3,
+            "nullable": false,
+            "type": "integer"
+          }
+        },
+        "required": [
+          "registeredModelName",
+          "registeredModelVersion",
+          "registeredModelType"
+        ]
       },
       "MountedGitRepoV1": {
         "properties": {
@@ -3064,8 +5050,8 @@
       "NewEnvironmentVisibilityV1": {
         "description": "Environment visibility. Required for creating a new environment",
         "enum": [
-          "Global",
-          "Private"
+          "global",
+          "private"
         ],
         "type": "string"
       },
@@ -3345,6 +5331,9 @@
       },
       "NewProjectV1": {
         "properties": {
+          "billingTag": {
+            "$ref": "#/components/schemas/BillingTagV1"
+          },
           "description": {
             "description": "Project description.",
             "type": "string"
@@ -3523,6 +5512,38 @@
         ],
         "type": "object"
       },
+      "OperationStatusStep": {
+        "properties": {
+          "name": {
+            "example": "Image Building",
+            "type": "string"
+          },
+          "progress": {
+            "example": 22.7,
+            "type": "number"
+          },
+          "status": {
+            "enum": [
+              "FINISHED",
+              "RUNNING",
+              "PENDING"
+            ],
+            "example": "RUNNING",
+            "type": "string"
+          }
+        }
+      },
+      "OperationType": {
+        "enum": [
+          "CREATE",
+          "AVAILABLE",
+          "UPDATE",
+          "DELETE",
+          "ERROR"
+        ],
+        "example": "CREATE",
+        "type": "string"
+      },
       "OrganizationEnvelopeV1": {
         "properties": {
           "metadata": {
@@ -3558,8 +5579,8 @@
       "OrganizationRoleV1": {
         "description": "Role of member in the organization.",
         "enum": [
-          "Member",
-          "Admin"
+          "member",
+          "admin"
         ],
         "type": "string"
       },
@@ -3592,6 +5613,24 @@
           "id",
           "name",
           "members"
+        ],
+        "type": "object"
+      },
+      "PaginatedComputeTiers": {
+        "properties": {
+          "items": {
+            "items": {
+              "$ref": "#/components/schemas/ComputeTier"
+            },
+            "type": "array"
+          },
+          "metadata": {
+            "$ref": "#/components/schemas/PaginatedMetadataV1"
+          }
+        },
+        "required": [
+          "items",
+          "metadata"
         ],
         "type": "object"
       },
@@ -3890,6 +5929,24 @@
           },
           "metadata": {
             "$ref": "#/components/schemas/TokenPaginatedMetadataV1"
+          }
+        },
+        "required": [
+          "items",
+          "metadata"
+        ],
+        "type": "object"
+      },
+      "PaginatedSelectableComputeTiers": {
+        "properties": {
+          "items": {
+            "items": {
+              "$ref": "#/components/schemas/SelectableComputeTier"
+            },
+            "type": "array"
+          },
+          "metadata": {
+            "$ref": "#/components/schemas/PaginatedMetadataV1"
           }
         },
         "required": [
@@ -4291,6 +6348,9 @@
       },
       "ProjectV1": {
         "properties": {
+          "billingTag": {
+            "$ref": "#/components/schemas/BillingTagV1"
+          },
           "collaborators": {
             "description": "List of collaborators, if any",
             "items": {
@@ -4307,7 +6367,7 @@
             "example": "626046fcb7e5d347dbe7a904",
             "type": "string"
           },
-          "internal tags": {
+          "internalTags": {
             "description": "Optional list of strings containing internal tags of project",
             "example": [
               "restricted"
@@ -4316,6 +6376,10 @@
               "type": "string"
             },
             "type": "array"
+          },
+          "isRestricted": {
+            "description": "Whether a project is restricted",
+            "type": "boolean"
           },
           "mainRepository": {
             "$ref": "#/components/schemas/ProjectGitRepositoryV1"
@@ -4347,16 +6411,16 @@
           "ownerId",
           "ownerUsername",
           "collaborators",
-          "internalTags"
+          "isRestricted"
         ],
         "type": "object"
       },
       "ProjectVisibilityV1": {
         "description": "Project visibility",
         "enum": [
-          "Public",
-          "Searchable",
-          "Private"
+          "public",
+          "searchable",
+          "private"
         ],
         "type": "string"
       },
@@ -5192,6 +7256,188 @@
         ],
         "type": "object"
       },
+      "RemoteMetric": {
+        "properties": {
+          "dataPoints": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "endingTimestamp": {
+            "example": "2023-07-04T15:27:30.45Z",
+            "format": "date-time",
+            "type": "string"
+          },
+          "modelDataPoints": {
+            "items": {
+              "$ref": "#/components/schemas/RemoteModelDetail"
+            },
+            "type": "array"
+          },
+          "startingTimestamp": {
+            "example": "2023-06-04T15:27:30.45Z",
+            "format": "date-time",
+            "type": "string"
+          },
+          "window": {
+            "example": "30 days",
+            "type": "string"
+          }
+        },
+        "required": [
+          "window",
+          "startingTimestamp",
+          "endingTimestamp",
+          "dataPoints",
+          "modelDataPoints"
+        ]
+      },
+      "RemoteModelDetail": {
+        "properties": {
+          "id": {
+            "description": "The id of the model.",
+            "example": "614e40a7-0509-4cae-89af-55e2097b817d",
+            "type": "string"
+          },
+          "modelAttributes": {
+            "$ref": "#/components/schemas/SchemaValues"
+          }
+        },
+        "required": [
+          "id",
+          "modelAttributes"
+        ]
+      },
+      "SchemaDefinition": {
+        "items": {
+          "$ref": "#/components/schemas/SchemaDefinitionItem"
+        },
+        "type": "array"
+      },
+      "SchemaDefinitionItem": {
+        "description": "Property of a schema for a dynamic data type",
+        "properties": {
+          "default": {
+            "$ref": "#/components/schemas/GenericFieldValueType",
+            "description": "Default value for the property"
+          },
+          "description": {
+            "description": "Description for the property",
+            "example": "Number of instances that will be deployed",
+            "type": "string"
+          },
+          "group": {
+            "description": "Name of group where other fields of the same group will be displayed",
+            "example": "Account Information",
+            "type": "string"
+          },
+          "length": {
+            "description": "Maximum length (for text & secret fields)",
+            "example": 100,
+            "type": "integer"
+          },
+          "max": {
+            "description": "Maximum value (for numeric fields)",
+            "example": 1024,
+            "type": "number"
+          },
+          "min": {
+            "description": "Minimum value (for numeric fields)",
+            "example": 0,
+            "type": "number"
+          },
+          "name": {
+            "description": "Internal name of the property",
+            "example": "numInstances",
+            "type": "string"
+          },
+          "optional": {
+            "default": false,
+            "description": "Whether or not the field is optional, defaults to false",
+            "type": "boolean"
+          },
+          "regex": {
+            "description": "Validation expression for text fields",
+            "example": "^AKIA[A-Z0-9]{16}$",
+            "type": "string"
+          },
+          "title": {
+            "description": "Label for the property",
+            "example": "Number of instances",
+            "type": "string"
+          },
+          "type": {
+            "$ref": "#/components/schemas/SchemaValueDataType"
+          },
+          "values": {
+            "description": "List of selectable values for text fields",
+            "example": [
+              "red",
+              "green",
+              "blue",
+              "yellow"
+            ],
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          }
+        },
+        "required": [
+          "name",
+          "title",
+          "type"
+        ],
+        "type": "object"
+      },
+      "SchemaValueDataType": {
+        "description": "Data type of the property",
+        "enum": [
+          "INT",
+          "TEXT",
+          "BOOLEAN",
+          "FLOAT",
+          "SECRET"
+        ],
+        "type": "string"
+      },
+      "SchemaValues": {
+        "additionalProperties": {
+          "$ref": "#/components/schemas/GenericFieldValueType"
+        },
+        "type": "object"
+      },
+      "SelectableComputeTier": {
+        "properties": {
+          "computeProviderName": {
+            "description": "Display name of the Compute Provider this Compute Tier belongs to",
+            "type": "string"
+          },
+          "configuration": {
+            "items": {
+              "$ref": "#/components/schemas/DefinedSchemaValue"
+            },
+            "type": "array"
+          },
+          "displayName": {
+            "description": "Display name for the Compute Tier",
+            "example": "Production",
+            "type": "string"
+          },
+          "id": {
+            "description": "UUID for the Compute Tier",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "displayName",
+          "computeProviderName",
+          "configuration"
+        ],
+        "type": "object"
+      },
       "SharedDatasetRwEntryV1": {
         "description": "An object describing the shared datasets imported into a project",
         "properties": {
@@ -5348,6 +7594,12 @@
         ],
         "type": "object",
         "x-domino-binary-stream": true
+      },
+      "SupportedSource": {
+        "enum": [
+          "MODELREGISTRY"
+        ],
+        "type": "string"
       },
       "TagEnvelopeV1": {
         "properties": {
@@ -5658,14 +7910,154 @@
   "info": {
     "description": "Domino Public API Endpoints",
     "title": "Domino Public API",
-    "version": "5.10.1"
+    "version": "0.0.0"
   },
   "openapi": "3.0.3",
   "paths": {
+    "/api/aigateway/v1/audit": {
+      "get": {
+        "description": "Gets AI Gateway audit data given filter input parameters",
+        "operationId": "getAIGatewayAuditData",
+        "parameters": [
+          {
+            "description": "Endpoint IDs to query audit data for",
+            "in": "query",
+            "name": "endpointIds",
+            "required": false,
+            "schema": {
+              "items": {
+                "type": "string"
+              },
+              "type": "array"
+            }
+          },
+          {
+            "description": "Endpoint names to query audit data for",
+            "in": "query",
+            "name": "endpointNames",
+            "required": false,
+            "schema": {
+              "items": {
+                "type": "string"
+              },
+              "type": "array"
+            }
+          },
+          {
+            "description": "Start time (iso8601)",
+            "in": "query",
+            "name": "startTime",
+            "required": false,
+            "schema": {
+              "format": "date-time",
+              "type": "string"
+            }
+          },
+          {
+            "description": "End time (iso8601)",
+            "in": "query",
+            "name": "endTime",
+            "required": false,
+            "schema": {
+              "format": "date-time",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/AIGatewayAuditDataV1"
+                  },
+                  "type": "array"
+                }
+              }
+            },
+            "description": "Success"
+          },
+          "400": {
+            "$ref": "#/components/responses/400"
+          },
+          "401": {
+            "$ref": "#/components/responses/401"
+          },
+          "403": {
+            "$ref": "#/components/responses/403"
+          },
+          "404": {
+            "$ref": "#/components/responses/404"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
+          }
+        },
+        "summary": "Get AI Gateway Audit Data",
+        "tags": [
+          "AIGateway"
+        ]
+      }
+    },
     "/api/aigateway/v1/endpoints": {
       "get": {
-        "description": "Get all active LLM endpoints accessible by the user",
+        "description": "Get all active Gateway LLMs accessible by the user",
         "operationId": "getAllGatewayEndpoints",
+        "parameters": [
+          {
+            "description": "How many Endpoints from the start to skip. Defaults to 0.",
+            "in": "query",
+            "name": "offset",
+            "required": false,
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "description": "Max number of Endpoints to fetch. Defaults to fetching all.",
+            "in": "query",
+            "name": "limit",
+            "required": false,
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "description": "The field by which to sort the list of returned endpoints. Defaults to creation date",
+            "in": "query",
+            "name": "sortByField",
+            "required": false,
+            "schema": {
+              "enum": [
+                "creationDate",
+                "endpointName",
+                "endpointType",
+                "modelProvider",
+                "modelName"
+              ],
+              "type": "string"
+            }
+          },
+          {
+            "description": "Boolean whether to sort Endpoints ascending or descending. Defaults to false (descending).",
+            "in": "query",
+            "name": "shouldSortAscending",
+            "required": false,
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "description": "Search string by which to filter the list of returned endpoints",
+            "in": "query",
+            "name": "searchFilter",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
         "responses": {
           "200": {
             "content": {
@@ -5693,7 +8085,7 @@
             "$ref": "#/components/responses/500"
           }
         },
-        "summary": "Get all active LLM endpoints accessible by the user",
+        "summary": "Get all active Gateway LLMs accessible by the user",
         "tags": [
           "AIGateway"
         ]
@@ -6003,6 +8395,576 @@
         ]
       }
     },
+    "/api/computeProviders/beta/computeProviderTypes": {
+      "get": {
+        "description": "Get all Compute Provider Types.",
+        "operationId": "getComputeProviderTypes",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/ComputeProviderType"
+                  },
+                  "type": "array"
+                }
+              }
+            },
+            "description": "Success"
+          },
+          "400": {
+            "$ref": "#/components/responses/400"
+          },
+          "401": {
+            "$ref": "#/components/responses/401"
+          },
+          "403": {
+            "$ref": "#/components/responses/403"
+          },
+          "404": {
+            "$ref": "#/components/responses/404"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
+          }
+        },
+        "summary": "Get all Compute Provider Types",
+        "tags": [
+          "ComputeProviders"
+        ]
+      }
+    },
+    "/api/computeProviders/beta/computeProviders": {
+      "get": {
+        "description": "Get all non-archived Compute Provider.",
+        "operationId": "getComputeProviders",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/ComputeProvider"
+                  },
+                  "type": "array"
+                }
+              }
+            },
+            "description": "Success"
+          },
+          "400": {
+            "$ref": "#/components/responses/400"
+          },
+          "401": {
+            "$ref": "#/components/responses/401"
+          },
+          "403": {
+            "$ref": "#/components/responses/403"
+          },
+          "404": {
+            "$ref": "#/components/responses/404"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
+          }
+        },
+        "summary": "Get all non-archived Compute Provider",
+        "tags": [
+          "ComputeProviders"
+        ]
+      },
+      "post": {
+        "description": "Create a new Compute Provider.",
+        "operationId": "createComputeProvider",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ComputeProviderCreation"
+              }
+            }
+          },
+          "description": "Details of the Compute Provider to create",
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ComputeProvider"
+                }
+              }
+            },
+            "description": "Success"
+          },
+          "400": {
+            "$ref": "#/components/responses/400"
+          },
+          "401": {
+            "$ref": "#/components/responses/401"
+          },
+          "403": {
+            "$ref": "#/components/responses/403"
+          },
+          "404": {
+            "$ref": "#/components/responses/404"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
+          }
+        },
+        "summary": "Create a new Compute Provider",
+        "tags": [
+          "ComputeProviders"
+        ]
+      }
+    },
+    "/api/computeProviders/beta/computeProviders/{computeProviderId}": {
+      "delete": {
+        "description": "Delete a Compute Provider.",
+        "operationId": "deleteComputeProvider",
+        "parameters": [
+          {
+            "description": "ID of Compute Provider",
+            "in": "path",
+            "name": "computeProviderId",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Deleted"
+          },
+          "400": {
+            "$ref": "#/components/responses/400"
+          },
+          "401": {
+            "$ref": "#/components/responses/401"
+          },
+          "403": {
+            "$ref": "#/components/responses/403"
+          },
+          "404": {
+            "$ref": "#/components/responses/404"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
+          }
+        },
+        "summary": "Delete a Compute Provider",
+        "tags": [
+          "ComputeProviders"
+        ]
+      },
+      "put": {
+        "description": "Update a Compute Provider.",
+        "operationId": "updateComputeProvider",
+        "parameters": [
+          {
+            "description": "ID of Compute Provider",
+            "in": "path",
+            "name": "computeProviderId",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ComputeProviderCreation"
+              }
+            }
+          },
+          "description": "Details of the Compute Provider to create",
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ComputeProvider"
+                }
+              }
+            },
+            "description": "Success"
+          },
+          "400": {
+            "$ref": "#/components/responses/400"
+          },
+          "401": {
+            "$ref": "#/components/responses/401"
+          },
+          "403": {
+            "$ref": "#/components/responses/403"
+          },
+          "404": {
+            "$ref": "#/components/responses/404"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
+          }
+        },
+        "summary": "Update a Compute Provider",
+        "tags": [
+          "ComputeProviders"
+        ]
+      }
+    },
+    "/api/computeProviders/beta/computeTiers": {
+      "get": {
+        "description": "Gets all non-archived Compute Tiers based on the provided filters.",
+        "operationId": "getAllComputeTiers",
+        "parameters": [
+          {
+            "description": "Search filter by Compute Tier name",
+            "in": "query",
+            "name": "search",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "description": "How many Compute Tiers from the start to skip. Defaults to 0.",
+            "in": "query",
+            "name": "offset",
+            "required": false,
+            "schema": {
+              "default": 0,
+              "type": "integer"
+            }
+          },
+          {
+            "description": "Max number of Compute Tiers to fetch. Defaults to 10.",
+            "in": "query",
+            "name": "limit",
+            "required": false,
+            "schema": {
+              "default": 10,
+              "type": "integer"
+            }
+          },
+          {
+            "description": "Compute Provider that Compute Tier belongs to.",
+            "in": "query",
+            "name": "computeProviderId",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PaginatedComputeTiers"
+                }
+              }
+            },
+            "description": "Success"
+          },
+          "400": {
+            "$ref": "#/components/responses/400"
+          },
+          "401": {
+            "$ref": "#/components/responses/401"
+          },
+          "403": {
+            "$ref": "#/components/responses/403"
+          },
+          "404": {
+            "$ref": "#/components/responses/404"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
+          }
+        },
+        "summary": "Gets all non-archived Compute Tiers based on the provided filters",
+        "tags": [
+          "ComputeProviders"
+        ]
+      },
+      "post": {
+        "description": "Create a new Compute Tier.",
+        "operationId": "createComputeTier",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ComputeTierCreation"
+              }
+            }
+          },
+          "description": "Details of the Compute Tier to create",
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ComputeTier"
+                }
+              }
+            },
+            "description": "Success"
+          },
+          "400": {
+            "$ref": "#/components/responses/400"
+          },
+          "401": {
+            "$ref": "#/components/responses/401"
+          },
+          "403": {
+            "$ref": "#/components/responses/403"
+          },
+          "404": {
+            "$ref": "#/components/responses/404"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
+          }
+        },
+        "summary": "Create a new Compute Tier",
+        "tags": [
+          "ComputeProviders"
+        ]
+      }
+    },
+    "/api/computeProviders/beta/computeTiers/full/{computeTierId}": {
+      "get": {
+        "description": "Get full configuration details for a Compute Tier.",
+        "operationId": "getFullComputeTier",
+        "parameters": [
+          {
+            "description": "ID of Compute Tier",
+            "in": "path",
+            "name": "computeTierId",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ComputeTierFullConfiguration"
+                }
+              }
+            },
+            "description": "Success"
+          },
+          "400": {
+            "$ref": "#/components/responses/400"
+          },
+          "401": {
+            "$ref": "#/components/responses/401"
+          },
+          "403": {
+            "$ref": "#/components/responses/403"
+          },
+          "404": {
+            "$ref": "#/components/responses/404"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
+          }
+        },
+        "summary": "Get full configuration details for a Compute Tier",
+        "tags": [
+          "ComputeProviders"
+        ]
+      }
+    },
+    "/api/computeProviders/beta/computeTiers/selectable": {
+      "get": {
+        "description": "Gets selectable Compute Tiers based on the provided filters.",
+        "operationId": "getSelectableComputeTiers",
+        "parameters": [
+          {
+            "description": "Search filter by Compute Tier name",
+            "in": "query",
+            "name": "search",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "description": "How many Compute Tiers from the start to skip. Defaults to 0.",
+            "in": "query",
+            "name": "offset",
+            "required": false,
+            "schema": {
+              "default": 0,
+              "type": "integer"
+            }
+          },
+          {
+            "description": "Max number of Compute Tiers to fetch. Defaults to 10.",
+            "in": "query",
+            "name": "limit",
+            "required": false,
+            "schema": {
+              "default": 10,
+              "type": "integer"
+            }
+          },
+          {
+            "description": "Compute Provider that Compute Tier belongs to.",
+            "in": "query",
+            "name": "computeProviderId",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PaginatedSelectableComputeTiers"
+                }
+              }
+            },
+            "description": "Success"
+          },
+          "400": {
+            "$ref": "#/components/responses/400"
+          },
+          "401": {
+            "$ref": "#/components/responses/401"
+          },
+          "403": {
+            "$ref": "#/components/responses/403"
+          },
+          "404": {
+            "$ref": "#/components/responses/404"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
+          }
+        },
+        "summary": "Gets selectable Compute Tiers based on the provided filters",
+        "tags": [
+          "ComputeProviders"
+        ]
+      }
+    },
+    "/api/computeProviders/beta/computeTiers/{computeTierId}": {
+      "delete": {
+        "description": "Delete a Compute Tier.",
+        "operationId": "deleteComputeTier",
+        "parameters": [
+          {
+            "description": "ID of Compute Tier",
+            "in": "path",
+            "name": "computeTierId",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Deleted"
+          },
+          "400": {
+            "$ref": "#/components/responses/400"
+          },
+          "401": {
+            "$ref": "#/components/responses/401"
+          },
+          "403": {
+            "$ref": "#/components/responses/403"
+          },
+          "404": {
+            "$ref": "#/components/responses/404"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
+          }
+        },
+        "summary": "Delete a Compute Tier",
+        "tags": [
+          "ComputeProviders"
+        ]
+      },
+      "put": {
+        "description": "Update a Compute Tier.",
+        "operationId": "updateComputeTier",
+        "parameters": [
+          {
+            "description": "ID of Compute Tier",
+            "in": "path",
+            "name": "computeTierId",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ComputeTierCreation"
+              }
+            }
+          },
+          "description": "Details of the Compute Tier to create",
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ComputeTier"
+                }
+              }
+            },
+            "description": "Success"
+          },
+          "400": {
+            "$ref": "#/components/responses/400"
+          },
+          "401": {
+            "$ref": "#/components/responses/401"
+          },
+          "403": {
+            "$ref": "#/components/responses/403"
+          },
+          "404": {
+            "$ref": "#/components/responses/404"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
+          }
+        },
+        "summary": "Update a Compute Tier",
+        "tags": [
+          "ComputeProviders"
+        ]
+      }
+    },
     "/api/cost/v1/allocation": {
       "get": {
         "description": "Retrieve cost allocation",
@@ -6288,171 +9250,171 @@
         ]
       }
     },
+    "/api/cost/v1/billingtagSettings/mode": {
+      "get": {
+        "description": "Get mode setting of the billing tags",
+        "operationId": "getBillingTagMode",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BillingTagsModeEnvelopeV1"
+                }
+              }
+            },
+            "description": "Success"
+          },
+          "400": {
+            "$ref": "#/components/responses/400"
+          },
+          "401": {
+            "$ref": "#/components/responses/401"
+          },
+          "403": {
+            "$ref": "#/components/responses/403"
+          },
+          "404": {
+            "$ref": "#/components/responses/404"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
+          }
+        },
+        "summary": "Get mode setting of the billing tags",
+        "tags": [
+          "BillingTagSettings"
+        ]
+      },
+      "put": {
+        "description": "Update mode setting of the billing tags",
+        "operationId": "updateBillingTagMode",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/BillingTagsModeV1"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BillingTagsModeEnvelopeV1"
+                }
+              }
+            },
+            "description": "Success"
+          },
+          "400": {
+            "$ref": "#/components/responses/400"
+          },
+          "401": {
+            "$ref": "#/components/responses/401"
+          },
+          "403": {
+            "$ref": "#/components/responses/403"
+          },
+          "404": {
+            "$ref": "#/components/responses/404"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
+          }
+        },
+        "summary": "Update mode setting of the billing tags",
+        "tags": [
+          "BillingTagSettings"
+        ]
+      }
+    },
+    "/api/cost/v1/billingtagSettings/notifications": {
+      "get": {
+        "description": "Get notifications setting of the billing tags",
+        "operationId": "getBillingTagNotification",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BillingTagsNotificationsEnvelopeV1"
+                }
+              }
+            },
+            "description": "Success"
+          },
+          "400": {
+            "$ref": "#/components/responses/400"
+          },
+          "401": {
+            "$ref": "#/components/responses/401"
+          },
+          "403": {
+            "$ref": "#/components/responses/403"
+          },
+          "404": {
+            "$ref": "#/components/responses/404"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
+          }
+        },
+        "summary": "Get notifications setting of the billing tags",
+        "tags": [
+          "BillingTagSettings"
+        ]
+      },
+      "put": {
+        "description": "Update notifications setting of the billing tags",
+        "operationId": "updateBillingTagNotification",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/BillingTagsNotificationsV1"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BillingTagsNotificationsEnvelopeV1"
+                }
+              }
+            },
+            "description": "Success"
+          },
+          "400": {
+            "$ref": "#/components/responses/400"
+          },
+          "401": {
+            "$ref": "#/components/responses/401"
+          },
+          "403": {
+            "$ref": "#/components/responses/403"
+          },
+          "404": {
+            "$ref": "#/components/responses/404"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
+          }
+        },
+        "summary": "Update notifications setting of the billing tags",
+        "tags": [
+          "BillingTagSettings"
+        ]
+      }
+    },
     "/api/cost/v1/billingtagSettings": {
-      "/api/cost/v1/billingtagSettings/mode": {
-        "get": {
-          "description": "Get mode setting of the billing tags",
-          "operationId": "getBillingTagMode",
-          "responses": {
-            "200": {
-              "content": {
-                "application/json": {
-                  "schema": {
-                    "$ref": "#/components/schemas/BillingTagsModeEnvelopeV1"
-                  }
-                }
-              },
-              "description": "Success"
-            },
-            "400": {
-              "$ref": "#/components/responses/400"
-            },
-            "401": {
-              "$ref": "#/components/responses/401"
-            },
-            "403": {
-              "$ref": "#/components/responses/403"
-            },
-            "404": {
-              "$ref": "#/components/responses/404"
-            },
-            "500": {
-              "$ref": "#/components/responses/500"
-            }
-          },
-          "summary": "Get mode setting of the billing tags",
-          "tags": [
-            "BillingTagSettings"
-          ]
-        },
-        "put": {
-          "description": "Update mode setting of the billing tags",
-          "operationId": "updateBillingTagMode",
-          "requestBody": {
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/BillingTagsModeV1"
-                }
-              }
-            },
-            "required": true
-          },
-          "responses": {
-            "200": {
-              "content": {
-                "application/json": {
-                  "schema": {
-                    "$ref": "#/components/schemas/BillingTagsModeEnvelopeV1"
-                  }
-                }
-              },
-              "description": "Success"
-            },
-            "400": {
-              "$ref": "#/components/responses/400"
-            },
-            "401": {
-              "$ref": "#/components/responses/401"
-            },
-            "403": {
-              "$ref": "#/components/responses/403"
-            },
-            "404": {
-              "$ref": "#/components/responses/404"
-            },
-            "500": {
-              "$ref": "#/components/responses/500"
-            }
-          },
-          "summary": "Update mode setting of the billing tags",
-          "tags": [
-            "BillingTagSettings"
-          ]
-        }
-      },
-      "/api/cost/v1/billingtagSettings/notifications": {
-        "get": {
-          "description": "Get notifications setting of the billing tags",
-          "operationId": "getBillingTagNotification",
-          "responses": {
-            "200": {
-              "content": {
-                "application/json": {
-                  "schema": {
-                    "$ref": "#/components/schemas/BillingTagsNotificationsEnvelopeV1"
-                  }
-                }
-              },
-              "description": "Success"
-            },
-            "400": {
-              "$ref": "#/components/responses/400"
-            },
-            "401": {
-              "$ref": "#/components/responses/401"
-            },
-            "403": {
-              "$ref": "#/components/responses/403"
-            },
-            "404": {
-              "$ref": "#/components/responses/404"
-            },
-            "500": {
-              "$ref": "#/components/responses/500"
-            }
-          },
-          "summary": "Get notifications setting of the billing tags",
-          "tags": [
-            "BillingTagSettings"
-          ]
-        },
-        "put": {
-          "description": "Update notifications setting of the billing tags",
-          "operationId": "updateBillingTagNotification",
-          "requestBody": {
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/BillingTagsNotificationsV1"
-                }
-              }
-            },
-            "required": true
-          },
-          "responses": {
-            "200": {
-              "content": {
-                "application/json": {
-                  "schema": {
-                    "$ref": "#/components/schemas/BillingTagsNotificationsEnvelopeV1"
-                  }
-                }
-              },
-              "description": "Success"
-            },
-            "400": {
-              "$ref": "#/components/responses/400"
-            },
-            "401": {
-              "$ref": "#/components/responses/401"
-            },
-            "403": {
-              "$ref": "#/components/responses/403"
-            },
-            "404": {
-              "$ref": "#/components/responses/404"
-            },
-            "500": {
-              "$ref": "#/components/responses/500"
-            }
-          },
-          "summary": "Update notifications setting of the billing tags",
-          "tags": [
-            "BillingTagSettings"
-          ]
-        }
-      },
       "get": {
         "description": "Get  billing tags setting",
         "operationId": "getBillingTagSettings",
@@ -6537,7 +9499,7 @@
     "/api/cost/v1/billingtags": {
       "get": {
         "description": "Get billing codes that a user can see.",
-        "operationId": "getBillingTags",
+        "operationId": "getActiveBillingTags",
         "responses": {
           "200": {
             "content": {
@@ -9261,6 +12223,388 @@
         ]
       }
     },
+    "/api/model-serving/beta/modelDeployments": {
+      "get": {
+        "description": "Retrieves all Model Deployments filtered by optional query arguments.",
+        "operationId": "getModelDeployments",
+        "parameters": [
+          {
+            "description": "The Model Deployment name to search by.",
+            "in": "query",
+            "name": "name",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "description": "The number of result to retrieve. Defaults to 25.",
+            "in": "query",
+            "name": "limit",
+            "required": false,
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "description": "The offset from the first element to start retrieving from.",
+            "in": "query",
+            "name": "offset",
+            "required": false,
+            "schema": {
+              "default": 25,
+              "type": "integer"
+            }
+          },
+          {
+            "description": "Field to order results by. Format is the name of the field optionally followed by a space and either ASC or DESC. If not specified defaults to ASC.",
+            "in": "query",
+            "name": "orderBy",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ModelDeploymentPaginatedList"
+                }
+              }
+            },
+            "description": "A list of Model Deployments matching the provided query."
+          },
+          "400": {
+            "$ref": "#/components/responses/400"
+          },
+          "401": {
+            "$ref": "#/components/responses/401"
+          },
+          "403": {
+            "$ref": "#/components/responses/403"
+          },
+          "404": {
+            "$ref": "#/components/responses/404"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
+          }
+        },
+        "summary": "Retrieve all Model Deployments",
+        "tags": [
+          "ModelDeployment"
+        ]
+      },
+      "post": {
+        "description": "Creates a new Model Deployment entity.",
+        "operationId": "createModelDeployment",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ModelDeploymentCreation"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ModelDeployment"
+                }
+              }
+            },
+            "description": "The created Model Deployment."
+          },
+          "400": {
+            "$ref": "#/components/responses/400"
+          },
+          "401": {
+            "$ref": "#/components/responses/401"
+          },
+          "403": {
+            "$ref": "#/components/responses/403"
+          },
+          "404": {
+            "$ref": "#/components/responses/404"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
+          }
+        },
+        "summary": "Create a new Model Deployment",
+        "tags": [
+          "ModelDeployment"
+        ]
+      }
+    },
+    "/api/model-serving/beta/modelDeployments/{modelDeploymentId}": {
+      "delete": {
+        "description": "Archives a Model Deployment.",
+        "operationId": "deleteModelDeployment",
+        "parameters": [
+          {
+            "description": "The id of the Model Deployment to archive.",
+            "in": "path",
+            "name": "modelDeploymentId",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Successfully archived the Model Deployment."
+          }
+        },
+        "tags": [
+          "ModelDeployment"
+        ]
+      },
+      "get": {
+        "description": "Retrieves a specific Model Deployment entity by id.",
+        "operationId": "getModelDeploymentById",
+        "parameters": [
+          {
+            "description": "The id of the Model Deployment to retrieve",
+            "in": "path",
+            "name": "modelDeploymentId",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ModelDeployment"
+                }
+              }
+            },
+            "description": "Model Deployment with the requested id."
+          },
+          "400": {
+            "$ref": "#/components/responses/400"
+          },
+          "401": {
+            "$ref": "#/components/responses/401"
+          },
+          "403": {
+            "$ref": "#/components/responses/403"
+          },
+          "404": {
+            "$ref": "#/components/responses/404"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
+          }
+        },
+        "summary": "Retrieve a specific Model Deployment",
+        "tags": [
+          "ModelDeployment"
+        ]
+      },
+      "put": {
+        "description": "Update fields of a Model Deployment entity by id.",
+        "operationId": "updateModelDeployment",
+        "parameters": [
+          {
+            "description": "The id of the Model Deployment to update",
+            "in": "path",
+            "name": "modelDeploymentId",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ModelDeploymentCreation"
+              }
+            }
+          },
+          "description": "Details of the Model Deployment to create.",
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ModelDeployment"
+                }
+              }
+            },
+            "description": "Model Deployment updated successfully."
+          },
+          "400": {
+            "$ref": "#/components/responses/400"
+          },
+          "401": {
+            "$ref": "#/components/responses/401"
+          },
+          "403": {
+            "$ref": "#/components/responses/403"
+          },
+          "404": {
+            "$ref": "#/components/responses/404"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
+          }
+        },
+        "summary": "Update a Model Deployment",
+        "tags": [
+          "ModelDeployment"
+        ]
+      }
+    },
+    "/api/model-serving/beta/modelDeployments/{modelDeploymentId}/versions": {
+      "get": {
+        "description": "Retrieves summary information for all historical versions of a Model Deployment.",
+        "operationId": "getModelDeploymentVersions",
+        "parameters": [
+          {
+            "description": "The id of the Model Deployment to update",
+            "in": "path",
+            "name": "modelDeploymentId",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "description": "The number of result to retrieve. Defaults to 25.",
+            "in": "query",
+            "name": "limit",
+            "required": false,
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "description": "The offset from the first element to start retrieving from.",
+            "in": "query",
+            "name": "offset",
+            "required": false,
+            "schema": {
+              "default": 25,
+              "type": "integer"
+            }
+          },
+          {
+            "description": "Field to order results by. Format is the name of the field optionally followed by a space and either ASC or DESC. If not specified defaults to ASC.",
+            "in": "query",
+            "name": "orderBy",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ModelDeploymentPaginatedList"
+                }
+              }
+            },
+            "description": "A paginated list of all Model Deployment versions for a specific Model Deployment."
+          },
+          "400": {
+            "$ref": "#/components/responses/400"
+          },
+          "401": {
+            "$ref": "#/components/responses/401"
+          },
+          "403": {
+            "$ref": "#/components/responses/403"
+          },
+          "404": {
+            "$ref": "#/components/responses/404"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
+          }
+        },
+        "summary": "Retrieve all versions of a specific Model Deployment",
+        "tags": [
+          "ModelDeployment"
+        ]
+      }
+    },
+    "/api/model-serving/beta/modelDeployments/{modelDeploymentId}/versions/{version}": {
+      "get": {
+        "description": "Retrieves a specific historical version (Model Deployment entity) of a Model Deployment.",
+        "operationId": "getModelDeploymentVersionById",
+        "parameters": [
+          {
+            "description": "The id of the Model Deployment",
+            "in": "path",
+            "name": "modelDeploymentId",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "description": "Version number of the Model Deployment",
+            "in": "path",
+            "name": "version",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ModelDeployment"
+                }
+              }
+            },
+            "description": "Historical version of the Model Deployment found."
+          },
+          "400": {
+            "$ref": "#/components/responses/400"
+          },
+          "401": {
+            "$ref": "#/components/responses/401"
+          },
+          "403": {
+            "$ref": "#/components/responses/403"
+          },
+          "404": {
+            "$ref": "#/components/responses/404"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
+          }
+        },
+        "summary": "Retrieve a specific version of a Model Deployment",
+        "tags": [
+          "ModelDeployment"
+        ]
+      }
+    },
     "/api/modelApis/async/v1/{asyncModelId}": {
       "post": {
         "description": "Request a prediction from an Async Model",
@@ -9383,6 +12727,1145 @@
         "summary": "Retrieve the result of an Async Model prediction",
         "tags": [
           "AsyncPredictions"
+        ]
+      }
+    },
+    "/api/modelServing/v1/modelApis": {
+      "get": {
+        "description": "Lists Model APIs based on the query filters. Returns only Model APIs visible to the requesting user.",
+        "operationId": "listModelAPIs",
+        "parameters": [
+          {
+            "description": "The id of the environment to filter the Model APIs by.",
+            "in": "query",
+            "name": "environmentId",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "description": "The id of the project to filter the Model APIs by.",
+            "in": "query",
+            "name": "projectId",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "description": "The name of the Model APIs. Can be a regular expression.",
+            "in": "query",
+            "name": "name",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "description": "The name of the registered model that is the source of the Model API.",
+            "in": "query",
+            "name": "registeredModelName",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "description": "The version of the registered model that is the source of the Model API. Can only be present along with registeredModelName.",
+            "in": "query",
+            "name": "registeredModelVersion",
+            "required": false,
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "description": "The number of result to retrieve. Defaults to 25.",
+            "in": "query",
+            "name": "limit",
+            "required": false,
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "description": "The offset from the first element to start retrieving from.",
+            "in": "query",
+            "name": "offset",
+            "required": false,
+            "schema": {
+              "default": 25,
+              "type": "integer"
+            }
+          },
+          {
+            "description": "Field to order results by. Format is the name of the field optionally followed by a space and either ASC or DESC. If not specified defaults to ASC.",
+            "in": "query",
+            "name": "orderBy",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ModelApiPaginatedList"
+                }
+              }
+            },
+            "description": "The list of Model APIs matching the provided query."
+          }
+        },
+        "tags": [
+          "ModelAPI"
+        ]
+      },
+      "post": {
+        "description": "Creates a new Model API with a single Model API version.",
+        "operationId": "createModelApi",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ModelApiCreationRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ModelApi"
+                }
+              }
+            },
+            "description": "The created Model API."
+          }
+        },
+        "tags": [
+          "ModelAPI"
+        ]
+      }
+    },
+    "/api/modelServing/v1/modelApis/{modelApiId}": {
+      "delete": {
+        "description": "Archives a Model API.",
+        "operationId": "deleteModelApi",
+        "parameters": [
+          {
+            "description": "The id of the Model API to archive.",
+            "in": "path",
+            "name": "modelApiId",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Successfully archived the Model API."
+          }
+        },
+        "tags": [
+          "ModelAPI"
+        ]
+      },
+      "get": {
+        "description": "Retrieves a single Model API.",
+        "operationId": "getModelApi",
+        "parameters": [
+          {
+            "description": "The id of the Model API to retrieve.",
+            "in": "path",
+            "name": "modelApiId",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ModelApi"
+                }
+              }
+            },
+            "description": "The Model API with the requested id."
+          }
+        },
+        "tags": [
+          "ModelAPI"
+        ]
+      },
+      "put": {
+        "description": "Updates a Model API.",
+        "operationId": "updateModelApi",
+        "parameters": [
+          {
+            "description": "The id of the Model API to update.",
+            "in": "path",
+            "name": "modelApiId",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ModelApiUpdateRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ModelApi"
+                }
+              }
+            },
+            "description": "The updated Model API."
+          }
+        },
+        "tags": [
+          "ModelAPI"
+        ]
+      }
+    },
+    "/api/modelServing/v1/modelApis/{modelApiId}/accessTokens": {
+      "get": {
+        "description": "Lists the access tokens of a Model API.",
+        "operationId": "listModelApiAccessTokens",
+        "parameters": [
+          {
+            "description": "The id of the Model API to list the access tokens for.",
+            "in": "path",
+            "name": "modelApiId",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/ModelApiAccessToken"
+                  },
+                  "type": "array"
+                }
+              }
+            },
+            "description": "The access tokens of the Model API."
+          }
+        },
+        "tags": [
+          "ModelAPI"
+        ]
+      },
+      "post": {
+        "description": "Creates an access token for a Model API.",
+        "operationId": "createModelApiAccessToken",
+        "parameters": [
+          {
+            "description": "The id of the Model API to create the access token for.",
+            "in": "path",
+            "name": "modelApiId",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ModelApiAccessTokenCreationRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ModelApiAccessToken"
+                }
+              }
+            },
+            "description": "The created access token"
+          }
+        },
+        "tags": [
+          "ModelAPI"
+        ]
+      }
+    },
+    "/api/modelServing/v1/modelApis/{modelApiId}/accessTokens/{accessTokenId}": {
+      "delete": {
+        "description": "",
+        "operationId": "deleteModelApiAccessToken",
+        "parameters": [
+          {
+            "description": "The id of the Model API to delete the access token for.",
+            "in": "path",
+            "name": "modelApiId",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "description": "The id of the access token to delete.",
+            "in": "path",
+            "name": "accessTokenId",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Successfully deleted the Model API access token."
+          }
+        },
+        "tags": [
+          "ModelAPI"
+        ]
+      },
+      "get": {
+        "description": "",
+        "operationId": "getModelApiAccessToken",
+        "parameters": [
+          {
+            "description": "The id of the Model API to retrieve the access token for.",
+            "in": "path",
+            "name": "modelApiId",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "description": "The id of the access token to retrieve.",
+            "in": "path",
+            "name": "accessTokenId",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ModelApiAccessToken"
+                }
+              }
+            },
+            "description": "The Model API access token with the given id."
+          }
+        },
+        "tags": [
+          "ModelAPI"
+        ]
+      },
+      "put": {
+        "description": "Updates a Model API access token.",
+        "operationId": "updateModelApiAccessToken",
+        "parameters": [
+          {
+            "description": "The id of the Model API to update the access token for.",
+            "in": "path",
+            "name": "modelApiId",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "description": "The id of the access token to update.",
+            "in": "path",
+            "name": "accessTokenId",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ModelApiAccessTokenCreationRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ModelApiAccessToken"
+                }
+              }
+            },
+            "description": "The updated Model API access token."
+          }
+        },
+        "tags": [
+          "ModelAPI"
+        ]
+      }
+    },
+    "/api/modelServing/v1/modelApis/{modelApiId}/collaborators": {
+      "get": {
+        "description": "Lists the collaborators of a Model API.",
+        "operationId": "listModelApiCollaborators",
+        "parameters": [
+          {
+            "description": "The id of the Model API to list the collaborators for.",
+            "in": "path",
+            "name": "modelApiId",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/ModelApiCollaboratorRole"
+                  },
+                  "type": "array"
+                }
+              }
+            },
+            "description": "The list of collaborators for the given Model API."
+          }
+        },
+        "tags": [
+          "ModelAPI"
+        ]
+      },
+      "post": {
+        "description": "Adds a collaborator to a Model API.",
+        "operationId": "createModelApiCollaborator",
+        "parameters": [
+          {
+            "description": "The id of the Model API to add the collaborator to.",
+            "in": "path",
+            "name": "modelApiId",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ModelApiCollaboratorRole"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ModelApiCollaboratorRole"
+                }
+              }
+            },
+            "description": "The added collaborator"
+          }
+        },
+        "tags": [
+          "ModelAPI"
+        ]
+      }
+    },
+    "/api/modelServing/v1/modelApis/{modelApiId}/collaborators/{collaborator}": {
+      "delete": {
+        "description": "",
+        "operationId": "removeModelApiCollaborator",
+        "parameters": [
+          {
+            "description": "The id of the Model API to remove the collaborator from.",
+            "in": "path",
+            "name": "modelApiId",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "description": "The reference of the collaborator to remove.",
+            "in": "path",
+            "name": "collaborator",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Successfully removed the collaborator."
+          }
+        },
+        "tags": [
+          "ModelAPI"
+        ]
+      },
+      "get": {
+        "description": "Retrieves a single collaborator for a Model API.",
+        "operationId": "getModelApiCollaborator",
+        "parameters": [
+          {
+            "description": "The id of the Model API to retrieve the collaborator for.",
+            "in": "path",
+            "name": "modelApiId",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "description": "The reference of the collaborator to retrieve.",
+            "in": "path",
+            "name": "collaborator",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ModelApiCollaboratorRole"
+                }
+              }
+            },
+            "description": "The Model API collaborator with the given reference."
+          }
+        },
+        "tags": [
+          "ModelAPI"
+        ]
+      },
+      "put": {
+        "description": "Updates a Model API collaborator.",
+        "operationId": "updateModelApiCollaborator",
+        "parameters": [
+          {
+            "description": "The id of the Model API to update the collaborator for.",
+            "in": "path",
+            "name": "modelApiId",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "description": "The reference of the collaborator to update.",
+            "in": "path",
+            "name": "collaborator",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ModelApiCollaboratorRole"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ModelApiCollaboratorRole"
+                }
+              }
+            },
+            "description": "The updated collaborator."
+          }
+        },
+        "tags": [
+          "ModelAPI"
+        ]
+      }
+    },
+    "/api/modelServing/v1/modelApis/{modelApiId}/environmentVariables/{environmentVariableName}": {
+      "delete": {
+        "description": "Deletes a Model API environment variable.",
+        "operationId": "deleteModelApiEnvironmentVariable",
+        "parameters": [
+          {
+            "description": "The id of the Model API to delete the environment variable from.",
+            "in": "path",
+            "name": "modelApiId",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "description": "The name of the environment variable to delete.",
+            "in": "path",
+            "name": "environmentVariableName",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Successfully deleted the Model API environment variable."
+          }
+        },
+        "tags": [
+          "ModelAPI"
+        ]
+      }
+    },
+    "/api/modelServing/v1/modelApis/{modelApiId}/versions": {
+      "get": {
+        "description": "Lists the Model API Versions for a Model API.",
+        "operationId": "listModelVersions",
+        "parameters": [
+          {
+            "description": "The id of the Model API to list the versions for.",
+            "in": "path",
+            "name": "modelApiId",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/ModelApiVersion"
+                  },
+                  "type": "array"
+                }
+              }
+            },
+            "description": "The list of Model API Versions for the given Model API."
+          }
+        },
+        "tags": [
+          "ModelAPIVersion"
+        ]
+      },
+      "post": {
+        "description": "Creates a Model API Version for a Model API.",
+        "operationId": "createModelApiVersion",
+        "parameters": [
+          {
+            "description": "The id of the Model API to create the version for.",
+            "in": "path",
+            "name": "modelApiId",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ModelApiVersionCreationRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ModelApiVersion"
+                }
+              }
+            },
+            "description": "The created Model API Version."
+          }
+        },
+        "tags": [
+          "ModelAPIVersion"
+        ]
+      }
+    },
+    "/api/modelServing/v1/modelApis/{modelApiId}/versions/{modelApiVersionId}": {
+      "get": {
+        "description": "Retrieves a single Model API Version.",
+        "operationId": "getModelApiVersion",
+        "parameters": [
+          {
+            "description": "The id of the Model API to retrieve the version for.",
+            "in": "path",
+            "name": "modelApiId",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "description": "The id of the Model API Version to retrieve.",
+            "in": "path",
+            "name": "modelApiVersionId",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ModelApiVersion"
+                }
+              }
+            },
+            "description": "The Model API version with the given id."
+          }
+        },
+        "tags": [
+          "ModelAPIVersion"
+        ]
+      }
+    },
+    "/api/modelServing/v1/modelApis/{modelApiId}/versions/{modelApiVersionId}/buildLogs": {
+      "get": {
+        "description": "Retrieves the build logs for a Model API Version.",
+        "operationId": "getModelApiVersionBuildLogs",
+        "parameters": [
+          {
+            "description": "The id of the Model API to retrieve the build logs for.",
+            "in": "path",
+            "name": "modelApiId",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "description": "The id of the Model API Version to retrieve the build logs for.",
+            "in": "path",
+            "name": "modelApiVersionId",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ModelApiVersionBuildLogs"
+                }
+              }
+            },
+            "description": "The build logs for the given Model API Version."
+          }
+        },
+        "tags": [
+          "ModelAPIVersion"
+        ]
+      }
+    },
+    "/api/modelServing/v1/modelApis/{modelApiId}/versions/{modelApiVersionId}/deploymentLogs": {
+      "get": {
+        "description": "Retrieves the deployment logs for a Model API Version.",
+        "operationId": "getModelApiVersionDeploymentLogs",
+        "parameters": [
+          {
+            "description": "The id of the Model API to retrieve the deployment logs for.",
+            "in": "path",
+            "name": "modelApiId",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "description": "The id of the Model API Version to retrieve the deployment logs for.",
+            "in": "path",
+            "name": "modelApiVersionId",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ModelApiVersionDeploymentLogs"
+                }
+              }
+            },
+            "description": "The deployment logs for the given Model API Version."
+          }
+        },
+        "tags": [
+          "ModelAPIVersion"
+        ]
+      }
+    },
+    "/api/modelServing/v1/modelApis/{modelApiId}/versions/{modelApiVersionId}/exportLogs": {
+      "get": {
+        "description": "Retrieves the export logs for a Model API Version.",
+        "operationId": "getModelApiVersionExportLogs",
+        "parameters": [
+          {
+            "description": "The id of the Model API to retrieve the export logs for.",
+            "in": "path",
+            "name": "modelApiId",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "description": "The id of the Model API Version to retrieve the export logs for.",
+            "in": "path",
+            "name": "modelApiVersionId",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ModelApiVersionExportLogs"
+                }
+              }
+            },
+            "description": "The export logs for the given Model API Version."
+          }
+        },
+        "tags": [
+          "ModelAPIVersion"
+        ]
+      }
+    },
+    "/api/modelServing/v1/modelApis/{modelApiId}/versions/{modelApiVersionId}/instanceLogs": {
+      "get": {
+        "description": "Retrieves the instance logs for a Model API Version.",
+        "operationId": "getModelApiVersionInstanceLogs",
+        "parameters": [
+          {
+            "description": "The id of the Model API to retrieve the instance logs for.",
+            "in": "path",
+            "name": "modelApiId",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "description": "The id of the Model API Version to retrieve the instance logs for.",
+            "in": "path",
+            "name": "modelApiVersionId",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ModelApiVersionInstanceLogs"
+                }
+              }
+            },
+            "description": "The instance logs for the given Model API Version."
+          }
+        },
+        "tags": [
+          "ModelAPIVersion"
+        ]
+      }
+    },
+    "/api/modelServing/v1/modelApis/{modelApiId}/versions/{modelApiVersionId}/isProd": {
+      "put": {
+        "description": "Updates a Model API Version's production label.",
+        "operationId": "updateModelApiVersionProductionLabel",
+        "parameters": [
+          {
+            "description": "The id of the Model API to update the production label for.",
+            "in": "path",
+            "name": "modelApiId",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "description": "The id of the Model API Version to update the production label for.",
+            "in": "path",
+            "name": "modelApiVersionId",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ModelApiVersionProductionLabel"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ModelApiVersionProductionLabel"
+                }
+              }
+            },
+            "description": "The updated Model API Version target state."
+          }
+        },
+        "tags": [
+          "ModelAPIVersion"
+        ]
+      }
+    },
+    "/api/modelServing/v1/modelApis/{modelApiId}/versions/{modelApiVersionId}/targetState": {
+      "put": {
+        "description": "Updates a Model API Version's target state.",
+        "operationId": "updateModelApiVersionTargetState",
+        "parameters": [
+          {
+            "description": "The id of the Model API to update the target state for.",
+            "in": "path",
+            "name": "modelApiId",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "description": "The id of the Model API Version to update the target state for.",
+            "in": "path",
+            "name": "modelApiVersionId",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ModelApiVersionTargetState"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ModelApiVersionTargetState"
+                }
+              }
+            },
+            "description": "The updated Model API Version target state."
+          }
+        },
+        "tags": [
+          "ModelAPIVersion"
+        ]
+      }
+    },
+    "/api/modelServing/v1/modelApis/{modelApiId}/volumes": {
+      "get": {
+        "description": "Lists the volumes of a Model API.",
+        "operationId": "listModelApiVolumes",
+        "parameters": [
+          {
+            "description": "The id of the Model API to list the volumes for.",
+            "in": "path",
+            "name": "modelApiId",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/ModelApiVolume"
+                  },
+                  "type": "array"
+                }
+              }
+            },
+            "description": "The list of volumes corresponding to the requested Model API."
+          }
+        },
+        "tags": [
+          "ModelAPI"
+        ]
+      },
+      "post": {
+        "description": "Creates a volume for a Model API.",
+        "operationId": "createModelApiVolume",
+        "parameters": [
+          {
+            "description": "The id of the Model API to create the volume for.",
+            "in": "path",
+            "name": "modelApiId",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ModelApiVolume"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ModelApiVolume"
+                }
+              }
+            },
+            "description": "The created volume."
+          }
+        },
+        "tags": [
+          "ModelAPI"
+        ]
+      }
+    },
+    "/api/modelServing/v1/modelApis/{modelApiId}/volumes/{volumeName}": {
+      "delete": {
+        "description": "Deletes a Model API volume.",
+        "operationId": "deleteModelApiVolume",
+        "parameters": [
+          {
+            "description": "The id of the Model API to delete the volume for.",
+            "in": "path",
+            "name": "modelApiId",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "description": "The name of the volume to delete.",
+            "in": "path",
+            "name": "volumeName",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Successfully deleted the Model API volume."
+          }
+        },
+        "tags": [
+          "ModelAPI"
         ]
       }
     },
@@ -12447,6 +16930,9 @@
       "name": "CustomMetrics"
     },
     {
+      "name": "Compute Providers"
+    },
+    {
       "name": "DatasetRw"
     },
     {
@@ -12463,6 +16949,12 @@
     },
     {
       "name": "Jobs"
+    },
+    {
+      "name": "ModelAPI"
+    },
+    {
+      "name": "ModelDeployment"
     },
     {
       "name": "Organizations"
