@@ -1,6 +1,7 @@
 package com.dominodatalab.client;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.databind.DeserializationConfig;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.MapperFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -24,7 +25,9 @@ abstract class DominoClient {
         mapper.enable(SerializationFeature.WRITE_ENUMS_USING_TO_STRING);
         mapper.enable(DeserializationFeature.READ_ENUMS_USING_TO_STRING);
         mapper.disable(DeserializationFeature.ADJUST_DATES_TO_CONTEXT_TIME_ZONE);
-        mapper.enable(MapperFeature.ACCEPT_CASE_INSENSITIVE_ENUMS);
+        final DeserializationConfig originalConfig = mapper.getDeserializationConfig();
+        final DeserializationConfig newConfig = originalConfig.with(MapperFeature.ACCEPT_CASE_INSENSITIVE_ENUMS);
+        mapper.setConfig(newConfig);
         final JavaTimeModule module = new JavaTimeModule();
         mapper.registerModule(module);
         return mapper;
