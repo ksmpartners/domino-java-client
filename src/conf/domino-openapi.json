@@ -4691,6 +4691,7 @@
             "type": "string"
           },
           "extraInfo": {
+            "additionalProperties": true,
             "nullable": true,
             "type": "object"
           },
@@ -6117,7 +6118,6 @@
           "UpdateDatasetRwV2",
           "PerformDatasetRwActionsAsAdminV2"
         ],
-        "properties": {},
         "type": "string"
       },
       "domino.datasetrw.api.DatasetRwProjectDetailsDto": {
@@ -6304,7 +6304,6 @@
           "Active",
           "Pending"
         ],
-        "properties": {},
         "type": "string"
       },
       "domino.datasetrw.api.DatasetRwSnapshotAdminSummaryDto": {
@@ -9429,7 +9428,8 @@
       "domino.featurestore.api.FeatureViewDto": {
         "properties": {
           "addedBy": {
-            "type": "collection.immutable.map[domino.common.dominoid,string]"
+            "additionalProperties": true,
+            "type": "object"
           },
           "author": {
             "nullable": true,
@@ -15404,7 +15404,8 @@
             "type": "integer"
           },
           "modelAccess": {
-            "type": "collection.immutable.map[domino.common.dominoid,domino.server.modelmanager.application.modeldetailsaccess]"
+            "additionalProperties": true,
+            "type": "object"
           },
           "models": {
             "items": {
@@ -16345,7 +16346,7 @@
           "Critical",
           "Default"
         ],
-        "type": "String"
+        "type": "string"
       },
       "domino.notifications.Timeframe": {
         "properties": {
@@ -18841,7 +18842,7 @@
       "domino.projects.api.AssetPortfolioPaginationFilter": {
         "properties": {
           "pagination": {
-            "$ref": "#/components/schemas/domino.apiserverutils.pagination.PaginationFilter"
+            "type": "string"
           },
           "searchQuery": {
             "nullable": true,
@@ -20184,7 +20185,7 @@
             "type": "boolean"
           },
           "pagination": {
-            "$ref": "#/components/schemas/domino.apiserverutils.pagination.PaginationFilter"
+            "type": "string"
           },
           "searchQuery": {
             "nullable": true,
@@ -21358,7 +21359,7 @@
       "domino.projects.api.repositories.responses.browse.CommitAuthorDTO": {
         "properties": {
           "date": {
-            "type": "date"
+            "type": "string"
           },
           "name": {
             "type": "string"
@@ -23373,8 +23374,9 @@
             "type": "string"
           },
           "volumeSpecificationOverride": {
+            "additionalProperties": true,
             "nullable": true,
-            "type": "domino.run.api.volume.runondemandvolumespecification"
+            "type": "object"
           }
         },
         "required": [
@@ -23484,8 +23486,9 @@
             "type": "string"
           },
           "volumeSpecificationOverride": {
+            "additionalProperties": true,
             "nullable": true,
-            "type": "domino.run.api.volume.runondemandvolumespecification"
+            "type": "object"
           }
         },
         "required": [
@@ -23611,8 +23614,9 @@
             "type": "string"
           },
           "volumeSpecificationOverride": {
+            "additionalProperties": true,
             "nullable": true,
-            "type": "domino.run.api.volume.runondemandvolumespecification"
+            "type": "object"
           }
         },
         "required": [
@@ -24619,7 +24623,7 @@
           },
           "diskUsage": {
             "nullable": true,
-            "type": "domino.run.api.rundiskusage"
+            "type": "string"
           },
           "environmentName": {
             "type": "string"
@@ -27538,7 +27542,7 @@
             "schema": {
               "format": "int32",
               "nullable": true,
-              "type": "number"
+              "type": "integer"
             }
           },
           {
@@ -27549,7 +27553,7 @@
             "schema": {
               "format": "int64",
               "nullable": true,
-              "type": "number"
+              "type": "integer"
             }
           },
           {
@@ -27610,7 +27614,7 @@
     },
     "/activity/metadata": {
       "get": {
-        "operationId": "notFound",
+        "operationId": "getActivityMetadata",
         "responses": {
           "200": {
             "content": {
@@ -27661,7 +27665,7 @@
             "required": true,
             "schema": {
               "format": "int32",
-              "type": "number"
+              "type": "integer"
             }
           },
           {
@@ -27680,7 +27684,7 @@
             "schema": {
               "format": "int32",
               "nullable": true,
-              "type": "number"
+              "type": "integer"
             }
           },
           {
@@ -27691,7 +27695,7 @@
             "schema": {
               "format": "int64",
               "nullable": true,
-              "type": "number"
+              "type": "integer"
             }
           }
         ],
@@ -28295,6 +28299,7 @@
     "/admin/notifications/admin": {
       "post": {
         "operationId": "createNotificationSuperUser",
+        "responses": {},
         "tags": [
           "adminnotifications"
         ]
@@ -29214,8 +29219,7 @@
             "schema": {
               "pattern": "^[0-9a-f]{24}$",
               "type": "string"
-            },
-            "type": "domino.common.DominoId"
+            }
           }
         ],
         "responses": {
@@ -29260,8 +29264,7 @@
             "schema": {
               "pattern": "^[0-9a-f]{24}$",
               "type": "string"
-            },
-            "type": "domino.common.DominoId"
+            }
           }
         ],
         "responses": {
@@ -29306,8 +29309,7 @@
             "schema": {
               "pattern": "^[0-9a-f]{24}$",
               "type": "string"
-            },
-            "type": "domino.common.DominoId"
+            }
           }
         ],
         "responses": {
@@ -29482,9 +29484,10 @@
     "/controlCenter/utilization/kubecostDeployed": {
       "get": {
         "operationId": "getKubecostLiveness",
+        "responses": {},
         "summary": "this endpoint will be temporarily used to discover if Kubecost is installed and will be removed if we retire the current cost& compute page",
         "tags": [
-          "controlcenter"
+          "Control Center"
         ]
       }
     },
