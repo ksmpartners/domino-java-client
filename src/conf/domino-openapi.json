@@ -31314,7 +31314,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "type": "#/components/schemas/domino.dataplane.DataPlane"
+                  "$ref": "#/components/schemas/domino.dataplane.DataPlane"
                 }
               }
             },
@@ -31406,7 +31406,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "type": "#/components/schemas/domino.dataplane.DataPlane"
+                  "$ref": "#/components/schemas/domino.dataplane.DataPlane"
                 }
               }
             },
@@ -31451,7 +31451,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "type": "#/components/schemas/domino.dataplane.DataPlane"
+                  "$ref": "#/components/schemas/domino.dataplane.DataPlane"
                 }
               }
             },
@@ -31479,7 +31479,7 @@
     "/dataplanes/targetVersion": {
       "get": {
         "operationId": "getTargetDataPlaneVersion",
-        "parameters": null,
+        "parameters": [],
         "responses": {
           "200": {
             "content": {
@@ -31549,7 +31549,7 @@
     },
     "/datasetUi/collections": {
       "post": {
-        "operationId": "createDataset",
+        "operationId": "createDatasetCollection",
         "parameters": [],
         "requestBody": {
           "content": {
@@ -31707,7 +31707,7 @@
     },
     "/datasetUi/collections/{datasetId}": {
       "post": {
-        "operationId": "updateDataset",
+        "operationId": "updateDatasetUi",
         "parameters": [
           {
             "description": "Id of the collection of datasets",
@@ -31857,7 +31857,7 @@
     },
     "/datasetUi/collections/{datasetId}/snapshot/file": {
       "post": {
-        "operationId": "uploadSnapshotFile",
+        "operationId": "uploadSnapshotFileUi",
         "parameters": [
           {
             "in": "path",
@@ -32010,7 +32010,13 @@
         ],
         "responses": {
           "200": {
-            "$ref": "#/components/schemas/domino.dataset.api.DatasetSnapshotDto",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/domino.dataset.api.DatasetSnapshotDto"
+                }
+              }
+            },
             "description": "the new snapshot"
           },
           "400": {
@@ -32214,7 +32220,7 @@
     },
     "/datasetUi/collections/{datasetId}/snapshots": {
       "get": {
-        "operationId": "getSnapshots",
+        "operationId": "getSnapshotsUi",
         "parameters": [
           {
             "description": "Id of the collection of datasets",
@@ -32768,7 +32774,7 @@
     },
     "/datasetUi/project/{projectId}/canAddDataset": {
       "get": {
-        "operationId": "canAddDataset",
+        "operationId": "canAddDatasetUi",
         "parameters": [
           {
             "description": "Project identifier",
@@ -33198,7 +33204,7 @@
     },
     "/datasetUi/{snapshotId}": {
       "get": {
-        "operationId": "getSnapshot",
+        "operationId": "getSnapshotUi",
         "parameters": [
           {
             "description": "Id of the snapshot",
@@ -33444,7 +33450,6 @@
           "200": {
             "content": {
               "application/json": {
-                "required": false,
                 "schema": {
                   "type": "number"
                 }
@@ -34057,6 +34062,13 @@
         },
         "responses": {
           "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/domino.datasetrw.api.DatasetRwSnapshotDto"
+                }
+              }
+            },
             "description": "success"
           },
           "400": {
@@ -34184,7 +34196,7 @@
     },
     "/datasetrw/dataset/{datasetId}/tag": {
       "post": {
-        "operationId": "addTag",
+        "operationId": "addDatasetTag",
         "parameters": [
           {
             "description": "Dataset ID",
@@ -34240,7 +34252,7 @@
     },
     "/datasetrw/dataset/{datasetId}/tag/{tagName}": {
       "delete": {
-        "operationId": "removeTag",
+        "operationId": "removeDatasetTag",
         "parameters": [
           {
             "description": "Dataset ID",
@@ -34511,7 +34523,7 @@
     },
     "/datasetrw/datasets/limit/{projectId}": {
       "post": {
-        "operationId": "setLimitOverride",
+        "operationId": "setDatasetLimitOverride",
         "parameters": [
           {
             "description": "Id of the project",
@@ -34862,7 +34874,7 @@
     },
     "/datasetrw/datasets/{datasetId}/snapshot/file/cancel/{uploadKey}": {
       "get": {
-        "operationId": "cancelSnapshotUpload",
+        "operationId": "cancelDatasetSnapshotUpload",
         "parameters": [
           {
             "description": "Id of the collection of datasets",
@@ -34909,7 +34921,7 @@
     },
     "/datasetrw/datasets/{datasetId}/snapshot/file/end/{uploadKey}": {
       "get": {
-        "operationId": "endSnapshotUpload",
+        "operationId": "endDatasetSnapshotUpload",
         "parameters": [
           {
             "description": "Dataset ID",
@@ -34973,7 +34985,7 @@
     },
     "/datasetrw/datasets/{datasetId}/snapshot/file/start": {
       "post": {
-        "operationId": "startSnapshotUpload",
+        "operationId": "startDatasetSnapshotUpload",
         "parameters": [
           {
             "description": "Id of the collection of datasets",
@@ -35112,7 +35124,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "type": "String"
+                  "type": "string"
                 }
               }
             },
@@ -35211,7 +35223,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "type": "String"
+                  "type": "string"
                 }
               }
             },
@@ -35274,7 +35286,7 @@
     },
     "/datasetrw/marked-snapshots": {
       "delete": {
-        "operationId": "deleteMarkedSnapshots",
+        "operationId": "deleteDatasetMarkedSnapshots",
         "responses": {
           "200": {
             "content": {
@@ -35764,7 +35776,7 @@
     },
     "/datasetrw/snapshot/upload/{uploadKey}": {
       "get": {
-        "operationId": "getSnapshotUploadSession",
+        "operationId": "getDatasetSnapshotUploadSession",
         "parameters": [
           {
             "in": "path",
@@ -35807,7 +35819,7 @@
     },
     "/datasetrw/snapshot/{snapshotId}": {
       "delete": {
-        "operationId": "deleteSnapshot",
+        "operationId": "deleteDatasetSnapshot",
         "parameters": [
           {
             "description": "Snapshot ID",
@@ -35893,7 +35905,7 @@
         ]
       },
       "put": {
-        "operationId": "updateSnapshotStatus",
+        "operationId": "updateDatasetSnapshotStatus",
         "parameters": [
           {
             "description": "Id of the dataset snapshot to be updated",
@@ -36496,7 +36508,8 @@
             "content": {
               "application/octet-stream": {
                 "schema": {
-                  "type": "binary"
+                  "format": "binary",
+                  "type": "string"
                 }
               }
             },
@@ -36549,6 +36562,16 @@
         },
         "responses": {
           "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/domino.datasetrw.api.DatasetRwSnapshotDto"
+                  },
+                  "type": "array"
+                }
+              }
+            },
             "description": "success"
           },
           "400": {
@@ -36664,7 +36687,7 @@
     },
     "/datasetrw/snapshots/summary/{datasetId}": {
       "get": {
-        "operationId": "getSnapshotSummaries",
+        "operationId": "getDatasetSnapshotSummaries",
         "parameters": [
           {
             "description": "Dataset ID",
@@ -36780,7 +36803,6 @@
           "200": {
             "content": {
               "application/json": {
-                "required": true,
                 "schema": {
                   "items": {
                     "$ref": "#/components/schemas/domino.datasetrw.api.DatasetStorageUsageDto"
@@ -36828,7 +36850,6 @@
           "200": {
             "content": {
               "application/json": {
-                "required": false,
                 "schema": {
                   "$ref": "#/components/schemas/domino.datasetrw.api.DatasetStorageUsageDto"
                 }
@@ -36997,7 +37018,7 @@
         ]
       },
       "post": {
-        "operationId": "create",
+        "operationId": "createDataSource",
         "parameters": [],
         "requestBody": {
           "content": {
@@ -37111,7 +37132,8 @@
             "content": {
               "application/octet-stream": {
                 "schema": {
-                  "type": "binary"
+                  "format": "binary",
+                  "type": "string"
                 }
               }
             },
@@ -37169,7 +37191,8 @@
             "content": {
               "application/jsonl": {
                 "schema": {
-                  "type": "binary"
+                  "format": "binary",
+                  "type": "string"
                 }
               }
             },
@@ -37242,7 +37265,7 @@
     },
     "/datasource/auths/all": {
       "get": {
-        "operationId": "getAuthConfigs",
+        "operationId": "getDataSourceAuthConfigs",
         "parameters": [],
         "responses": {
           "200": {
@@ -37454,7 +37477,7 @@
     },
     "/datasource/full": {
       "get": {
-        "operationId": "getFullCredentials",
+        "operationId": "getDataSourceFullCredentials",
         "parameters": [
           {
             "description": "registered data source id",
@@ -38865,7 +38888,7 @@
     },
     "/datasource/{dataSourceId}/projects/{projectId}": {
       "delete": {
-        "operationId": "removeProject",
+        "operationId": "removeProjectFromDataSource",
         "parameters": [
           {
             "description": "Data source Id",
@@ -38918,7 +38941,7 @@
         ]
       },
       "post": {
-        "operationId": "addProject",
+        "operationId": "addProjectToDataSource",
         "parameters": [
           {
             "description": "Data source Id",
@@ -39081,7 +39104,7 @@
     },
     "/datasource/{dataSourceId}/users": {
       "delete": {
-        "operationId": "removeUsers",
+        "operationId": "removeUsersFromDataSource",
         "parameters": [
           {
             "description": "Data source Id",
@@ -39137,7 +39160,7 @@
         ]
       },
       "post": {
-        "operationId": "addUsers",
+        "operationId": "addUsersToDataSource",
         "parameters": [
           {
             "description": "Data source Id",
@@ -39193,7 +39216,7 @@
         ]
       },
       "put": {
-        "operationId": "updateUsers",
+        "operationId": "updateUsersForDataSource",
         "parameters": [
           {
             "description": "data source id",
@@ -39662,7 +39685,7 @@
             "required": true,
             "schema": {
               "pattern": "^[0-9a-f]{24}$",
-              "type": "domino.common.DominoId"
+              "type": "string"
             }
           },
           {
