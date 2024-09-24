@@ -4,7 +4,7 @@
     <groupId>com.ksmpartners</groupId>
     <artifactId>domino-java-client</artifactId>
     <packaging>jar</packaging>
-    <version>5.10.1.0</version>
+    <version>5.11.1.2</version>
     <name>Domino Data Lab API Client</name>
     <description>Domino Data Lab API Client to connect to Domino web services using Java HTTP Client.</description>
     <url>https://github.com/ksmpartners/domino-java-client</url>
@@ -97,7 +97,7 @@
         <dependency>
             <groupId>org.junit.jupiter</groupId>
             <artifactId>junit-jupiter</artifactId>
-            <version>5.10.3</version>
+            <version>5.11.0</version>
             <scope>test</scope>
         </dependency>
     </dependencies>
@@ -106,7 +106,7 @@
             <dependency>
                 <groupId>com.fasterxml.jackson</groupId>
                 <artifactId>jackson-bom</artifactId>
-                <version>2.17.1</version>
+                <version>2.17.2</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
@@ -125,7 +125,7 @@
             <plugin>
                 <groupId>org.openapitools</groupId>
                 <artifactId>openapi-generator-maven-plugin</artifactId>
-                <version>7.6.0</version>
+                <version>7.8.0</version>
                 <executions>
                     <execution>
                         <id>domino-v4-endpoints</id>
@@ -308,11 +308,11 @@
     </build>
     <distributionManagement>
         <snapshotRepository>
-            <id>ossrh</id>
+            <id>ossrh1</id>
             <url>https://s01.oss.sonatype.org/content/repositories/snapshots</url>
         </snapshotRepository>
         <repository>
-            <id>ossrh</id>
+            <id>ossrh1</id>
             <url>https://s01.oss.sonatype.org/service/local/staging/deploy/maven2/</url>
         </repository>
     </distributionManagement>
@@ -343,7 +343,7 @@
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-javadoc-plugin</artifactId>
-                        <version>3.7.0</version>
+                        <version>3.10.0</version>
                         <executions>
                             <execution>
                                 <id>attach-javadocs</id>
@@ -367,7 +367,7 @@
                         <version>1.7.0</version>
                         <extensions>true</extensions>
                         <configuration>
-                            <serverId>ossrh</serverId>
+                            <serverId>ossrh1</serverId>
                             <nexusUrl>https://s01.oss.sonatype.org/</nexusUrl>
                             <autoReleaseAfterClose>true</autoReleaseAfterClose>
                         </configuration>
@@ -375,7 +375,7 @@
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-gpg-plugin</artifactId>
-                        <version>3.2.4</version>
+                        <version>3.2.6</version>
                         <executions>
                             <execution>
                                 <id>sign-artifacts</id>
