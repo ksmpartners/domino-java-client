@@ -117,6 +117,16 @@ $ mvn install
 
 (Replace `5.5.1` in the steps above with the actual SEMVER release number.)
 
+# "Slim" Domino API
+This is a subset of the v4 API currently used by KSM. The endpoints used are listed in `src/conf/domino-internal-api-usage.csv`. To (re)create the slim openapi spec:
+- Copy the `openapi`, `tags`, `info`, `security`, and `servers` top-level sections from the `domino-openapi.json` into the new spec file
+- For each endpoint listed in the CSV:
+  - Copy the definition from the `paths` section of `domino-openapi.json`
+  - For each schema/response ref listed in the `requestBody` (if applicable) and/or `responses` sections of the endpoint definition:
+    - Copy the schema/response definition from `components/schemas` or `components/responses` in `domino-openapi.json`
+    - Copy any other nested definitions referenced in the schema
+- Run `mvn compile` to ensure the slim spec file is valid
+
 # License
 
 Licensed under the [MIT](https://en.wikipedia.org/wiki/MIT_License) license.
