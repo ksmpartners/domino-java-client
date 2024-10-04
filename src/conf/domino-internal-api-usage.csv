@@ -8,8 +8,8 @@ delete,/v4,/datasetrw/{projectId}/shared/{datasetId}
 post,/v4,/datasetrw/{projectId}/shared/{datasetId}
 get,/v4,/datasetrw/dataset/{datasetId}/grants
 put,/v4,/datasetrw/dataset/{datasetId}/grants
-get,/v4,/datasetrw/datasets/{datasetId}
 get,/v4,/datasetrw/datasets-v2
+get,/v4,/datasetrw/datasets/{datasetId}
 get,/v4,/datasetrw/files/{snapshotId}
 get,/v4,/datasetrw/mounts-v2/{projectId}/shared
 get,/v4,/datasetrw/snapshot/{snapshotId}
@@ -21,6 +21,7 @@ get,/v4,/gateway/users/projectsDependencyGraph
 get,/v4,/jobs/{jobId}
 get,/v4,/jobs/{jobId}/logsWithProblemSuggestions
 post,/v4,/jobs/{jobId}/name
+get,v4,/jobs/{jobId}/runtimeExecutionDetails
 post,/v4,/jobs/restart
 post,/v4,/jobs/start
 post,/v4,/jobs/stop
@@ -37,6 +38,7 @@ post,/v4,/projects/{projectId}/gitRepositories
 delete,/v4,/projects/{projectId}/gitRepositories/{repositoryId}
 put,/v4,/projects/{projectId}/gitRepositories/{repositoryId}/ref
 post,/v4,/projects/{projectId}/goal/{goalId}/markComplete
+get,v4,/projects/{projectId}/hardwareTiers
 get,/v4,/runs/recent
 get,/v4,/scheduledruns
 get,/v4,/users
