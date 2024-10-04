@@ -6,6 +6,69 @@
     "version": "4.0.0"
   },
   "paths": {
+    "/projects/{projectId}/hardwareTiers": {
+      "get": {
+        "operationId": "listHardwareTiersForProject",
+        "parameters": [
+          {
+            "description": "Id of the project",
+            "in": "path",
+            "name": "projectId",
+            "required": true,
+            "schema": {
+              "pattern": "^[0-9a-f]{24}$",
+              "type": "string"
+            }
+          },
+          {
+            "description": "Flag to declare if archived hardware tiers are included in the response.",
+            "in": "query",
+            "name": "showArchived",
+            "required": false,
+            "schema": {
+              "nullable": true,
+              "type": "boolean"
+            }
+          },
+          {
+            "description": "Flag to declare if only model api hardware tiers are returned in the response.",
+            "in": "query",
+            "name": "forModelApi",
+            "required": false,
+            "schema": {
+              "nullable": true,
+              "type": "boolean"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/domino.hardwaretier.api.HardwareTierWithCapacityDto"
+                  },
+                  "type": "array"
+                }
+              }
+            },
+            "description": "success"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalError"
+          }
+        },
+        "summary": "retrieves the Hardware Tiers accessible for a Project",
+        "tags": ["Projects"]
+      }
+    },
     "/admin/supportbundle/{executionId}": {
       "get": {
         "operationId": "getExecutionSupportBundle",
@@ -2325,6 +2388,366 @@
             "items": { "$ref": "#/components/schemas/Environment" }
           }
         }
+      },
+      "domino.hardwaretier.api.HardwareTierCapacity": {
+        "properties": {
+          "availableCapacityWithoutLaunching": {
+            "format": "int32",
+            "type": "integer"
+          },
+          "capacityLevel": {
+            "enum": [
+              "CAN_EXECUTE_WITH_CURRENT_INSTANCES",
+              "REQUIRES_LAUNCHING_INSTANCE",
+              "FULL",
+              "UNKNOWN"
+            ],
+            "type": "string"
+          },
+          "currentNumberOfExecutors": {
+            "format": "int32",
+            "type": "integer"
+          },
+          "maximumAvailableCapacity": {
+            "format": "int32",
+            "type": "integer"
+          },
+          "maximumConcurrentRuns": {
+            "format": "int32",
+            "type": "integer"
+          },
+          "maximumNumberOfExecutors": {
+            "format": "int32",
+            "type": "integer"
+          },
+          "numberOfCurrentlyExecutingRuns": {
+            "format": "int32",
+            "type": "integer"
+          },
+          "numberOfQueuedRuns": {
+            "format": "int32",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "currentNumberOfExecutors",
+          "maximumNumberOfExecutors",
+          "numberOfCurrentlyExecutingRuns",
+          "numberOfQueuedRuns",
+          "maximumConcurrentRuns",
+          "availableCapacityWithoutLaunching",
+          "maximumAvailableCapacity",
+          "capacityLevel"
+        ]
+      },
+      "domino.hardwaretier.api.HardwareTierComputeClusterRestrictionsDto": {
+        "properties": {
+          "restrictToDask": {
+            "type": "boolean"
+          },
+          "restrictToMpi": {
+            "type": "boolean"
+          },
+          "restrictToRay": {
+            "type": "boolean"
+          },
+          "restrictToSpark": {
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "restrictToSpark",
+          "restrictToRay",
+          "restrictToDask",
+          "restrictToMpi"
+        ]
+      },
+      "domino.hardwaretier.api.HardwareTierGpuConfigurationDto": {
+        "properties": {
+          "gpuKey": {
+            "type": "string"
+          },
+          "numberOfGpus": {
+            "format": "int32",
+            "type": "integer"
+          }
+        },
+        "required": ["numberOfGpus", "gpuKey"]
+      },
+      "domino.hardwaretier.api.HwtFlags": {
+        "properties": {
+          "isAllowedDuringTrial": {
+            "type": "boolean"
+          },
+          "isArchived": {
+            "type": "boolean"
+          },
+          "isDataAnalystTier": {
+            "type": "boolean"
+          },
+          "isDefault": {
+            "type": "boolean"
+          },
+          "isDefaultForModelApi": {
+            "nullable": true,
+            "type": "boolean"
+          },
+          "isFree": {
+            "type": "boolean"
+          },
+          "isGlobal": {
+            "type": "boolean"
+          },
+          "isModelApiTier": {
+            "nullable": true,
+            "type": "boolean"
+          },
+          "isVisible": {
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "isDefault",
+          "isVisible",
+          "isGlobal",
+          "isArchived",
+          "isFree",
+          "isDataAnalystTier",
+          "isAllowedDuringTrial"
+        ]
+      },
+      "domino.hardwaretier.api.HwtResources": {
+        "properties": {
+          "allowSharedMemoryToExceedDefault": {
+            "type": "boolean"
+          },
+          "cores": {
+            "format": "double",
+            "type": "number"
+          },
+          "coresLimit": {
+            "format": "double",
+            "nullable": true,
+            "type": "number"
+          },
+          "memory": {
+            "$ref": "#/components/schemas/Information"
+          },
+          "memoryLimit": {
+            "$ref": "#/components/schemas/Information",
+            "nullable": true
+          },
+          "memorySwapLimit": {
+            "$ref": "#/components/schemas/Information",
+            "nullable": true
+          },
+          "sharedMemoryLimit": {
+            "$ref": "#/components/schemas/Information",
+            "nullable": true
+          }
+        },
+        "required": ["cores", "memory", "allowSharedMemoryToExceedDefault"]
+      },
+      "domino.hardwaretier.api.HardwareTierDto": {
+        "properties": {
+          "availabilityZones": {
+            "items": {
+              "type": "string"
+            },
+            "nullable": true,
+            "type": "array"
+          },
+          "capacity": {
+            "$ref": "#/components/schemas/domino.hardwaretier.api.HardwareTierCapacity",
+            "nullable": true
+          },
+          "centsPerMinute": {
+            "format": "double",
+            "type": "number"
+          },
+          "clusterType": {
+            "enum": ["ClassicOnPremises", "ClassicAWS", "Kubernetes"],
+            "nullable": true,
+            "type": "string"
+          },
+          "computeClusterRestrictions": {
+            "$ref": "#/components/schemas/domino.hardwaretier.api.HardwareTierComputeClusterRestrictionsDto",
+            "nullable": true
+          },
+          "creationTime": {
+            "format": "date-time",
+            "type": "string"
+          },
+          "dataPlaneId": {
+            "nullable": true,
+            "type": "string"
+          },
+          "gpuConfiguration": {
+            "$ref": "#/components/schemas/domino.hardwaretier.api.HardwareTierGpuConfigurationDto",
+            "nullable": true
+          },
+          "hwtFlags": {
+            "$ref": "#/components/schemas/domino.hardwaretier.api.HwtFlags"
+          },
+          "hwtResources": {
+            "$ref": "#/components/schemas/domino.hardwaretier.api.HwtResources"
+          },
+          "id": {
+            "type": "string"
+          },
+          "maxSimultaneousExecutions": {
+            "format": "int32",
+            "nullable": true,
+            "type": "integer"
+          },
+          "metadata": {
+            "additionalProperties": {
+              "type": "string"
+            },
+            "type": "object"
+          },
+          "name": {
+            "type": "string"
+          },
+          "nodePool": {
+            "nullable": true,
+            "type": "string"
+          },
+          "overprovisioning": {
+            "$ref": "#/components/schemas/domino.hardwaretier.api.HardwareTierOverprovisioningDto",
+            "nullable": true
+          },
+          "podCustomization": {
+            "$ref": "#/components/schemas/domino.hardwaretier.api.HardwareTierPodCustomizationDto"
+          },
+          "tags": {
+            "items": {
+              "type": "string"
+            },
+            "nullable": true,
+            "type": "array"
+          },
+          "updateTime": {
+            "format": "date-time",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "name",
+          "hwtResources",
+          "hwtFlags",
+          "centsPerMinute",
+          "creationTime",
+          "updateTime",
+          "podCustomization",
+          "metadata"
+        ]
+      },
+      "domino.hardwaretier.api.HardwareTierOverprovisioningDto": {
+        "properties": {
+          "daysOfWeek": {
+            "items": {
+              "enum": [
+                "MONDAY",
+                "TUESDAY",
+                "WEDNESDAY",
+                "THURSDAY",
+                "FRIDAY",
+                "SATURDAY",
+                "SUNDAY"
+              ],
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "fromTime": {
+            "type": "string"
+          },
+          "instances": {
+            "format": "int32",
+            "type": "integer"
+          },
+          "schedulingEnabled": {
+            "type": "boolean"
+          },
+          "timezone": {
+            "type": "string"
+          },
+          "toTime": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "instances",
+          "schedulingEnabled",
+          "daysOfWeek",
+          "timezone",
+          "fromTime",
+          "toTime"
+        ]
+      },
+      "domino.hardwaretier.api.HardwareTierPodCustomizationDto": {
+        "properties": {
+          "additionalAnnotations": {
+            "additionalProperties": {
+              "type": "string"
+            },
+            "type": "object"
+          },
+          "additionalLabels": {
+            "additionalProperties": {
+              "type": "string"
+            },
+            "type": "object"
+          },
+          "additionalLimits": {
+            "additionalProperties": {
+              "type": "string"
+            },
+            "type": "object"
+          },
+          "additionalRequests": {
+            "additionalProperties": {
+              "type": "string"
+            },
+            "type": "object"
+          },
+          "capabilities": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "hugepages": {
+            "additionalProperties": {
+              "type": "string"
+            },
+            "type": "object"
+          }
+        },
+        "required": [
+          "additionalRequests",
+          "additionalLimits",
+          "additionalAnnotations",
+          "additionalLabels",
+          "hugepages",
+          "capabilities"
+        ]
+      },
+      "domino.hardwaretier.api.HardwareTierWithCapacityDto": {
+        "properties": {
+          "capacity": {
+            "$ref": "#/components/schemas/domino.hardwaretier.api.HardwareTierCapacity"
+          },
+          "dataPlane": {
+            "$ref": "#/components/schemas/domino.dataplane.DataPlaneDto"
+          },
+          "hardwareTier": {
+            "$ref": "#/components/schemas/domino.hardwaretier.api.HardwareTierDto"
+          }
+        },
+        "required": ["hardwareTier", "capacity", "dataPlane"]
       },
       "domino.projectManagement.web.ErrorResponse": {
         "properties": {
