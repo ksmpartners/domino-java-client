@@ -6,6 +6,48 @@
     "version": "4.0.0"
   },
   "paths": {
+    "/jobs/{jobId}/runtimeExecutionDetails": {
+      "get": {
+        "operationId": "getRuntimeExecutionDetails",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "jobId",
+            "required": true,
+            "schema": {
+              "pattern": "^[0-9a-f]{24}$",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/domino.jobs.interface.JobRuntimeExecutionDetails"
+                }
+              }
+            },
+            "description": "success"
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalError"
+          }
+        },
+        "summary": "Get the runtime execution details for a given job",
+        "tags": ["Jobs"]
+      }
+    },
     "/projects/{projectId}/hardwareTiers": {
       "get": {
         "operationId": "listHardwareTiersForProject",
@@ -2380,6 +2422,101 @@
   },
   "components": {
     "schemas": {
+      "domino.jobs.interface.HardwareTierDetails": {
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "isArchived": {
+            "type": "boolean"
+          },
+          "name": {
+            "type": "string"
+          }
+        },
+        "required": ["id", "name", "isArchived"]
+      },
+      "domino.jobs.interface.ExecutorInfo": {
+        "properties": {
+          "executorInstanceId": {
+            "type": "string"
+          },
+          "humanName": {
+            "nullable": true,
+            "type": "string"
+          },
+          "privateAddress": {
+            "nullable": true,
+            "type": "string"
+          },
+          "publicAddress": {
+            "nullable": true,
+            "type": "string"
+          },
+          "region": {
+            "type": "string"
+          }
+        },
+        "required": ["executorInstanceId", "region"]
+      },
+      "domino.jobs.interface.Environment": {
+        "properties": {
+          "environmentId": {
+            "pattern": "^[0-9a-f]{24}$",
+            "type": "string"
+          },
+          "environmentName": {
+            "type": "string"
+          },
+          "environmentRevisionId": {
+            "nullable": true,
+            "pattern": "^[0-9a-f]{24}$",
+            "type": "string"
+          },
+          "environmentRevisionSpec": {
+            "oneOf": [
+              {
+                "enum": ["ActiveRevision", "LatestRevision"],
+                "type": "string"
+              },
+              {
+                "properties": {
+                  "revisionId": {
+                    "type": "string"
+                  }
+                },
+                "required": ["revisionId"],
+                "type": "object"
+              }
+            ]
+          },
+          "revisionNumber": {
+            "format": "int32",
+            "nullable": true,
+            "type": "integer"
+          }
+        },
+        "required": [
+          "environmentId",
+          "environmentName",
+          "environmentRevisionSpec"
+        ]
+      },
+      "domino.jobs.interface.JobRuntimeExecutionDetails": {
+        "properties": {
+          "environment": {
+            "$ref": "#/components/schemas/domino.jobs.interface.Environment"
+          },
+          "executorInfo": {
+            "$ref": "#/components/schemas/domino.jobs.interface.ExecutorInfo",
+            "nullable": true
+          },
+          "hardwareTier": {
+            "$ref": "#/components/schemas/domino.jobs.interface.HardwareTierDetails"
+          }
+        },
+        "required": ["environment", "hardwareTier"]
+      },
       "domino.projects.api.UseableProjectEnvironmentsDTO": {
         "type": "object",
         "properties": {
