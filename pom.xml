@@ -4,7 +4,7 @@
     <groupId>com.ksmpartners</groupId>
     <artifactId>domino-java-client</artifactId>
     <packaging>jar</packaging>
-    <version>5.11.1.5</version>
+    <version>5.11.1.6</version>
     <name>Domino Data Lab API Client</name>
     <description>Domino Data Lab API Client to connect to Domino web services using Java HTTP Client.</description>
     <url>https://github.com/ksmpartners/domino-java-client</url>
@@ -153,6 +153,7 @@
                                 <serializableModel>false</serializableModel>
                                 <dateLibrary>java8</dateLibrary>
                                 <openApiNullable>false</openApiNullable>
+                                <useEnumCaseInsensitive>true</useEnumCaseInsensitive>
                             </configOptions>
                         </configuration>
                     </execution>
@@ -182,6 +183,7 @@
                                 <serializableModel>false</serializableModel>
                                 <dateLibrary>java8</dateLibrary>
                                 <openApiNullable>false</openApiNullable>
+                                <useEnumCaseInsensitive>true</useEnumCaseInsensitive>
                             </configOptions>
                         </configuration>
                     </execution>
