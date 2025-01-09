@@ -108,6 +108,56 @@
       }
     },
     "schemas": {
+      "Comment": {
+        "properties": {
+          "commentBody": {
+            "type": "string"
+          },
+          "commentId": {
+            "pattern": "^[0-9a-f]{24}$",
+            "type": "string"
+          },
+          "commenter": {
+            "$ref": "#/components/schemas/Commenter"
+          },
+          "createdAt": {
+            "format": "date-time",
+            "type": "string"
+          },
+          "updatedAt": {
+            "format": "date-time",
+            "type": "string"
+          }
+        },
+        "required": [
+          "commentId",
+          "commenter",
+          "commentBody",
+          "createdAt",
+          "updatedAt"
+        ],
+        "type": "object"
+      },
+      "Commenter": {
+        "properties": {
+          "commenterId": {
+            "pattern": "^[0-9a-f]{24}$",
+            "type": "string"
+          },
+          "fullName": {
+            "type": "string"
+          },
+          "username": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "commenterId",
+          "username",
+          "fullName"
+        ],
+        "type": "object"
+      },
       "ComputeClusterType": {
         "description": "Type of compute cluster",
         "enum": [
@@ -490,6 +540,9 @@
           "commentActivityMetaData": {
             "$ref": "#/components/schemas/domino.activity.api.CommentActivityMetaData"
           },
+          "commentedOnDeliverableMetaData": {
+            "$ref": "#/components/schemas/domino.activity.api.CommentedOnDeliverableMetaData"
+          },
           "commentedOnFileMetaData": {
             "$ref": "#/components/schemas/domino.activity.api.CommentedOnFileMetaData"
           },
@@ -583,6 +636,7 @@
           "commentedOnWorkspaceMetaData",
           "commentedOnFileMetaData",
           "commentedOnProjectGoalMetaData",
+          "commentedOnDeliverableMetaData",
           "projectStageChangeActivityMetaData",
           "projectStatusChangeActivityMetaData",
           "appStatusActivityMetaData",
@@ -658,6 +712,7 @@
           "commentedOn": {
             "enum": [
               "project",
+              "deliverable",
               "job",
               "goal",
               "workspace",
@@ -682,6 +737,32 @@
           "commentedOnMetaData",
           "operation",
           "commentData"
+        ]
+      },
+      "domino.activity.api.CommentedOnDeliverableMetaData": {
+        "properties": {
+          "approvalId": {
+            "nullable": true,
+            "type": "string"
+          },
+          "artifactId": {
+            "nullable": true,
+            "type": "string"
+          },
+          "deliverableId": {
+            "type": "string"
+          },
+          "threadStatus": {
+            "enum": [
+              "Open",
+              "Resolved"
+            ],
+            "type": "string"
+          }
+        },
+        "required": [
+          "deliverableId",
+          "threadStatus"
         ]
       },
       "domino.activity.api.CommentedOnFileMetaData": {
@@ -1851,6 +1932,24 @@
           "workloadType",
           "computeClusterOverviews",
           "onDemandSparkExecutionUnits"
+        ]
+      },
+      "domino.admin.interface.ExecutionOverviewsWithTotalCount": {
+        "properties": {
+          "overviews": {
+            "items": {
+              "$ref": "#/components/schemas/domino.admin.interface.ExecutionOverview"
+            },
+            "type": "array"
+          },
+          "totalCount": {
+            "format": "int32",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "overviews",
+          "totalCount"
         ]
       },
       "domino.admin.interface.GlobalBanner": {
@@ -3796,6 +3895,9 @@
       },
       "domino.common.run.interfaces.RunMonolithDTO": {
         "properties": {
+          "command": {
+            "type": "string"
+          },
           "estimatedCost": {
             "format": "double",
             "type": "number"
@@ -3805,6 +3907,9 @@
           },
           "id": {
             "pattern": "^[0-9a-f]{24}$",
+            "type": "string"
+          },
+          "nextFireTime": {
             "type": "string"
           },
           "projectId": {
@@ -3852,7 +3957,9 @@
         "required": [
           "id",
           "title",
+          "command",
           "startTime",
+          "nextFireTime",
           "projectId",
           "projectIdentity",
           "runType",
@@ -4089,7 +4196,8 @@
               {
                 "enum": [
                   "ActiveRevision",
-                  "LatestRevision"
+                  "LatestRevision",
+                  "RestrictedRevision"
                 ],
                 "type": "string"
               },
@@ -4226,7 +4334,8 @@
               {
                 "enum": [
                   "ActiveRevision",
-                  "LatestRevision"
+                  "LatestRevision",
+                  "RestrictedRevision"
                 ],
                 "type": "string"
               },
@@ -4505,7 +4614,6 @@
             "enum": [
               "Other",
               "Role",
-              "StatefulSet",
               "Job",
               "Service",
               "ServiceAccount",
@@ -4515,6 +4623,8 @@
               "PriorityClass",
               "RoleBinding",
               "Event",
+              "StatefulSet",
+              "Ingress",
               "ConfigMap",
               "Node",
               "HorizontalPodAutoscaler",
@@ -5850,14 +5960,11 @@
             "format": "int64",
             "type": "integer"
           },
-          "dataPlaneIds": {
-            "items": {
-              "pattern": "^[0-9a-f]{24}$",
-              "type": "string"
-            },
-            "type": "array"
-          },
           "datasetPath": {
+            "type": "string"
+          },
+          "datasetStorageId": {
+            "pattern": "^[0-9a-f]{24}$",
             "type": "string"
           },
           "description": {
@@ -6116,10 +6223,36 @@
           "projectInfo": {
             "$ref": "#/components/schemas/domino.datasetrw.api.DatasetRwProjectInfoDto",
             "nullable": true
+          },
+          "storageInfo": {
+            "$ref": "#/components/schemas/domino.datasetrw.api.DatasetRwStorageInfoDto",
+            "nullable": true
           }
         },
         "required": [
           "datasetRwDto"
+        ]
+      },
+      "domino.datasetrw.api.DatasetRwMountInfoDto": {
+        "properties": {
+          "driverType": {
+            "nullable": true,
+            "type": "string"
+          },
+          "mountPath": {
+            "type": "string"
+          },
+          "subDir": {
+            "type": "string"
+          },
+          "volumeName": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "mountPath",
+          "subDir",
+          "volumeName"
         ]
       },
       "domino.datasetrw.api.DatasetRwPermission": {
@@ -6270,6 +6403,10 @@
             "pattern": "^[0-9a-f]{24}$",
             "type": "string"
           },
+          "storageInfo": {
+            "$ref": "#/components/schemas/domino.datasetrw.api.DatasetRwStorageInfoDto",
+            "nullable": true
+          },
           "storageSize": {
             "format": "int64",
             "nullable": true,
@@ -6291,24 +6428,6 @@
           "availableVersions",
           "mountPathsForProject",
           "dataPlanes"
-        ]
-      },
-      "domino.datasetrw.api.DatasetRwResourceDto": {
-        "properties": {
-          "claimName": {
-            "type": "string"
-          },
-          "resourceId": {
-            "type": "string"
-          },
-          "subDir": {
-            "type": "string"
-          }
-        },
-        "required": [
-          "claimName",
-          "resourceId",
-          "subDir"
         ]
       },
       "domino.datasetrw.api.DatasetRwRole": {
@@ -6335,6 +6454,10 @@
           },
           "snapshot": {
             "$ref": "#/components/schemas/domino.datasetrw.api.DatasetRwSnapshotDto"
+          },
+          "storageName": {
+            "nullable": true,
+            "type": "string"
           }
         },
         "required": [
@@ -6355,6 +6478,10 @@
             "type": "integer"
           },
           "datasetId": {
+            "pattern": "^[0-9a-f]{24}$",
+            "type": "string"
+          },
+          "datasetStorageId": {
             "pattern": "^[0-9a-f]{24}$",
             "type": "string"
           },
@@ -6389,8 +6516,8 @@
             ],
             "type": "string"
           },
-          "resource": {
-            "$ref": "#/components/schemas/domino.datasetrw.api.DatasetRwResourceDto"
+          "resourceId": {
+            "type": "string"
           },
           "statusLastUpdatedBy": {
             "pattern": "^[0-9a-f]{24}$",
@@ -6411,7 +6538,6 @@
         },
         "required": [
           "id",
-          "resource",
           "datasetId",
           "version",
           "creationTime",
@@ -6420,7 +6546,9 @@
           "statusLastUpdatedTime",
           "storageSize",
           "isPartialSize",
-          "isReadWrite"
+          "isReadWrite",
+          "datasetStorageId",
+          "resourceId"
         ]
       },
       "domino.datasetrw.api.DatasetRwSnapshotFileMetadataDto": {
@@ -6489,11 +6617,110 @@
           },
           "snapshot": {
             "$ref": "#/components/schemas/domino.datasetrw.api.DatasetRwSnapshotDto"
+          },
+          "storageInfo": {
+            "$ref": "#/components/schemas/domino.datasetrw.api.DatasetRwStorageInfoDto",
+            "nullable": true
           }
         },
         "required": [
           "snapshot",
           "isReadWrite"
+        ]
+      },
+      "domino.datasetrw.api.DatasetRwStorageDto": {
+        "properties": {
+          "dataPlaneId": {
+            "pattern": "^[0-9a-f]{24}$",
+            "type": "string"
+          },
+          "dataPlaneName": {
+            "nullable": true,
+            "type": "string"
+          },
+          "hardwareTiers": {
+            "items": {
+              "type": "string"
+            },
+            "nullable": true,
+            "type": "array"
+          },
+          "hostname": {
+            "nullable": true,
+            "type": "string"
+          },
+          "id": {
+            "pattern": "^[0-9a-f]{24}$",
+            "type": "string"
+          },
+          "isDataPlaneDefault": {
+            "type": "boolean"
+          },
+          "loadBalanceType": {
+            "enum": [
+              "primary"
+            ],
+            "type": "string"
+          },
+          "mountInfo": {
+            "$ref": "#/components/schemas/domino.datasetrw.api.DatasetRwMountInfoDto",
+            "nullable": true
+          },
+          "name": {
+            "type": "string"
+          },
+          "numberOfActiveDatasets": {
+            "format": "int32",
+            "nullable": true,
+            "type": "integer"
+          },
+          "storageAddedAt": {
+            "format": "int64",
+            "type": "integer"
+          },
+          "unregisteredAt": {
+            "format": "int64",
+            "nullable": true,
+            "type": "integer"
+          }
+        },
+        "required": [
+          "id",
+          "name",
+          "dataPlaneId",
+          "isDataPlaneDefault",
+          "loadBalanceType",
+          "storageAddedAt"
+        ]
+      },
+      "domino.datasetrw.api.DatasetRwStorageInfoDto": {
+        "properties": {
+          "dataPlaneName": {
+            "nullable": true,
+            "type": "string"
+          },
+          "isAccessible": {
+            "nullable": true,
+            "type": "boolean"
+          },
+          "mountPath": {
+            "nullable": true,
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "pvcName": {
+            "nullable": true,
+            "type": "string"
+          },
+          "subDir": {
+            "nullable": true,
+            "type": "string"
+          }
+        },
+        "required": [
+          "name"
         ]
       },
       "domino.datasetrw.api.DatasetRwStorageUsageDto": {
@@ -6578,6 +6805,10 @@
               "Active",
               "Pending"
             ],
+            "nullable": true,
+            "type": "string"
+          },
+          "storageName": {
             "nullable": true,
             "type": "string"
           }
@@ -6722,6 +6953,29 @@
           "isAtEmailThreshold"
         ]
       },
+      "domino.datasetrw.api.DatasetStorageVolumeInfoDto": {
+        "properties": {
+          "dataPlaneId": {
+            "pattern": "^[0-9a-f]{24}$",
+            "type": "string"
+          },
+          "dataPlaneName": {
+            "type": "string"
+          },
+          "pvcName": {
+            "type": "string"
+          },
+          "volumeType": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "pvcName",
+          "dataPlaneId",
+          "dataPlaneName",
+          "volumeType"
+        ]
+      },
       "domino.datasetrw.api.SharedDatasetRwEntryDto": {
         "properties": {
           "projectId": {
@@ -6785,9 +7039,22 @@
           "tag"
         ]
       },
+      "domino.datasetrw.web.CalculateSnapshotSizeRequest": {
+        "properties": {
+          "forceRecalculate": {
+            "nullable": true,
+            "type": "boolean"
+          }
+        }
+      },
       "domino.datasetrw.web.CreateDatasetRequest": {
         "properties": {
           "datasetName": {
+            "type": "string"
+          },
+          "datasetStorageId": {
+            "nullable": true,
+            "pattern": "^[0-9a-f]{24}$",
             "type": "string"
           },
           "description": {
@@ -6813,6 +7080,29 @@
           "datasetName",
           "projectId",
           "usedForModelMonitoring"
+        ]
+      },
+      "domino.datasetrw.web.CreateDatasetRwStorageRequest": {
+        "properties": {
+          "dataPlaneId": {
+            "pattern": "^[0-9a-f]{24}$",
+            "type": "string"
+          },
+          "isDataPlaneDefault": {
+            "nullable": true,
+            "type": "boolean"
+          },
+          "name": {
+            "type": "string"
+          },
+          "pvcName": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "name",
+          "dataPlaneId",
+          "pvcName"
         ]
       },
       "domino.datasetrw.web.CreateDownloadArchiveRequest": {
@@ -6983,6 +7273,31 @@
             "type": "string"
           },
           "description": {
+            "nullable": true,
+            "type": "string"
+          }
+        }
+      },
+      "domino.datasetrw.web.UpdateDatasetRwStorageRequest": {
+        "properties": {
+          "dataPlaneId": {
+            "nullable": true,
+            "pattern": "^[0-9a-f]{24}$",
+            "type": "string"
+          },
+          "isDataPlaneDefault": {
+            "nullable": true,
+            "type": "boolean"
+          },
+          "mountPath": {
+            "nullable": true,
+            "type": "string"
+          },
+          "name": {
+            "nullable": true,
+            "type": "string"
+          },
+          "pvcName": {
             "nullable": true,
             "type": "string"
           }
@@ -9443,7 +9758,9 @@
       "domino.featurestore.api.FeatureViewDto": {
         "properties": {
           "addedBy": {
-            "additionalProperties": true,
+            "additionalProperties": {
+              "type": "string"
+            },
             "type": "object"
           },
           "author": {
@@ -11186,6 +11503,10 @@
       },
       "domino.gruz.api.DatasetMount": {
         "properties": {
+          "claimName": {
+            "nullable": true,
+            "type": "string"
+          },
           "containerPath": {
             "type": "string"
           },
@@ -11197,9 +11518,9 @@
           "isReadOnly": {
             "type": "boolean"
           },
-          "resource": {
-            "$ref": "#/components/schemas/domino.datasetrw.api.DatasetRwResourceDto",
-            "nullable": true
+          "resourceId": {
+            "nullable": true,
+            "type": "string"
           },
           "snapshotId": {
             "nullable": true,
@@ -11207,6 +11528,10 @@
             "type": "string"
           },
           "storageMode": {
+            "nullable": true,
+            "type": "string"
+          },
+          "subDir": {
             "nullable": true,
             "type": "string"
           }
@@ -11714,6 +12039,179 @@
         "required": [
           "runs"
         ]
+      },
+      "domino.guardrails.interface.CommentCountsDto": {
+        "properties": {
+          "commentCountsMap": {
+            "additionalProperties": {
+              "type": "integer"
+            },
+            "type": "object"
+          }
+        },
+        "required": [
+          "commentCountsMap"
+        ],
+        "type": "object"
+      },
+      "domino.guardrails.interface.DeliverableCommentThreadDto": {
+        "properties": {
+          "approvalId": {
+            "type": "string"
+          },
+          "artifactId": {
+            "type": "string"
+          },
+          "comments": {
+            "items": {
+              "$ref": "#/components/schemas/Comment"
+            },
+            "type": "array"
+          },
+          "deliverableId": {
+            "type": "string"
+          },
+          "id": {
+            "pattern": "^[0-9a-f]{24}$",
+            "type": "string"
+          },
+          "projectId": {
+            "pattern": "^[0-9a-f]{24}$",
+            "type": "string"
+          },
+          "threadStatus": {
+            "enum": [
+              "Open",
+              "Resolved"
+            ],
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "deliverableId",
+          "projectId",
+          "threadStatus",
+          "comments"
+        ],
+        "type": "object"
+      },
+      "domino.guardrails.interface.DeliverableCommentsSummary": {
+        "properties": {
+          "artifactCommentsCountMap": {
+            "additionalProperties": {
+              "type": "integer"
+            },
+            "type": "object"
+          },
+          "deliverableCommentsCount": {
+            "type": "integer"
+          }
+        },
+        "required": [
+          "deliverableCommentsCount",
+          "artifactCommentsCountMap"
+        ],
+        "type": "object"
+      },
+      "domino.guardrails.web.CreateCommentRequest": {
+        "properties": {
+          "approvalId": {
+            "type": "string"
+          },
+          "artifactId": {
+            "type": "string"
+          },
+          "comment": {
+            "type": "string"
+          },
+          "deliverableId": {
+            "type": "string"
+          },
+          "projectId": {
+            "pattern": "^[0-9a-f]{24}$",
+            "type": "string"
+          }
+        },
+        "required": [
+          "deliverableId",
+          "projectId",
+          "comment"
+        ],
+        "type": "object"
+      },
+      "domino.guardrails.web.GetCommentCountsRequest": {
+        "properties": {
+          "deliverableIds": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          }
+        },
+        "required": [
+          "deliverableIds"
+        ],
+        "type": "object"
+      },
+      "domino.guardrails.web.RecordGuardrailsAuditEventRequest": {
+        "properties": {
+          "eventDetails": {
+            "additionalProperties": {
+              "type": "string"
+            },
+            "type": "object"
+          },
+          "eventType": {
+            "description": "audit event type",
+            "enum": [
+              "CreateGovernancePolicy",
+              "UpdateGovernancePolicyDefinition",
+              "ChangeGovernancePolicyStatus",
+              "DeleteGovernancePolicy",
+              "CreateGovernanceBundle",
+              "ChangeGovernanceBundleStage",
+              "DeleteGovernanceBundle",
+              "CreateGovernanceApproval",
+              "AcceptGovernanceApproval",
+              "AddGovernanceBundleAttachment",
+              "RemoveGovernanceBundleAttachment",
+              "CreateGovernanceResults"
+            ],
+            "type": "string"
+          }
+        },
+        "required": [
+          "eventType",
+          "eventDetails"
+        ],
+        "type": "object"
+      },
+      "domino.guardrails.web.UpdateCommentRequest": {
+        "properties": {
+          "comment": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "comment"
+        ],
+        "type": "object"
+      },
+      "domino.guardrails.web.UpdateThreadStatusRequest": {
+        "properties": {
+          "threadStatus": {
+            "enum": [
+              "Open",
+              "Resolved"
+            ],
+            "type": "string"
+          }
+        },
+        "required": [
+          "threadStatus"
+        ],
+        "type": "object"
       },
       "domino.hardwaretier.api.HardwareTierCapacity": {
         "properties": {
@@ -12228,6 +12726,20 @@
           }
         }
       },
+      "domino.jobs.interface.AbnormalStatus": {
+        "properties": {
+          "runFailureMessage": {
+            "type": "string"
+          },
+          "runFailureReason": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "runFailureReason",
+          "runFailureMessage"
+        ]
+      },
       "domino.jobs.interface.ArtifactsInfoDto": {
         "properties": {
           "changes": {
@@ -12463,7 +12975,8 @@
               {
                 "enum": [
                   "ActiveRevision",
-                  "LatestRevision"
+                  "LatestRevision",
+                  "RestrictedRevision"
                 ],
                 "type": "string"
               },
@@ -12714,7 +13227,8 @@
               {
                 "enum": [
                   "ActiveRevision",
-                  "LatestRevision"
+                  "LatestRevision",
+                  "RestrictedRevision"
                 ],
                 "type": "string"
               },
@@ -12868,6 +13382,10 @@
       },
       "domino.jobs.interface.Job": {
         "properties": {
+          "abnormalStatus": {
+            "$ref": "#/components/schemas/domino.jobs.interface.AbnormalStatus",
+            "nullable": true
+          },
           "commentsCount": {
             "format": "int32",
             "type": "integer"
@@ -12935,6 +13453,10 @@
             "format": "int32",
             "type": "integer"
           },
+          "projectId": {
+            "pattern": "^[0-9a-f]{24}$",
+            "type": "string"
+          },
           "queuedJobHistoryDetails": {
             "$ref": "#/components/schemas/domino.jobs.interface.QueuedJobHistoryDetails",
             "nullable": true
@@ -12986,6 +13508,7 @@
           "tags",
           "jobRunCommand",
           "commentsCount",
+          "projectId",
           "commitDetails",
           "dominoStats",
           "statuses",
@@ -14080,7 +14603,8 @@
               {
                 "enum": [
                   "ActiveRevision",
-                  "LatestRevision"
+                  "LatestRevision",
+                  "RestrictedRevision"
                 ],
                 "type": "string"
               },
@@ -14144,7 +14668,8 @@
               {
                 "enum": [
                   "ActiveRevision",
-                  "LatestRevision"
+                  "LatestRevision",
+                  "RestrictedRevision"
                 ],
                 "type": "string"
               },
@@ -17530,6 +18055,9 @@
             "type": "integer"
           },
           "users": {
+            "additionalProperties": {
+              "type": "integer"
+            },
             "type": "object"
           }
         },
@@ -17668,7 +18196,8 @@
               {
                 "enum": [
                   "ActiveRevision",
-                  "LatestRevision"
+                  "LatestRevision",
+                  "RestrictedRevision"
                 ],
                 "type": "string"
               },
@@ -17738,7 +18267,8 @@
               {
                 "enum": [
                   "ActiveRevision",
-                  "LatestRevision"
+                  "LatestRevision",
+                  "RestrictedRevision"
                 ],
                 "type": "string"
               },
@@ -18104,6 +18634,10 @@
             ],
             "type": "string"
           },
+          "ticketAssignee": {
+            "$ref": "#/components/schemas/domino.projectManagement.api.PmUser",
+            "nullable": true
+          },
           "ticketMetadata": {
             "$ref": "#/components/schemas/domino.projectManagement.api.PmTicketMetadata"
           },
@@ -18358,6 +18892,10 @@
       },
       "domino.projectManagement.api.PmTicket": {
         "properties": {
+          "assignee": {
+            "$ref": "#/components/schemas/domino.projectManagement.api.PmUser",
+            "nullable": true
+          },
           "comments": {
             "items": {
               "$ref": "#/components/schemas/domino.projectManagement.api.PmComment"
@@ -18548,6 +19086,20 @@
           "stageId"
         ]
       },
+      "domino.projectManagement.web.AssigneeForLinkedGoal": {
+        "properties": {
+          "jiraUserId": {
+            "type": "string"
+          },
+          "jiraUserName": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "jiraUserId",
+          "jiraUserName"
+        ]
+      },
       "domino.projectManagement.web.BulkDeleteProjectGoals": {
         "properties": {
           "goalIds": {
@@ -18702,6 +19254,21 @@
             "type": "string"
           }
         }
+      },
+      "domino.projectManagement.web.SetAssigneeForLinkedGoalRequest": {
+        "properties": {
+          "goalId": {
+            "pattern": "^[0-9a-f]{24}$",
+            "type": "string"
+          },
+          "jiraUserData": {
+            "$ref": "#/components/schemas/domino.projectManagement.web.AssigneeForLinkedGoal",
+            "nullable": true
+          }
+        },
+        "required": [
+          "goalId"
+        ]
       },
       "domino.projectManagement.web.UnlinkFileFromGoalRequest": {
         "properties": {
@@ -19143,6 +19710,10 @@
             "pattern": "^[0-9a-f]{24}$",
             "type": "string"
           },
+          "importSpec": {
+            "$ref": "#/components/schemas/domino.projects.api.ImportGitFilesSpec",
+            "nullable": true
+          },
           "importedGitReposCredentialId": {
             "nullable": true,
             "pattern": "^[0-9a-f]{24}$",
@@ -19199,7 +19770,8 @@
               {
                 "enum": [
                   "ActiveRevision",
-                  "LatestRevision"
+                  "LatestRevision",
+                  "RestrictedRevision"
                 ],
                 "type": "string"
               },
@@ -19398,6 +19970,24 @@
           "start"
         ]
       },
+      "domino.projects.api.ImportGitFilesSpec": {
+        "properties": {
+          "forceRequested": {
+            "type": "boolean"
+          },
+          "targetRepoName": {
+            "type": "string"
+          },
+          "targetRepoOwnerName": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "targetRepoName",
+          "targetRepoOwnerName",
+          "forceRequested"
+        ]
+      },
       "domino.projects.api.LinkedGitRepoMetadata": {
         "properties": {
           "uri": {
@@ -19447,7 +20037,8 @@
               {
                 "enum": [
                   "ActiveRevision",
-                  "LatestRevision"
+                  "LatestRevision",
+                  "RestrictedRevision"
                 ],
                 "type": "string"
               },
@@ -19794,6 +20385,10 @@
               "$ref": "#/components/schemas/domino.projects.api.EntityLink"
             },
             "type": "array"
+          },
+          "project": {
+            "$ref": "#/components/schemas/domino.projects.api.model.ref.ProjectRefDto",
+            "nullable": true
           },
           "projectId": {
             "pattern": "^[0-9a-f]{24}$",
@@ -20644,6 +21239,14 @@
       },
       "domino.projects.api.ProjectTemplateDetails": {
         "properties": {
+          "forceImport": {
+            "nullable": true,
+            "type": "boolean"
+          },
+          "importToMainRepo": {
+            "nullable": true,
+            "type": "boolean"
+          },
           "name": {
             "type": "string"
           },
@@ -20734,7 +21337,6 @@
             "additionalProperties": {
               "type": "string"
             },
-            "nullable": true,
             "type": "object"
           }
         },
@@ -21054,6 +21656,62 @@
         ],
         "type": "object"
       },
+      "domino.projects.api.model.goals.ProjectGoalCollectionDto": {
+        "properties": {
+          "items": {
+            "items": {
+              "$ref": "#/components/schemas/domino.projects.api.ProjectGoal"
+            },
+            "type": "array"
+          },
+          "paginationDetails": {
+            "type": "string"
+          },
+          "totalCount": {
+            "format": "int32",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "items",
+          "paginationDetails",
+          "totalCount"
+        ]
+      },
+      "domino.projects.api.model.ref.ProjectRefDto": {
+        "properties": {
+          "id": {
+            "pattern": "^[0-9a-f]{24}$",
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "owner": {
+            "$ref": "#/components/schemas/domino.projects.api.model.ref.UserRefDto"
+          }
+        },
+        "required": [
+          "id",
+          "name",
+          "owner"
+        ]
+      },
+      "domino.projects.api.model.ref.UserRefDto": {
+        "properties": {
+          "id": {
+            "pattern": "^[0-9a-f]{24}$",
+            "type": "string"
+          },
+          "userName": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "userName"
+        ]
+      },
       "domino.projects.api.repositories.AccessTypeDto": {
         "properties": {
           "accessType": {
@@ -21191,10 +21849,6 @@
           "owner": {
             "type": "string"
           },
-          "repositoryTemplateName": {
-            "nullable": true,
-            "type": "string"
-          },
           "repositoryToCreateName": {
             "type": "string"
           },
@@ -21308,6 +21962,19 @@
         "required": [
           "items",
           "summary"
+        ]
+      },
+      "domino.projects.api.repositories.responses.GetRepoFilesApiResponse": {
+        "properties": {
+          "files": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          }
+        },
+        "required": [
+          "files"
         ]
       },
       "domino.projects.api.repositories.responses.GitApiResponseWrapper": {
@@ -21516,6 +22183,10 @@
           "id": {
             "type": "string"
           },
+          "isCompanyOfficial": {
+            "nullable": true,
+            "type": "boolean"
+          },
           "license": {
             "nullable": true,
             "type": "string"
@@ -21588,6 +22259,10 @@
             "nullable": true,
             "type": "string"
           },
+          "billingTag": {
+            "$ref": "#/components/schemas/domino.projects.api.BillingTag",
+            "nullable": true
+          },
           "categories": {
             "items": {
               "type": "string"
@@ -21609,6 +22284,10 @@
             "type": "string"
           },
           "isArchived": {
+            "type": "boolean"
+          },
+          "isCompanyOfficial": {
+            "nullable": true,
             "type": "boolean"
           },
           "license": {
@@ -21648,6 +22327,43 @@
           "sourceProject",
           "definition",
           "isArchived"
+        ]
+      },
+      "domino.projects.templates.api.models.CustomerTemplateTagCollectionDto": {
+        "properties": {
+          "items": {
+            "items": {
+              "$ref": "#/components/schemas/domino.projects.templates.api.models.CustomerTemplateTagDto"
+            },
+            "type": "array"
+          },
+          "totalCount": {
+            "format": "int32",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "items",
+          "totalCount"
+        ]
+      },
+      "domino.projects.templates.api.models.CustomerTemplateTagDto": {
+        "properties": {
+          "id": {
+            "pattern": "^[0-9a-f]{24}$",
+            "type": "string"
+          },
+          "isApproved": {
+            "type": "boolean"
+          },
+          "name": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "name",
+          "isApproved"
         ]
       },
       "domino.projects.templates.api.models.DatasetDto": {
@@ -21831,6 +22547,10 @@
           "access": {
             "$ref": "#/components/schemas/domino.projects.templates.api.models.TemplateAccessDto"
           },
+          "billingTag": {
+            "$ref": "#/components/schemas/domino.projects.api.BillingTag",
+            "nullable": true
+          },
           "definition": {
             "$ref": "#/components/schemas/domino.projects.templates.api.models.NewTemplateDefinitionDto"
           },
@@ -21921,12 +22641,11 @@
           "included": {
             "items": {
               "enum": [
-                "artifacts",
-                "billings_tags",
                 "integrations",
                 "external_data_volumes",
                 "launchers",
-                "models",
+                "artifacts",
+                "mounted_datasets",
                 "imported_projects",
                 "tags",
                 "datasets",
@@ -22124,12 +22843,11 @@
           "included": {
             "items": {
               "enum": [
-                "artifacts",
-                "billings_tags",
                 "integrations",
                 "external_data_volumes",
                 "launchers",
-                "models",
+                "artifacts",
+                "mounted_datasets",
                 "imported_projects",
                 "tags",
                 "datasets",
@@ -22215,14 +22933,23 @@
               "Private",
               "Internal"
             ],
+            "nullable": true,
+            "type": "string"
+          },
+          "writeType": {
+            "enum": [
+              "Create",
+              "Import",
+              "ForceImport"
+            ],
+            "nullable": true,
             "type": "string"
           }
         },
         "required": [
           "credentialId",
           "repoName",
-          "repoOwnerName",
-          "visibility"
+          "repoOwnerName"
         ]
       },
       "domino.projects.templates.api.models.TemplateCollaboratorDto": {
@@ -22378,6 +23105,44 @@
         "required": [
           "name"
         ]
+      },
+      "domino.projects.templates.api.models.UpdateCustomerTemplateDto": {
+        "properties": {
+          "collaborators": {
+            "items": {
+              "$ref": "#/components/schemas/domino.projects.templates.api.models.TemplateCollaboratorDto"
+            },
+            "nullable": true,
+            "type": "array"
+          },
+          "description": {
+            "nullable": true,
+            "type": "string"
+          },
+          "isCompanyOfficial": {
+            "nullable": true,
+            "type": "boolean"
+          },
+          "name": {
+            "nullable": true,
+            "type": "string"
+          },
+          "tags": {
+            "items": {
+              "type": "string"
+            },
+            "nullable": true,
+            "type": "array"
+          },
+          "visibility": {
+            "enum": [
+              "private",
+              "all_non_anonymous_users"
+            ],
+            "nullable": true,
+            "type": "string"
+          }
+        }
       },
       "domino.projects.templates.api.models.ValueOptionalLink": {
         "properties": {
@@ -23132,7 +23897,8 @@
               {
                 "enum": [
                   "ActiveRevision",
-                  "LatestRevision"
+                  "LatestRevision",
+                  "RestrictedRevision"
                 ],
                 "type": "string"
               },
@@ -23301,7 +24067,8 @@
               {
                 "enum": [
                   "ActiveRevision",
-                  "LatestRevision"
+                  "LatestRevision",
+                  "RestrictedRevision"
                 ],
                 "type": "string"
               },
@@ -23412,7 +24179,8 @@
               {
                 "enum": [
                   "ActiveRevision",
-                  "LatestRevision"
+                  "LatestRevision",
+                  "RestrictedRevision"
                 ],
                 "type": "string"
               },
@@ -23541,7 +24309,8 @@
               {
                 "enum": [
                   "ActiveRevision",
-                  "LatestRevision"
+                  "LatestRevision",
+                  "RestrictedRevision"
                 ],
                 "type": "string"
               },
@@ -24368,7 +25137,8 @@
               {
                 "enum": [
                   "ActiveRevision",
-                  "LatestRevision"
+                  "LatestRevision",
+                  "RestrictedRevision"
                 ],
                 "type": "string"
               },
@@ -24437,6 +25207,21 @@
         "required": [
           "name",
           "mount"
+        ]
+      },
+      "domino.workspace.api.DataPlaneRefDto": {
+        "properties": {
+          "id": {
+            "pattern": "^[0-9a-f]{24}$",
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "name"
         ]
       },
       "domino.workspace.api.QueuedWorkspaceHistoryDetails": {
@@ -24705,7 +25490,8 @@
               {
                 "enum": [
                   "ActiveRevision",
-                  "LatestRevision"
+                  "LatestRevision",
+                  "RestrictedRevision"
                 ],
                 "type": "string"
               },
@@ -24914,6 +25700,10 @@
           "ownerName": {
             "type": "string"
           },
+          "project": {
+            "$ref": "#/components/schemas/domino.workspace.api.ref.ProjectRefDto",
+            "nullable": true
+          },
           "projectId": {
             "pattern": "^[0-9a-f]{24}$",
             "type": "string"
@@ -24997,6 +25787,10 @@
       },
       "domino.workspace.api.WorkspaceHardwareTierDto": {
         "properties": {
+          "dataPlane": {
+            "$ref": "#/components/schemas/domino.workspace.api.DataPlaneRefDto",
+            "nullable": true
+          },
           "id": {
             "$ref": "#/components/schemas/domino.hardwaretier.api.HardwareTierIdentifier"
           },
@@ -25108,6 +25902,28 @@
           "repoName",
           "commitId",
           "isMainRepo"
+        ]
+      },
+      "domino.workspace.api.WorkspacePageCollectionDto": {
+        "properties": {
+          "items": {
+            "items": {
+              "$ref": "#/components/schemas/domino.workspace.api.WorkspaceDto"
+            },
+            "type": "array"
+          },
+          "paginationDetails": {
+            "type": "string"
+          },
+          "totalCount": {
+            "format": "int32",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "items",
+          "paginationDetails",
+          "totalCount"
         ]
       },
       "domino.workspace.api.WorkspacePageDto": {
@@ -25693,6 +26509,40 @@
           "filePath"
         ]
       },
+      "domino.workspace.api.ref.ProjectRefDto": {
+        "properties": {
+          "id": {
+            "pattern": "^[0-9a-f]{24}$",
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "owner": {
+            "$ref": "#/components/schemas/domino.workspace.api.ref.UserRefDto"
+          }
+        },
+        "required": [
+          "id",
+          "name",
+          "owner"
+        ]
+      },
+      "domino.workspace.api.ref.UserRefDto": {
+        "properties": {
+          "id": {
+            "pattern": "^[0-9a-f]{24}$",
+            "type": "string"
+          },
+          "userName": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "userName"
+        ]
+      },
       "domino.workspace.web.CreateWorkspaceRequest": {
         "properties": {
           "clusterConfig": {
@@ -25713,7 +26563,8 @@
               {
                 "enum": [
                   "ActiveRevision",
-                  "LatestRevision"
+                  "LatestRevision",
+                  "RestrictedRevision"
                 ],
                 "type": "string"
               },
@@ -25855,7 +26706,8 @@
               {
                 "enum": [
                   "ActiveRevision",
-                  "LatestRevision"
+                  "LatestRevision",
+                  "RestrictedRevision"
                 ],
                 "type": "string"
               },
@@ -26174,7 +27026,8 @@
               {
                 "enum": [
                   "ActiveRevision",
-                  "LatestRevision"
+                  "LatestRevision",
+                  "RestrictedRevision"
                 ],
                 "type": "string"
               },
@@ -26213,6 +27066,7 @@
               "VolumesMounted",
               "ResourcesDeleted",
               "QuotaChecked",
+              "ExecutionAvailable",
               "VolumesReleased",
               "UserCodeLaunched",
               "FilesPrepared",
@@ -26956,7 +27810,8 @@
               {
                 "enum": [
                   "ActiveRevision",
-                  "LatestRevision"
+                  "LatestRevision",
+                  "RestrictedRevision"
                 ],
                 "type": "string"
               },
@@ -27642,90 +28497,6 @@
         ]
       }
     },
-    "/activity/registered_model": {
-      "get": {
-        "operationId": "getRegisteredModelActivityStream",
-        "parameters": [
-          {
-            "description": "Name of the registered model",
-            "in": "query",
-            "name": "modelName",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
-            "description": "Version number of the registered model",
-            "in": "query",
-            "name": "modelVersion",
-            "required": true,
-            "schema": {
-              "format": "int32",
-              "type": "integer"
-            }
-          },
-          {
-            "in": "query",
-            "name": "projectId",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
-            "description": "page size to get the activity",
-            "in": "query",
-            "name": "pageSize",
-            "required": false,
-            "schema": {
-              "format": "int32",
-              "nullable": true,
-              "type": "integer"
-            }
-          },
-          {
-            "description": "latest time stamp of the activity",
-            "in": "query",
-            "name": "latestTimeStamp",
-            "required": false,
-            "schema": {
-              "format": "int64",
-              "nullable": true,
-              "type": "integer"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/domino.activity.api.ActivityStream"
-                }
-              }
-            },
-            "description": "success"
-          },
-          "400": {
-            "$ref": "#/components/responses/BadRequest"
-          },
-          "401": {
-            "$ref": "#/components/responses/Unauthorized"
-          },
-          "403": {
-            "$ref": "#/components/responses/Forbidden"
-          },
-          "500": {
-            "$ref": "#/components/responses/InternalError"
-          }
-        },
-        "summary": "Gets the activity stream for a registered model",
-        "tags": [
-          "Activity"
-        ]
-      }
-    },
     "/admin/adminMenu": {
       "get": {
         "operationId": "getAdminMenu",
@@ -28039,16 +28810,93 @@
     "/admin/executions": {
       "get": {
         "operationId": "getCurrentExecutions",
-        "parameters": [],
+        "parameters": [
+          {
+            "description": "The number of items to skip relative to the sort criteria.",
+            "in": "query",
+            "name": "offset",
+            "required": false,
+            "schema": {
+              "default": 0,
+              "format": "int32",
+              "nullable": true,
+              "type": "integer"
+            }
+          },
+          {
+            "description": "The size of the page to return.",
+            "in": "query",
+            "name": "pageSize",
+            "required": false,
+            "schema": {
+              "default": 50,
+              "format": "int32",
+              "nullable": true,
+              "type": "integer"
+            }
+          },
+          {
+            "description": "A column name to sort over.",
+            "in": "query",
+            "name": "sortBy",
+            "required": false,
+            "schema": {
+              "default": "executionId",
+              "enum": [
+                "executionId",
+                "hardwareTier",
+                "user",
+                "project",
+                "title",
+                "started",
+                "status"
+              ],
+              "nullable": true,
+              "type": "string"
+            }
+          },
+          {
+            "description": "order of sort",
+            "in": "query",
+            "name": "sortOrder",
+            "required": false,
+            "schema": {
+              "default": "asc",
+              "enum": [
+                "asc",
+                "desc"
+              ],
+              "nullable": true,
+              "type": "string"
+            }
+          },
+          {
+            "description": "string to filter on",
+            "in": "query",
+            "name": "searchQuery",
+            "required": false,
+            "schema": {
+              "nullable": true,
+              "type": "string"
+            }
+          },
+          {
+            "description": "comma-separated list of columns to search in for searchQuery",
+            "in": "query",
+            "name": "searchColumns",
+            "required": false,
+            "schema": {
+              "nullable": true,
+              "type": "string"
+            }
+          }
+        ],
         "responses": {
           "200": {
             "content": {
               "application/json": {
                 "schema": {
-                  "items": {
-                    "$ref": "#/components/schemas/domino.admin.interface.ExecutionOverview"
-                  },
-                  "type": "array"
+                  "$ref": "#/components/schemas/domino.admin.interface.ExecutionOverviewsWithTotalCount"
                 }
               }
             },
@@ -28296,9 +29144,38 @@
     "/admin/notifications/admin": {
       "post": {
         "operationId": "createNotificationSuperUser",
-        "responses": {},
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/domino.notifications.CreateNotificationRequest"
+              }
+            }
+          },
+          "description": "Create Notification Request",
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/domino.notifications.AdminNotification"
+                }
+              }
+            },
+            "description": "success"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalError"
+          }
+        },
+        "summary": "Creates a new notification from service.",
         "tags": [
-          "adminnotifications"
+          "Adminnotifications"
         ]
       }
     },
@@ -28444,6 +29321,46 @@
               "format": "int32",
               "nullable": true,
               "type": "integer"
+            }
+          },
+          {
+            "description": "Search string.",
+            "in": "query",
+            "name": "query",
+            "required": false,
+            "schema": {
+              "nullable": true,
+              "type": "string"
+            }
+          },
+          {
+            "description": "Field to sort by.",
+            "in": "query",
+            "name": "sortby",
+            "required": false,
+            "schema": {
+              "enum": [
+                "username",
+                "email",
+                "idpid",
+                "dominouserid"
+              ],
+              "nullable": true,
+              "type": "string"
+            }
+          },
+          {
+            "description": "Sort direction (default - ascending).",
+            "in": "query",
+            "name": "sortdir",
+            "required": false,
+            "schema": {
+              "enum": [
+                "asc",
+                "desc"
+              ],
+              "nullable": true,
+              "type": "string"
             }
           }
         ],
@@ -34391,6 +35308,16 @@
             }
           },
           {
+            "description": "boolean to request storage level info",
+            "in": "query",
+            "name": "includeStorageInfo",
+            "required": false,
+            "schema": {
+              "nullable": true,
+              "type": "boolean"
+            }
+          },
+          {
             "description": "minimum dataset rw permission to check for",
             "in": "query",
             "name": "minimumPermission",
@@ -34418,6 +35345,20 @@
             "description": "project IDs to search datasets from",
             "in": "query",
             "name": "projectIdsToInclude",
+            "required": false,
+            "schema": {
+              "items": {
+                "pattern": "^[0-9a-f]{24}$",
+                "type": "string"
+              },
+              "nullable": true,
+              "type": "array"
+            }
+          },
+          {
+            "description": "dataset IDs to search datasets from",
+            "in": "query",
+            "name": "datasetIds",
             "required": false,
             "schema": {
               "items": {
@@ -35341,6 +36282,19 @@
               "nullable": true,
               "type": "string"
             }
+          },
+          {
+            "description": "dataplane id to look for mounts in",
+            "in": "query",
+            "name": "dataPlaneId",
+            "required": false,
+            "schema": {
+              "items": {
+                "pattern": "^[0-9a-f]{24}$",
+                "type": "string"
+              },
+              "type": "array"
+            }
           }
         ],
         "responses": {
@@ -35398,6 +36352,19 @@
             "schema": {
               "nullable": true,
               "type": "string"
+            }
+          },
+          {
+            "description": "data plane IDs to look for mounts in",
+            "in": "query",
+            "name": "dataPlaneId",
+            "required": false,
+            "schema": {
+              "items": {
+                "pattern": "^[0-9a-f]{24}$",
+                "type": "string"
+              },
+              "type": "array"
             }
           }
         ],
@@ -35870,6 +36837,16 @@
             "schema": {
               "pattern": "^[0-9a-f]{24}$",
               "type": "string"
+            }
+          },
+          {
+            "description": "boolean to request storage level info",
+            "in": "query",
+            "name": "includeStorageInfo",
+            "required": false,
+            "schema": {
+              "nullable": true,
+              "type": "boolean"
             }
           }
         ],
@@ -36560,13 +37537,59 @@
         },
         "responses": {
           "200": {
+            "description": "success"
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalError"
+          }
+        },
+        "summary": "Deletes files from snapshot",
+        "tags": [
+          "DatasetRw"
+        ]
+      }
+    },
+    "/datasetrw/snapshot/{snapshotId}/sizing": {
+      "post": {
+        "operationId": "calculateSnapshotSize",
+        "parameters": [
+          {
+            "description": "Id of the dataset snapshot to size",
+            "in": "path",
+            "name": "snapshotId",
+            "required": true,
+            "schema": {
+              "pattern": "^[0-9a-f]{24}$",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/domino.datasetrw.web.CalculateSnapshotSizeRequest"
+              }
+            }
+          },
+          "description": "Request body with flag whether to override deduplication check. Defaults to false",
+          "required": false
+        },
+        "responses": {
+          "200": {
             "content": {
               "application/json": {
                 "schema": {
-                  "items": {
-                    "$ref": "#/components/schemas/domino.datasetrw.api.DatasetRwSnapshotDto"
-                  },
-                  "type": "array"
+                  "$ref": "#/components/schemas/domino.datasetrw.api.DatasetRwFiletaskTaskDto"
                 }
               }
             },
@@ -36585,7 +37608,7 @@
             "$ref": "#/components/responses/InternalError"
           }
         },
-        "summary": "Deletes files from snapshot",
+        "summary": "Create sizing task for given snapshot",
         "tags": [
           "DatasetRw"
         ]
@@ -36779,6 +37802,178 @@
         ]
       }
     },
+    "/datasetrw/storage": {
+      "get": {
+        "operationId": "getDatasetStorages",
+        "parameters": [
+          {
+            "description": "the IDs of the storages to get",
+            "in": "query",
+            "name": "datasetStorageIds",
+            "required": false,
+            "schema": {
+              "items": {
+                "pattern": "^[0-9a-f]{24}$",
+                "type": "string"
+              },
+              "nullable": true,
+              "type": "array"
+            }
+          },
+          {
+            "description": "the IDs of the dataplanes to get storages from",
+            "in": "query",
+            "name": "dataPlaneIds",
+            "required": false,
+            "schema": {
+              "items": {
+                "pattern": "^[0-9a-f]{24}$",
+                "type": "string"
+              },
+              "nullable": true,
+              "type": "array"
+            }
+          },
+          {
+            "description": "the names of storages to get",
+            "in": "query",
+            "name": "names",
+            "required": false,
+            "schema": {
+              "items": {
+                "type": "string"
+              },
+              "nullable": true,
+              "type": "array"
+            }
+          },
+          {
+            "description": "whether to get registered or unregistered storages",
+            "in": "query",
+            "name": "isRegistered",
+            "required": false,
+            "schema": {
+              "nullable": true,
+              "type": "boolean"
+            }
+          },
+          {
+            "description": "whether to include the number of active datasets",
+            "in": "query",
+            "name": "includeNumberOfActiveDatasets",
+            "required": false,
+            "schema": {
+              "nullable": true,
+              "type": "boolean"
+            }
+          },
+          {
+            "description": "whether to get hardware tier names",
+            "in": "query",
+            "name": "includeHardwareTiers",
+            "required": false,
+            "schema": {
+              "nullable": true,
+              "type": "boolean"
+            }
+          },
+          {
+            "description": "whether to get the dataplane hostname",
+            "in": "query",
+            "name": "includeHostname",
+            "required": false,
+            "schema": {
+              "nullable": true,
+              "type": "boolean"
+            }
+          },
+          {
+            "description": "whether to get the mount information",
+            "in": "query",
+            "name": "includeMountInfo",
+            "required": false,
+            "schema": {
+              "nullable": true,
+              "type": "boolean"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/domino.datasetrw.api.DatasetRwStorageDto"
+                  },
+                  "type": "array"
+                }
+              }
+            },
+            "description": "success"
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalError"
+          }
+        },
+        "summary": "Get DatasetRwStorages by IDs",
+        "tags": [
+          "DatasetRw"
+        ]
+      },
+      "post": {
+        "operationId": "createDatasetStorage",
+        "parameters": [],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/domino.datasetrw.web.CreateDatasetRwStorageRequest"
+              }
+            }
+          },
+          "description": "Dataset storage spec to persist",
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/domino.datasetrw.api.DatasetRwStorageDto"
+                }
+              }
+            },
+            "description": "success"
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalError"
+          }
+        },
+        "summary": "Create DatasetRwStorage",
+        "tags": [
+          "DatasetRw"
+        ]
+      }
+    },
     "/datasetrw/storage-usage": {
       "get": {
         "operationId": "getDatasetStorageUsage",
@@ -36869,6 +38064,222 @@
           }
         },
         "summary": "Gets the storage usage for a specific username",
+        "tags": [
+          "DatasetRw"
+        ]
+      }
+    },
+    "/datasetrw/storage/rpc/get-available-for-project/{projectId}": {
+      "get": {
+        "operationId": "getAvailableDatasetStoragesForProject",
+        "parameters": [
+          {
+            "description": "the ID of the project to get storages from",
+            "in": "path",
+            "name": "projectId",
+            "required": true,
+            "schema": {
+              "pattern": "^[0-9a-f]{24}$",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/domino.datasetrw.api.DatasetRwStorageDto"
+                  },
+                  "type": "array"
+                }
+              }
+            },
+            "description": "success"
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalError"
+          }
+        },
+        "summary": "Get available storages by project ID",
+        "tags": [
+          "DatasetRw"
+        ]
+      }
+    },
+    "/datasetrw/storage/rpc/get-available-volumes": {
+      "get": {
+        "operationId": "getAvailableVolumesForDatasetStorage",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/domino.datasetrw.api.DatasetStorageVolumeInfoDto"
+                  },
+                  "type": "array"
+                }
+              }
+            },
+            "description": "success"
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalError"
+          }
+        },
+        "summary": "Get available volumes for dataset storage",
+        "tags": [
+          "DatasetRw"
+        ]
+      }
+    },
+    "/datasetrw/storage/{datasetStorageId}": {
+      "delete": {
+        "operationId": "unregisterDatasetStorage",
+        "parameters": [
+          {
+            "description": "dataset storage ID",
+            "in": "path",
+            "name": "datasetStorageId",
+            "required": true,
+            "schema": {
+              "pattern": "^[0-9a-f]{24}$",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/domino.datasetrw.api.DatasetRwStorageDto"
+                }
+              }
+            },
+            "description": "success"
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalError"
+          }
+        },
+        "summary": "Unregister dataset storage",
+        "tags": [
+          "DatasetRw"
+        ]
+      },
+      "put": {
+        "operationId": "updateDatasetStorage",
+        "parameters": [
+          {
+            "description": "dataset storage ID",
+            "in": "path",
+            "name": "datasetStorageId",
+            "required": true,
+            "schema": {
+              "pattern": "^[0-9a-f]{24}$",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/domino.datasetrw.web.UpdateDatasetRwStorageRequest"
+              }
+            }
+          },
+          "description": "fields to update",
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/domino.datasetrw.api.DatasetRwStorageDto"
+                }
+              }
+            },
+            "description": "success"
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalError"
+          }
+        },
+        "summary": "Update dataset storage metadata",
+        "tags": [
+          "DatasetRw"
+        ]
+      }
+    },
+    "/datasetrw/storages/set-up": {
+      "get": {
+        "operationId": "areMultipleStoragesRegistered",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "boolean"
+                }
+              }
+            },
+            "description": "success"
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalError"
+          }
+        },
+        "summary": "Get whether or not there is more than one Dataset storage set up",
         "tags": [
           "DatasetRw"
         ]
@@ -39268,6 +40679,62 @@
         ]
       }
     },
+    "/develop/v1/customer-project-template-tag": {
+      "get": {
+        "operationId": "getCustomerProjectTemplateTags",
+        "parameters": [
+          {
+            "description": "Query to filter down the tags",
+            "in": "query",
+            "name": "q",
+            "required": false,
+            "schema": {
+              "nullable": true,
+              "type": "string"
+            }
+          },
+          {
+            "description": "Query to request more or less tags",
+            "in": "query",
+            "name": "limit",
+            "required": false,
+            "schema": {
+              "format": "int32",
+              "nullable": true,
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/domino.projects.templates.api.models.CustomerTemplateTagCollectionDto"
+                }
+              }
+            },
+            "description": "success"
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalError"
+          }
+        },
+        "summary": "Get customer template tags",
+        "tags": [
+          "DevelopV1ProjectTemplates"
+        ]
+      }
+    },
     "/develop/v1/customer-project-templates": {
       "post": {
         "operationId": "createCustomerProjectTemplate",
@@ -39397,6 +40864,58 @@
           }
         },
         "summary": "Get a customer project template by id.",
+        "tags": [
+          "DevelopV1ProjectTemplates"
+        ]
+      },
+      "patch": {
+        "operationId": "updateCustomerProjectTemplate",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "pattern": "^[0-9a-f]{24}$",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/domino.projects.templates.api.models.UpdateCustomerTemplateDto"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/domino.projects.templates.api.models.CustomerTemplateDto"
+                }
+              }
+            },
+            "description": "success"
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalError"
+          }
+        },
+        "summary": "Update customer template",
         "tags": [
           "DevelopV1ProjectTemplates"
         ]
@@ -39597,6 +41116,16 @@
             }
           },
           {
+            "description": "To filter on company official templates.",
+            "in": "query",
+            "name": "isCompanyOfficial",
+            "required": false,
+            "schema": {
+              "nullable": true,
+              "type": "boolean"
+            }
+          },
+          {
             "description": "The field to sort the collection by (in the given order).",
             "in": "query",
             "name": "orderBy",
@@ -39618,11 +41147,13 @@
             "name": "sortOrder",
             "required": false,
             "schema": {
-              "default": "desc",
               "enum": [
                 "asc",
                 "desc"
               ],
+              "items": {
+                "type": "string"
+              },
               "nullable": true,
               "type": "string"
             }
@@ -39635,6 +41166,17 @@
             "schema": {
               "default": "",
               "nullable": true,
+              "type": "string"
+            }
+          },
+          {
+            "description": "The custom template tag to search for.",
+            "in": "query",
+            "name": "customTemplateTagId",
+            "required": false,
+            "schema": {
+              "default": "",
+              "pattern": "^[0-9a-f]{24}$",
               "type": "string"
             }
           }
@@ -40512,7 +42054,9 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/domino.environments.api.PaginatedRevisionData",
+                  "items": {
+                    "$ref": "#/components/schemas/domino.environments.api.PaginatedRevisionData"
+                  },
                   "type": "array"
                 }
               }
@@ -42689,7 +44233,7 @@
               }
             }
           },
-          "description": "JSON object with information to remove this file or direcotyr",
+          "description": "JSON object with information to remove this file or directory",
           "required": true
         },
         "responses": {
@@ -42893,7 +44437,7 @@
             "description": "search query for branch name",
             "in": "query",
             "name": "query",
-            "required": true,
+            "required": false,
             "schema": {
               "type": "string"
             }
@@ -43116,6 +44660,17 @@
             "schema": {
               "default": true,
               "type": "boolean"
+            }
+          },
+          {
+            "description": "limit the number of projects returned",
+            "in": "query",
+            "name": "limit",
+            "required": false,
+            "schema": {
+              "format": "int32",
+              "nullable": true,
+              "type": "integer"
             }
           }
         ],
@@ -43763,6 +45318,514 @@
         ]
       }
     },
+    "/guardrails/audit-event": {
+      "post": {
+        "operationId": "recordGuardrailsAuditEvent",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/domino.guardrails.web.RecordGuardrailsAuditEventRequest"
+              }
+            }
+          },
+          "description": "guardrails audit event type and details",
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "success"
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalError"
+          }
+        },
+        "summary": "record guardrails audit event",
+        "tags": [
+          "Guardrails"
+        ]
+      }
+    },
+    "/guardrails/comments": {
+      "get": {
+        "operationId": "getCommentThreads",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "deliverableId",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "description": "optional filter by comment thread status (either Open or Resolved)",
+            "in": "query",
+            "name": "threadStatus",
+            "required": false,
+            "schema": {
+              "enum": [
+                "Open",
+                "Resolved"
+              ],
+              "nullable": true,
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/domino.guardrails.interface.DeliverableCommentThreadDto"
+                  },
+                  "type": "array"
+                }
+              }
+            },
+            "description": "success"
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalError"
+          }
+        },
+        "summary": "get comments threads for a deliverable",
+        "tags": [
+          "Guardrails"
+        ]
+      },
+      "post": {
+        "operationId": "createComment",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/domino.guardrails.web.CreateCommentRequest"
+              }
+            }
+          },
+          "description": "comment creation details",
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/domino.guardrails.interface.DeliverableCommentThreadDto"
+                }
+              }
+            },
+            "description": "success"
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalError"
+          }
+        },
+        "summary": "Create a comment",
+        "tags": [
+          "Guardrails"
+        ]
+      }
+    },
+    "/guardrails/comments/counts": {
+      "post": {
+        "operationId": "getCommentCounts",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/domino.guardrails.web.GetCommentCountsRequest"
+              }
+            }
+          },
+          "description": "deliverable IDs for which to get comment counts",
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/domino.guardrails.interface.CommentCountsDto"
+                }
+              }
+            },
+            "description": "success"
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalError"
+          }
+        },
+        "summary": "get comments counts for a list of deliverables",
+        "tags": [
+          "Guardrails"
+        ]
+      }
+    },
+    "/guardrails/comments/deliverable/{deliverableId}/approval/{approvalId}": {
+      "get": {
+        "operationId": "getCommentThreadByApproval",
+        "parameters": [
+          {
+            "description": "Deliverable Id",
+            "in": "path",
+            "name": "deliverableId",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "description": "Approval ID",
+            "in": "path",
+            "name": "approvalId",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/domino.guardrails.interface.DeliverableCommentThreadDto"
+                }
+              }
+            },
+            "description": "success"
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalError"
+          }
+        },
+        "summary": "Get a comment thread by deliverable ID and approval ID",
+        "tags": [
+          "Guardrails"
+        ]
+      }
+    },
+    "/guardrails/comments/deliverable/{deliverableId}/artifact/{artifactId}": {
+      "get": {
+        "operationId": "getCommentThreadByArtifact",
+        "parameters": [
+          {
+            "description": "Deliverable Id",
+            "in": "path",
+            "name": "deliverableId",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "description": "Artifact ID",
+            "in": "path",
+            "name": "artifactId",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/domino.guardrails.interface.DeliverableCommentThreadDto"
+                }
+              }
+            },
+            "description": "success"
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalError"
+          }
+        },
+        "summary": "Get a comment thread by deliverable ID and artifact ID",
+        "tags": [
+          "Guardrails"
+        ]
+      }
+    },
+    "/guardrails/comments/summary": {
+      "get": {
+        "operationId": "getCommentsSummary",
+        "parameters": [
+          {
+            "description": "deliverable ID for which to get comments summary",
+            "in": "query",
+            "name": "deliverableId",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/domino.guardrails.interface.DeliverableCommentsSummary"
+                }
+              }
+            },
+            "description": "success"
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalError"
+          }
+        },
+        "summary": "get comments summary for a deliverable",
+        "tags": [
+          "Guardrails"
+        ]
+      }
+    },
+    "/guardrails/comments/{threadId}": {
+      "put": {
+        "operationId": "updateThreadStatus",
+        "parameters": [
+          {
+            "description": "Comment thread ID",
+            "in": "path",
+            "name": "threadId",
+            "required": true,
+            "schema": {
+              "pattern": "^[0-9a-f]{24}$",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/domino.guardrails.web.UpdateThreadStatusRequest"
+              }
+            }
+          },
+          "description": "updated comment body",
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/domino.guardrails.interface.DeliverableCommentThreadDto"
+                }
+              }
+            },
+            "description": "success"
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalError"
+          }
+        },
+        "summary": "update a comment thread's status",
+        "tags": [
+          "Guardrails"
+        ]
+      }
+    },
+    "/guardrails/comments/{threadId}/{commentId}": {
+      "delete": {
+        "operationId": "deleteComment",
+        "parameters": [
+          {
+            "description": "Comment thread ID",
+            "in": "path",
+            "name": "threadId",
+            "required": true,
+            "schema": {
+              "pattern": "^[0-9a-f]{24}$",
+              "type": "string"
+            }
+          },
+          {
+            "description": "Comment ID",
+            "in": "path",
+            "name": "commentId",
+            "required": true,
+            "schema": {
+              "pattern": "^[0-9a-f]{24}$",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/domino.guardrails.interface.DeliverableCommentThreadDto"
+                }
+              }
+            },
+            "description": "success"
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalError"
+          }
+        },
+        "summary": "delete a comment in a comment thread",
+        "tags": [
+          "Guardrails"
+        ]
+      },
+      "put": {
+        "operationId": "updateComment",
+        "parameters": [
+          {
+            "description": "Comment thread ID",
+            "in": "path",
+            "name": "threadId",
+            "required": true,
+            "schema": {
+              "pattern": "^[0-9a-f]{24}$",
+              "type": "string"
+            }
+          },
+          {
+            "description": "Comment ID",
+            "in": "path",
+            "name": "commentId",
+            "required": true,
+            "schema": {
+              "pattern": "^[0-9a-f]{24}$",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/domino.guardrails.web.UpdateCommentRequest"
+              }
+            }
+          },
+          "description": "updated comment body",
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/domino.guardrails.interface.DeliverableCommentThreadDto"
+                }
+              }
+            },
+            "description": "success"
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalError"
+          }
+        },
+        "summary": "Update a comment in a comment thread",
+        "tags": [
+          "Guardrails"
+        ]
+      }
+    },
     "/hardwareTier": {
       "get": {
         "operationId": "getAllHardwareTiers",
@@ -44132,6 +46195,14 @@
             "required": false,
             "schema": {
               "type": "boolean"
+            }
+          },
+          {
+            "description": "Optional job type filter",
+            "in": "query",
+            "name": "type",
+            "schema": {
+              "type": "string"
             }
           }
         ],
@@ -48751,6 +50822,64 @@
         ]
       }
     },
+    "/modelProducts/consumer/{modelProductId}/access": {
+      "get": {
+        "operationId": "canAccess",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "modelProductId",
+            "required": true,
+            "schema": {
+              "pattern": "^[0-9a-f]{24}$",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/domino.nucleus.modelproduct.models.ConsumerModelProduct"
+                }
+              }
+            },
+            "description": "success"
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/domino.nucleus.modelproduct.models.GrantAccessRequired"
+                }
+              }
+            },
+            "description": "Current user does not have access to this model product but may request it."
+          },
+          "403": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/domino.nucleus.modelproduct.models.LoginRequired"
+                }
+              }
+            },
+            "description": "Access to this model product is forbidden for the current user"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalError"
+          }
+        },
+        "summary": "Checks if the consumer can access the model product",
+        "tags": [
+          "Model Products"
+        ]
+      }
+    },
     "/modelProducts/isRunnable": {
       "get": {
         "operationId": "isRunnable",
@@ -49900,34 +52029,119 @@
         ]
       }
     },
-    "/photon/hydrate/{key}": {
+    "/project-goals": {
       "get": {
-        "operationId": "getData",
+        "operationId": "getGoals",
         "parameters": [
           {
-            "in": "path",
-            "name": "key",
-            "required": true,
+            "description": "length of items in page",
+            "in": "query",
+            "name": "pageSize",
+            "required": false,
             "schema": {
+              "default": 10,
+              "format": "int32",
+              "type": "integer"
+            }
+          },
+          {
+            "description": "page number",
+            "in": "query",
+            "name": "pageNumber",
+            "required": false,
+            "schema": {
+              "default": 1,
+              "format": "int32",
+              "type": "integer"
+            }
+          },
+          {
+            "description": "The field to sort the collection by (in the given sortOrder).",
+            "in": "query",
+            "name": "sortField",
+            "required": false,
+            "schema": {
+              "default": "lastUpdatedAt",
               "enum": [
-                "ProjectManagerValues"
+                "lastUpdatedAt",
+                "createdAt"
               ],
+              "nullable": true,
               "type": "string"
             }
           },
           {
+            "description": "The direction to sort the collection by. The direction is 'desc' by default in all cases.",
             "in": "query",
-            "name": "id",
+            "name": "sortOrder",
             "required": false,
             "schema": {
-              "pattern": "^[0-9a-f]{24}$",
+              "enum": [
+                "asc",
+                "desc"
+              ],
+              "items": {
+                "type": "string"
+              },
+              "nullable": true,
               "type": "string"
+            }
+          },
+          {
+            "description": "filter by completed or uncompleted goals",
+            "in": "query",
+            "name": "isComplete",
+            "required": false,
+            "schema": {
+              "nullable": true,
+              "type": "boolean"
+            }
+          },
+          {
+            "description": "filter by the id of the user the goal is assigned to",
+            "in": "query",
+            "name": "assigneeId",
+            "required": false,
+            "schema": {
+              "items": {
+                "pattern": "^[0-9a-f]{24}$",
+                "type": "string"
+              },
+              "nullable": true,
+              "type": "array"
             }
           }
         ],
-        "responses": {},
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/domino.projects.api.model.goals.ProjectGoalCollectionDto"
+                }
+              }
+            },
+            "description": "success"
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "409": {
+            "$ref": "#/components/responses/ProjectManagementErrorResponse"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalError"
+          }
+        },
+        "summary": "Get goals across all projects, sorted by most recently updated.",
         "tags": [
-          "photonRawData"
+          "Project Goals"
         ]
       }
     },
@@ -50293,6 +52507,46 @@
         ]
       }
     },
+    "/projectManagement/goal/assignJiraUser": {
+      "put": {
+        "operationId": "assignJiraUserToLinkedGoal",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/domino.projectManagement.web.SetAssigneeForLinkedGoalRequest"
+              }
+            }
+          },
+          "description": "JSON object with data to assign to a jira user",
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "success"
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "409": {
+            "$ref": "#/components/responses/ProjectManagementErrorResponse"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalError"
+          }
+        },
+        "summary": "Update the assignee of a linked goal (jira ticket)",
+        "tags": [
+          "ProjectManagement"
+        ]
+      }
+    },
     "/projectManagement/goal/{goalId}": {
       "delete": {
         "operationId": "deleteManageProjectGoal",
@@ -50439,6 +52693,67 @@
           }
         },
         "summary": "Assign a user to a goal",
+        "tags": [
+          "ProjectManagement"
+        ]
+      }
+    },
+    "/projectManagement/goal/{goalId}/assignableUsers": {
+      "get": {
+        "operationId": "getUsersForLinkedGoal",
+        "parameters": [
+          {
+            "description": "Domino id of the goal",
+            "in": "path",
+            "name": "goalId",
+            "required": true,
+            "schema": {
+              "pattern": "^[0-9a-f]{24}$",
+              "type": "string"
+            }
+          },
+          {
+            "description": "filter text for users",
+            "in": "query",
+            "name": "filterText",
+            "required": false,
+            "schema": {
+              "nullable": true,
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/domino.projectManagement.api.PmUser"
+                  },
+                  "type": "array"
+                }
+              }
+            },
+            "description": "success"
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "409": {
+            "$ref": "#/components/responses/ProjectManagementErrorResponse"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalError"
+          }
+        },
+        "summary": "Get Assignable Users for Linked Goal",
         "tags": [
           "ProjectManagement"
         ]
@@ -51731,6 +54046,54 @@
         ]
       }
     },
+    "/projectManagement/{goalId}/getLinkedSubTicket": {
+      "get": {
+        "operationId": "getLinkedTicketByGoalId",
+        "parameters": [
+          {
+            "description": "Domino id of the goal",
+            "in": "path",
+            "name": "goalId",
+            "required": true,
+            "schema": {
+              "pattern": "^[0-9a-f]{24}$",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/domino.projectManagement.api.SubTicketToDominoMapper"
+                }
+              }
+            },
+            "description": "success"
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "409": {
+            "$ref": "#/components/responses/ProjectManagementErrorResponse"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalError"
+          }
+        },
+        "summary": "Get Ticket Linked to a Goal",
+        "tags": [
+          "ProjectManagement"
+        ]
+      }
+    },
     "/projectManagement/{jobId}/linkJobToGoal": {
       "post": {
         "operationId": "linkJobToGoal",
@@ -52691,7 +55054,7 @@
               }
             }
           },
-          "description": "JSON object with information for linking goal to a workpace",
+          "description": "JSON object with information for linking goal to a workspace",
           "required": true
         },
         "responses": {
@@ -57183,7 +59546,6 @@
               "schema": {
                 "properties": {
                   "kerberosMode": {
-                    "required": true,
                     "type": "string"
                   },
                   "keytabFileName": {
@@ -57199,8 +59561,7 @@
                   }
                 },
                 "required": [
-                  "kerberosMode",
-                  "upfile"
+                  "kerberosMode"
                 ],
                 "type": "object"
               }
@@ -59768,6 +62129,74 @@
         ]
       }
     },
+    "/runs/recentlyStarted": {
+      "get": {
+        "operationId": "listRecentlyStartedRunsWithLimit",
+        "parameters": [
+          {
+            "description": "Max number of runs to fetch. Defaults to 15.",
+            "in": "query",
+            "name": "limit",
+            "required": false,
+            "schema": {
+              "default": 15,
+              "format": "int32",
+              "nullable": true,
+              "type": "integer"
+            }
+          },
+          {
+            "description": "The type of workload to filter on (optional). If not set, no filter will be used.",
+            "in": "query",
+            "name": "workloadType",
+            "required": false,
+            "schema": {
+              "enum": [
+                "job",
+                "workspace",
+                "other"
+              ],
+              "nullable": true,
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/domino.common.run.interfaces.RunMonolithDTO"
+                  },
+                  "type": "array"
+                }
+              }
+            },
+            "description": "success"
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalError"
+          }
+        },
+        "summary": "retrieves list of recently started runs",
+        "tags": [
+          "Runs"
+        ]
+      }
+    },
     "/scheduledruns": {
       "get": {
         "operationId": "listScheduledRuns",
@@ -59961,14 +62390,6 @@
             "schema": {
               "type": "string"
             }
-          },
-          {
-            "in": "path",
-            "name": "serviceAccountIpdId",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
           }
         ],
         "responses": {
@@ -60008,14 +62429,6 @@
             "schema": {
               "type": "string"
             }
-          },
-          {
-            "in": "path",
-            "name": "serviceAccountIpdId",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
           }
         ],
         "responses": {
@@ -60051,14 +62464,6 @@
           {
             "in": "path",
             "name": "serviceAccountIdpId",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
-            "in": "path",
-            "name": "serviceAccountIpdId",
             "required": true,
             "schema": {
               "type": "string"
@@ -60350,6 +62755,17 @@
             "schema": {
               "nullable": true,
               "type": "string"
+            }
+          },
+          {
+            "description": "Query to request more or less tags",
+            "in": "query",
+            "name": "limit",
+            "required": false,
+            "schema": {
+              "format": "int32",
+              "nullable": true,
+              "type": "integer"
             }
           }
         ],
@@ -60850,6 +63266,15 @@
             "description": "Limit to either expired or non-expired notifications (optional, defaults to all)",
             "in": "query",
             "name": "expired",
+            "required": false,
+            "schema": {
+              "nullable": true,
+              "type": "boolean"
+            }
+          },
+          {
+            "in": "query",
+            "name": "read",
             "required": false,
             "schema": {
               "nullable": true,
@@ -62006,6 +64431,108 @@
         "summary": "Stop the deployment of model API version",
         "tags": [
           "ModelManager"
+        ]
+      }
+    },
+    "/workspace": {
+      "get": {
+        "operationId": "ownerProvisionedWorkspacesAllProjects",
+        "parameters": [
+          {
+            "description": "length of items in page",
+            "in": "query",
+            "name": "pageSize",
+            "required": false,
+            "schema": {
+              "default": 10,
+              "format": "int32",
+              "type": "integer"
+            }
+          },
+          {
+            "description": "page number",
+            "in": "query",
+            "name": "pageNumber",
+            "required": false,
+            "schema": {
+              "default": 1,
+              "format": "int32",
+              "type": "integer"
+            }
+          },
+          {
+            "description": "the searchy query to filter by name",
+            "in": "query",
+            "name": "q",
+            "required": false,
+            "schema": {
+              "nullable": true,
+              "type": "string"
+            }
+          },
+          {
+            "description": "The field to sort the collection by (in the given sortOrder).",
+            "in": "query",
+            "name": "sortField",
+            "required": false,
+            "schema": {
+              "default": "LastStarted",
+              "enum": [
+                "Name",
+                "ProjectName",
+                "LastStarted",
+                "HardwareTierName",
+                "Status"
+              ],
+              "nullable": true,
+              "type": "string"
+            }
+          },
+          {
+            "description": "The direction to sort the collection by. The direction is 'desc' by default in all cases.",
+            "in": "query",
+            "name": "sortOrder",
+            "required": false,
+            "schema": {
+              "enum": [
+                "asc",
+                "desc"
+              ],
+              "items": {
+                "type": "string"
+              },
+              "nullable": true,
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/domino.workspace.api.WorkspacePageCollectionDto"
+                }
+              }
+            },
+            "description": "success"
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalError"
+          }
+        },
+        "summary": "Get all provisioned (i.e. not deleted) workspaces owned by a user across projects, sorted by last started time descending.",
+        "tags": [
+          "Workspace"
         ]
       }
     },
