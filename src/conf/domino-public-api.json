@@ -852,7 +852,9 @@
             "type": "string"
           },
           "window": {
-            "$ref": "#/components/schemas/CostAssetsV1Window",
+            "schema": {
+              "$ref": "#/components/schemas/CostAssetsV1Window"
+            },
             "type": "object"
           }
         },
@@ -15565,7 +15567,7 @@
         "responses": {
           "200": {
             "content": {
-              "application/octet-stream": {
+              "*/*": {
                 "schema": {
                   "format": "binary",
                   "type": "string"
@@ -15963,7 +15965,7 @@
         "responses": {
           "200": {
             "content": {
-              "application/octet-stream": {
+              "*/*": {
                 "schema": {
                   "format": "binary",
                   "type": "string"
