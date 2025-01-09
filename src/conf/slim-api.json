@@ -835,6 +835,13 @@
             "schema": { "nullable": true, "type": "boolean" }
           },
           {
+            "description": "boolean to request storage level info",
+            "in": "query",
+            "name": "includeStorageInfo",
+            "required": false,
+            "schema": { "nullable": true, "type": "boolean" }
+          },
+          {
             "description": "minimum dataset rw permission to check for",
             "in": "query",
             "name": "minimumPermission",
@@ -856,6 +863,17 @@
             "description": "project IDs to search datasets from",
             "in": "query",
             "name": "projectIdsToInclude",
+            "required": false,
+            "schema": {
+              "items": { "pattern": "^[0-9a-f]{24}$", "type": "string" },
+              "nullable": true,
+              "type": "array"
+            }
+          },
+          {
+            "description": "dataset IDs to search datasets from",
+            "in": "query",
+            "name": "datasetIds",
             "required": false,
             "schema": {
               "items": { "pattern": "^[0-9a-f]{24}$", "type": "string" },
@@ -943,6 +961,16 @@
             "name": "minimumPermission",
             "required": false,
             "schema": { "nullable": true, "type": "string" }
+          },
+          {
+            "description": "data plane IDs to look for mounts in",
+            "in": "query",
+            "name": "dataPlaneId",
+            "required": false,
+            "schema": {
+              "items": { "type": "string" },
+              "type": "array"
+            }
           }
         ],
         "responses": {
@@ -1008,6 +1036,13 @@
             "name": "snapshotId",
             "required": true,
             "schema": { "pattern": "^[0-9a-f]{24}$", "type": "string" }
+          },
+          {
+            "description": "boolean to request storage level info",
+            "in": "query",
+            "name": "includeStorageInfo",
+            "required": false,
+            "schema": { "nullable": true, "type": "boolean" }
           }
         ],
         "responses": {
@@ -1208,6 +1243,13 @@
             "name": "showCompleted",
             "required": false,
             "schema": { "default": true, "type": "boolean" }
+          },
+          {
+            "description": "limit the number of projects returned",
+            "in": "query",
+            "name": "limit",
+            "required": false,
+            "schema": { "format": "int32", "nullable": true, "type": "integer" }
           }
         ],
         "responses": {
@@ -2476,7 +2518,7 @@
           "environmentRevisionSpec": {
             "oneOf": [
               {
-                "enum": ["ActiveRevision", "LatestRevision"],
+                "enum": ["ActiveRevision", "LatestRevision", "RestrictedRevision"],
                 "type": "string"
               },
               {
@@ -3041,6 +3083,11 @@
       "domino.datasetrw.web.CreateDatasetRequest": {
         "properties": {
           "datasetName": { "type": "string" },
+          "datasetStorageId": {
+            "nullable": true,
+            "pattern": "^[0-9a-f]{24}$",
+            "type": "string"
+          },
           "description": { "nullable": true, "type": "string" },
           "grants": {
             "items": {
@@ -3191,6 +3238,7 @@
             "type": "array"
           },
           "datasetPath": { "type": "string" },
+          "datasetStorageId": { "pattern": "^[0-9a-f]{24}$", "type": "string" },
           "description": { "nullable": true, "type": "string" },
           "id": { "pattern": "^[0-9a-f]{24}$", "type": "string" },
           "lifecycleStatus": {
@@ -3273,6 +3321,10 @@
           "projectInfo": {
             "$ref": "#/components/schemas/domino.datasetrw.api.DatasetRwProjectInfoDto",
             "nullable": true
+          },
+          "storageInfo": {
+            "$ref": "#/components/schemas/domino.datasetrw.api.DatasetRwStorageInfoDto",
+            "nullable": true
           }
         },
         "required": ["datasetRwDto"]
@@ -3291,6 +3343,17 @@
           "projectOwnerUsername",
           "isProjectArchived"
         ]
+      },
+      "domino.datasetrw.api.DatasetRwStorageInfoDto": {
+        "properties": {
+          "dataPlaneName": { "nullable": true, "type": "string" },
+          "isAccessible": { "nullable": true, "type": "boolean" },
+          "mountPath": { "nullable": true, "type": "string" },
+          "name": { "type": "string" },
+          "pvcName": { "nullable": true, "type": "string" },
+          "subDir": { "nullable": true, "type": "string" }
+        },
+        "required": ["name"]
       },
       "domino.datasetrw.api.DatasetRwSnapshotFilesViewDto": {
         "properties": {
@@ -3356,6 +3419,10 @@
             "type": "string"
           },
           "snapshotId": { "pattern": "^[0-9a-f]{24}$", "type": "string" },
+          "storageInfo": {
+            "$ref": "#/components/schemas/domino.datasetrw.api.DatasetRwStorageInfoDto",
+            "nullable": true
+          },
           "storageSize": {
             "format": "int64",
             "nullable": true,
@@ -3420,6 +3487,7 @@
           },
           "creationTime": { "format": "int64", "type": "integer" },
           "datasetId": { "pattern": "^[0-9a-f]{24}$", "type": "string" },
+          "datasetStorageId": { "pattern": "^[0-9a-f]{24}$", "type": "string"  },
           "description": { "nullable": true, "type": "string" },
           "id": { "pattern": "^[0-9a-f]{24}$", "type": "string" },
           "isPartialSize": { "type": "boolean" },
@@ -3441,9 +3509,7 @@
             ],
             "type": "string"
           },
-          "resource": {
-            "$ref": "#/components/schemas/domino.datasetrw.api.DatasetRwResourceDto"
-          },
+          "resourceId": { "type": "string" },
           "statusLastUpdatedBy": {
             "pattern": "^[0-9a-f]{24}$",
             "type": "string"
@@ -3454,7 +3520,6 @@
         },
         "required": [
           "id",
-          "resource",
           "datasetId",
           "version",
           "creationTime",
@@ -3463,7 +3528,9 @@
           "statusLastUpdatedTime",
           "storageSize",
           "isPartialSize",
-          "isReadWrite"
+          "isReadWrite",
+          "datasetStorageId",
+          "resourceId"
         ]
       },
       "domino.datasetrw.api.DatasetRwSnapshotSummaryDto": {
@@ -3473,17 +3540,13 @@
           "isReadWrite": { "type": "boolean" },
           "snapshot": {
             "$ref": "#/components/schemas/domino.datasetrw.api.DatasetRwSnapshotDto"
+          },
+          "storageInfo": {
+            "$ref": "#/components/schemas/domino.datasetrw.api.DatasetRwStorageInfoDto",
+            "nullable": true
           }
         },
         "required": ["snapshot", "isReadWrite"]
-      },
-      "domino.datasetrw.api.DatasetRwResourceDto": {
-        "properties": {
-          "claimName": { "type": "string" },
-          "resourceId": { "type": "string" },
-          "subDir": { "type": "string" }
-        },
-        "required": ["claimName", "resourceId", "subDir"]
       },
       "domino.datasource.api.DataSourceDto": {
         "properties": {
@@ -3992,6 +4055,8 @@
       },
       "domino.projects.api.ProjectTemplateDetails": {
         "properties": {
+          "forceImport": { "nullable": true, "type": "boolean" },
+          "importToMainRepo": { "nullable": true, "type": "boolean" },
           "name": { "type": "string" },
           "templateId": { "type": "string" },
           "templateRevisionId": { "nullable": true, "type": "string" },
@@ -4043,6 +4108,10 @@
       },
       "domino.jobs.interface.Job": {
         "properties": {
+          "abnormalStatus": {
+            "$ref": "#/components/schemas/domino.jobs.interface.AbnormalStatus",
+            "nullable": true
+          },
           "commentsCount": { "format": "int32", "type": "integer" },
           "commitDetails": {
             "$ref": "#/components/schemas/domino.jobs.interface.CommitDetails"
@@ -4096,6 +4165,7 @@
             "nullable": true
           },
           "number": { "format": "int32", "type": "integer" },
+          "projectId": { "pattern": "^[0-9a-f]{24}$", "type": "string" },
           "queuedJobHistoryDetails": {
             "$ref": "#/components/schemas/domino.jobs.interface.QueuedJobHistoryDetails",
             "nullable": true
@@ -4140,6 +4210,7 @@
           "tags",
           "jobRunCommand",
           "commentsCount",
+          "projectId",
           "commitDetails",
           "dominoStats",
           "statuses",
@@ -4151,6 +4222,13 @@
           "dependentExternalVolumeMounts",
           "snapshotDatasetsOnCompletion"
         ]
+      },
+      "domino.jobs.interface.AbnormalStatus": {
+        "properties": {
+          "runFailureMessage": { "type": "string" },
+          "runFailureReason": { "type": "string" }
+        },
+        "required": ["runFailureReason", "runFailureMessage"]
       },
       "domino.jobs.interface.CommitDetails": {
         "properties": {
@@ -4170,7 +4248,7 @@
             "nullable": true,
             "oneOf": [
               {
-                "enum": ["ActiveRevision", "LatestRevision"],
+                "enum": ["ActiveRevision", "LatestRevision", "RestrictedRevision"],
                 "type": "string"
               },
               {
@@ -4508,7 +4586,7 @@
             "nullable": true,
             "oneOf": [
               {
-                "enum": ["ActiveRevision", "LatestRevision"],
+                "enum": ["ActiveRevision", "LatestRevision", "RestrictedRevision"],
                 "type": "string"
               },
               {
@@ -4556,7 +4634,7 @@
             "nullable": true,
             "oneOf": [
               {
-                "enum": ["ActiveRevision", "LatestRevision"],
+                "enum": ["ActiveRevision", "LatestRevision", "RestrictedRevision"],
                 "type": "string"
               },
               {
@@ -4650,6 +4728,10 @@
             },
             "type": "array"
           },
+          "project": {
+            "$ref": "#/components/schemas/domino.projects.api.model.ref.ProjectRefDto",
+            "nullable": true
+          },
           "projectId": { "pattern": "^[0-9a-f]{24}$", "type": "string" },
           "title": { "type": "string" }
         },
@@ -4664,6 +4746,26 @@
           "createdAt",
           "createdBy"
         ]
+      },
+      "domino.projects.api.model.ref.ProjectRefDto": {
+        "properties": {
+          "id": { "pattern": "^[0-9a-f]{24}$", "type": "string" },
+          "name": { "type": "string" },
+          "owner": {
+            "$ref": "#/components/schemas/domino.projects.api.model.ref.UserRefDto"
+          }
+        },
+        "required": ["id", "name", "owner"]
+      },
+      "domino.projects.api.model.ref.UserRefDto": {
+        "properties": {
+          "id": {
+            "pattern": "^[0-9a-f]{24}$",
+            "type": "string"
+          },
+          "userName": { "type": "string" }
+        },
+        "required": ["id", "userName"]
       },
       "domino.projects.api.ProjectStage": {
         "properties": {
@@ -4856,7 +4958,6 @@
         "properties": {
           "credentialId": { "pattern": "^[0-9a-f]{24}$", "type": "string" },
           "owner": { "type": "string" },
-          "repositoryTemplateName": { "nullable": true, "type": "string" },
           "repositoryToCreateName": { "type": "string" },
           "serviceProvider": {
             "enum": [
@@ -5095,9 +5196,11 @@
       },
       "domino.common.run.interfaces.RunMonolithDTO": {
         "properties": {
+          "command": { "type": "string" },
           "estimatedCost": { "format": "double", "type": "number" },
           "hardwareTierName": { "type": "string" },
           "id": { "pattern": "^[0-9a-f]{24}$", "type": "string" },
+          "nextFireTime": { "type": "string" },
           "projectId": { "pattern": "^[0-9a-f]{24}$", "type": "string" },
           "projectIdentity": { "type": "string" },
           "runDurationInSeconds": { "format": "double", "type": "number" },
@@ -5129,7 +5232,9 @@
         "required": [
           "id",
           "title",
+          "command",
           "startTime",
+          "nextFireTime",
           "projectId",
           "projectIdentity",
           "runType",
