@@ -36290,9 +36290,9 @@
             "required": false,
             "schema": {
               "items": {
+                "pattern": "^[0-9a-f]{24}$",
                 "type": "string"
               },
-              "pattern": "^[0-9a-f]{24}$",
               "type": "array"
             }
           }
@@ -36361,9 +36361,9 @@
             "required": false,
             "schema": {
               "items": {
+                "pattern": "^[0-9a-f]{24}$",
                 "type": "string"
               },
-              "pattern": "^[0-9a-f]{24}$",
               "type": "array"
             }
           }
@@ -42054,7 +42054,9 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/domino.environments.api.PaginatedRevisionData",
+                  "items": {
+                    "$ref": "#/components/schemas/domino.environments.api.PaginatedRevisionData"
+                  },
                   "type": "array"
                 }
               }
