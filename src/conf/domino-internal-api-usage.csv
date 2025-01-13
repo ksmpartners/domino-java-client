@@ -2,6 +2,7 @@ HTTP Method,API,HTTP Endpoint
 get,/v4,/accounts/{userId}/gitcredentials
 post,/v4,/accounts/{userId}/gitcredentials
 delete,/v4,/accounts/{userId}/gitcredentials/{credentialId}
+get,/v4,/admin/supportbundle/{executionId}
 get,/v4,/datamount/projects/{projectId}
 post,/v4,/datasetrw
 delete,/v4,/datasetrw/{projectId}/shared/{datasetId}
@@ -13,7 +14,11 @@ get,/v4,/datasetrw/datasets/{datasetId}
 get,/v4,/datasetrw/files/{snapshotId}
 get,/v4,/datasetrw/mounts-v2/{projectId}/shared
 get,/v4,/datasetrw/snapshot/{snapshotId}
+get,/v4,/datasetrw/snapshot/{snapshotId}/download-local/{taskKey}
+get,/v4,/datasetrw/snapshot/{snapshotId}/file/raw
 get,/v4,/datasetrw/snapshots/{datasetId}
+get,/v4,/datasource/audit/download
+get,/v4,/datasource/audit/download/runs
 post,/v4,/datasource/{dataSourceId}/projects/{projectId}
 get,/v4,/gateway/projects
 get,/v4,/gateway/projects/findProjectByOwnerAndName
@@ -25,6 +30,7 @@ get,v4,/jobs/{jobId}/runtimeExecutionDetails
 post,/v4,/jobs/restart
 post,/v4,/jobs/start
 post,/v4,/jobs/stop
+get,/v4,/modelManager/{modelVersionId}/logs
 post,/v4,/projectManagement/{jobId}/linkJobToGoal
 get,/v4,/projectManagement/{projectId}/goals
 post,/v4,/projects
