@@ -7,8 +7,10 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
 import com.dominodatalab.TestClientConfigurer;
+import com.dominodatalab.TestData;
 import com.dominodatalab.pub.invoker.ApiClient;
 import com.dominodatalab.pub.invoker.ApiException;
+import com.dominodatalab.pub.model.PaginatedGitRepositoriesEnvelopeV1;
 import com.dominodatalab.pub.model.ProjectEnvelopeV1;
 
 public class ProjectsApiTest extends TestClientConfigurer {
@@ -24,7 +26,7 @@ public class ProjectsApiTest extends TestClientConfigurer {
     @Test
     void getProjectById_success() throws ApiException {
         // Arrange
-        String projectId = "66313c4cdb6cb00661f1a27b";
+        String projectId = TestData.VALID_PROJECT_ID_0;
 
         // Act
         ProjectEnvelopeV1 result = projectsApi.getProjectById(projectId);
@@ -37,8 +39,7 @@ public class ProjectsApiTest extends TestClientConfigurer {
     @Test
     void testGetProjectById_notFound() {
         // Arrange
-        // projectId must conform to "^[0-9a-f]{24}$" to pass input validation
-        String projectId = "000000000000000000000000";
+        String projectId = TestData.NOT_FOUND_PROJECT_ID;
 
         // Act
         ApiException th = assertThrows(ApiException.class, () -> projectsApi.getProjectById(projectId));
@@ -50,11 +51,47 @@ public class ProjectsApiTest extends TestClientConfigurer {
     @Test
     void testGetProjectById_invalidCode() {
         // Arrange
-        // projectId must conform to "^[0-9a-f]{24}$" to pass input validation
-        String projectId = "invalid";
+        String projectId = TestData.INVALID_PROJECT_ID;
 
         // Act
         ApiException th = assertThrows(ApiException.class, () -> projectsApi.getProjectById(projectId));
+
+        // Assert
+        assertEquals(400, th.getCode());
+        assert(th.getMessage()).contains(projectId + " is not a valid ID");
+    }
+    
+    @Test
+    void testGetImportedRepos_success() throws ApiException {
+        // Arrange
+        String projectId = TestData.VALID_PROJECT_ID_0;
+
+        // Act
+        PaginatedGitRepositoriesEnvelopeV1 repos = projectsApi.getImportedRepos(projectId, 0, 10);
+
+        // Assert
+        assertEquals(0, repos.getRepositories().size());
+    }
+
+    @Test
+    void testGetImportedRepos_notFound() {
+        // Arrange
+        String projectId = TestData.NOT_FOUND_PROJECT_ID;
+
+        // Act
+        ApiException th = assertThrows(ApiException.class, () -> projectsApi.getImportedRepos(projectId, 0, 10));
+
+        // Assert
+        assertEquals(404, th.getCode());
+    }
+
+    @Test
+    void testGetImportedRepos_invalidCode() {
+        // Arrange
+        String projectId = TestData.INVALID_PROJECT_ID;
+
+        // Act
+        ApiException th = assertThrows(ApiException.class, () -> projectsApi.getImportedRepos(projectId, 0, 10));
 
         // Assert
         assertEquals(400, th.getCode());
