@@ -81,12 +81,14 @@ component_schemas_set = set()
 
 # Iterate over endpoints
 for endpoint, methods in endpoint_methods.items():
-    assert endpoint in internal_spec_dict['paths'], f"Listed endpoint from CSV '{endpoint}' not found in internal spec"
+    if endpoint not in internal_spec_dict['paths']:
+        raise KeyError(f"Listed endpoint from CSV '{endpoint}' not found in internal spec")
     path_dict = internal_spec_dict['paths'][endpoint]
     new_path_dict = {}
 
     for method in methods:
-        assert method in path_dict, f"Method '{method.upper()}' for endpoint '{endpoint}' not found in internal spec"
+        if method not in path_dict:
+            raise KeyError(f"Method '{method.upper()}' for endpoint '{endpoint}' not found in internal spec")
         new_path_dict[method] = path_dict[method]
 
         # Load all references to components to sets to dereference in the next step
@@ -109,7 +111,8 @@ component_responses_spec_dict = {}
 responses_dict = internal_spec_dict['components']['responses']
 
 for response in component_responses_set:
-    assert response in responses_dict, f"Referenced response '{response}' not found in internal spec"
+    if response not in responses_dict:
+        raise KeyError(f"Referenced response '{response}' not found in internal spec")
     component_responses_spec_dict[response] = responses_dict[response]
 
     # Search for any additional schemas marked in spec
@@ -126,7 +129,8 @@ schemas_dict = internal_spec_dict['components']['schemas']
 def walk_schema_tree(schema_name):
     # Prevent circular walks - only parse schema if not already set on dict
     if schema_name not in component_schemas_spec_dict:
-        assert schema_name in schemas_dict, f"Referenced schema '{schema_name}' not found in internal spec"
+        if schema_name not in schemas_dict:
+            raise KeyError(f"Referenced schema '{schema_name}' not found in internal spec")
         component_schemas_spec_dict[schema_name] = schemas_dict[schema_name]
 
         # Search for any additional schemas marked in spec
