@@ -142,7 +142,8 @@ for schema in component_schemas_set:
 
 output_spec_dict['components'] = {
     'responses': component_responses_spec_dict,
-    'schemas': component_schemas_spec_dict
+    'schemas': component_schemas_spec_dict,
+    'securitySchemes': internal_spec_dict['components']['securitySchemes']
 }
 
 print(json.dumps(output_spec_dict, indent = 2, sort_keys = True))
