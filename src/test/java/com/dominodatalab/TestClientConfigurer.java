@@ -6,6 +6,7 @@ import java.net.URI;
 import java.net.http.HttpRequest.Builder;
 import java.util.Properties;
 
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.TestInstance;
 
 import com.dominodatalab.client.DominoApiClient;
@@ -17,6 +18,7 @@ import lombok.extern.java.Log;
  * URL and API key configured to permit integration testing.
  */
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
+@Tag("Integration")
 @Log
 public class TestClientConfigurer {
     
