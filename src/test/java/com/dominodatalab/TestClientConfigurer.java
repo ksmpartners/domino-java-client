@@ -27,9 +27,7 @@ public class TestClientConfigurer {
 
     private static String DEFAULT_DOMINO_API_BASE_PATH = "/v4";
     private static String DOMINO_API_KEY_HEADER = "X-Domino-Api-Key";
-    private static String DOMINO_API_KEY_ENVVAR = "DOMINO_API_KEY";
     private static String DOMINO_API_KEY_PROPERTY = "domino.api.key";
-    private static String DOMINO_API_URL_ENVVAR = "DOMINO_API_URL";
     private static String DOMINO_API_URL_PROPERTY = "domino.api.url";
 
     public TestClientConfigurer() {
@@ -82,21 +80,21 @@ public class TestClientConfigurer {
 
     private String getDominoApiUrl() {
         if (dominoApiUrl == null) {
-            dominoApiUrl = getProperty(DOMINO_API_URL_PROPERTY, DOMINO_API_URL_ENVVAR);
+            dominoApiUrl = getProperty(DOMINO_API_URL_PROPERTY);
         }
         return dominoApiUrl;
     }
 
     private String getDominoApiKey() {
         if (dominoApiKey == null) {
-            dominoApiKey = getProperty(DOMINO_API_KEY_PROPERTY, DOMINO_API_KEY_ENVVAR);
+            dominoApiKey = getProperty(DOMINO_API_KEY_PROPERTY);
         }
         return dominoApiKey;
     }
     
-    private String getProperty(final String propertyName, final String envvarName) {
+    private String getProperty(final String propertyName) {
         String property = System.getProperty(propertyName);
-        String envvar = System.getenv(envvarName);
+        String envvar = System.getenv(envify(propertyName));
 
         if (property == null && envvar == null) {
             throw new IllegalStateException("Property '" + propertyName + "' is not set!");
@@ -105,6 +103,16 @@ public class TestClientConfigurer {
         // Use property over environment variable - since these are integration tests
         // user's set environment may not align with expected test environment
         return property != null ? property : envvar;
+    }
+
+    /**
+     * Get the equivalent environment variable name based on the application
+     * property name.
+     * 
+     * <p>For example, 'domino.api.url' becomes 'DOMINO_API_URL'.
+     */
+    private static String envify(String propertyName) {
+        return propertyName.toUpperCase().replace('.', '_');
     }
 
 }
