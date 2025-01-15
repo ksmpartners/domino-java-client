@@ -83,6 +83,15 @@ class UsersApiTest extends TestClientConfigurer {
         assertNotNull(envVars);
     }
 
+    /**
+     * Tests adding and removing environment variables for a Domino user.
+     * 
+     * <p>Since the only operation to remove an environment variable for a user
+     * is to delete them all, any initial environment variables configured on
+     * the user profile are reinstated as a final step.
+     * 
+     * @throws ApiException if any error code is received from the Domino API.
+     */
     @Test
     @Tag("Stateful")
     void userEnvironmentVariables() throws ApiException {

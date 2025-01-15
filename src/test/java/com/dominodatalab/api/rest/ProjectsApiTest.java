@@ -20,9 +20,13 @@ import com.dominodatalab.api.invoker.ApiClient;
 import com.dominodatalab.api.invoker.ApiException;
 import com.dominodatalab.api.model.DominoCommonModelsEnvironmentVariable;
 import com.dominodatalab.api.model.DominoCommonUserPerson;
+import com.dominodatalab.api.model.DominoHardwaretierApiHardwareTierWithCapacityDto;
 import com.dominodatalab.api.model.DominoNucleusProjectModelsCollaborator;
 import com.dominodatalab.api.model.DominoProjectsApiCollaboratorDTO;
 import com.dominodatalab.api.model.DominoProjectsApiProjectSummary;
+import com.dominodatalab.api.model.DominoProjectsApiRepositoriesGitRepositoryDTO;
+import com.dominodatalab.api.model.DominoProjectsApiRepositoriesReferenceDTO;
+import com.dominodatalab.api.model.DominoProjectsApiUseableProjectEnvironmentsDTO;
 import com.dominodatalab.api.model.DominoNucleusProjectModelsCollaborator.ProjectRoleEnum;
 
 class ProjectsApiTest extends TestClientConfigurer {
@@ -273,6 +277,182 @@ class ProjectsApiTest extends TestClientConfigurer {
     }
     
     @Test
+    void listHardwareTiersForProjectSuccess() throws ApiException {
+        // Arrange
+        String projectId = TestData.VALID_PROJECT_ID_0;
+
+        // Act
+        List<DominoHardwaretierApiHardwareTierWithCapacityDto> tiers = projectsApi.listHardwareTiersForProject(projectId, Boolean.FALSE, Boolean.FALSE);
+
+        // Assert
+        assertNotNull(tiers);
+        assertFalse(tiers.isEmpty());
+    }
+    
+    @Test
+    void listHardwareTiersForProjectNotFound() {
+        // Arrange
+        String projectId = TestData.NOT_FOUND_PROJECT_ID;
+
+        // Act
+        ApiException th = assertThrows(ApiException.class, () -> projectsApi.listHardwareTiersForProject(projectId, Boolean.FALSE, Boolean.FALSE));
+
+        // Assert
+        assertEquals(404, th.getCode());
+    }
+    
+    @Test
+    void listHardwareTiersForProjectInvalidCode() {
+        // Arrange
+        String projectId = TestData.INVALID_PROJECT_ID;
+
+        // Act
+        ApiException th = assertThrows(ApiException.class, () -> projectsApi.listHardwareTiersForProject(projectId, Boolean.FALSE, Boolean.FALSE));
+
+        // Assert
+        assertEquals(400, th.getCode());
+        assert(th.getMessage()).contains(projectId + " is not a valid ID");
+    }
+    
+    @Test
+    void getUseableEnvironmentsSuccess() throws ApiException {
+        // Arrange
+        String projectId = TestData.VALID_PROJECT_ID_0;
+
+        // Act
+        DominoProjectsApiUseableProjectEnvironmentsDTO environments = projectsApi.getUseableEnvironments(projectId);
+
+        // Assert
+        assertNotNull(environments.getCurrentlySelectedEnvironment());
+        assertFalse(environments.getEnvironments().isEmpty());
+    }
+    
+    @Test
+    void getUseableEnvironmentsNotFound() {
+        // Arrange
+        String projectId = TestData.NOT_FOUND_PROJECT_ID;
+
+        // Act
+        ApiException th = assertThrows(ApiException.class, () -> projectsApi.getUseableEnvironments(projectId));
+
+        // Assert
+        assertEquals(404, th.getCode());
+    }
+    
+    @Test
+    void getUseableEnvironmentsInvalidCode() {
+        // Arrange
+        String projectId = TestData.INVALID_PROJECT_ID;
+
+        // Act
+        ApiException th = assertThrows(ApiException.class, () -> projectsApi.getUseableEnvironments(projectId));
+
+        // Assert
+        assertEquals(400, th.getCode());
+        assert(th.getMessage()).contains(projectId + " is not a valid ID");
+    }
+    
+    @Test
+    void getGitReposSuccess() throws ApiException {
+        // Arrange
+        String projectId = TestData.VALID_PROJECT_ID_0;
+
+        // Act
+        List<DominoProjectsApiRepositoriesGitRepositoryDTO> repos = projectsApi.getGitRepos(projectId);
+
+        // Assert
+        assertNotNull(repos);
+        assertFalse(repos.isEmpty());
+    }
+    
+    @Test
+    void getGitReposNotFound() {
+        // Arrange
+        String projectId = TestData.NOT_FOUND_PROJECT_ID;
+
+        // Act
+        ApiException th = assertThrows(ApiException.class, () -> projectsApi.getGitRepos(projectId));
+
+        // Assert
+        assertEquals(404, th.getCode());
+    }
+    
+    @Test
+    void getGitReposInvalidCode() {
+        // Arrange
+        String projectId = TestData.INVALID_PROJECT_ID;
+
+        // Act
+        ApiException th = assertThrows(ApiException.class, () -> projectsApi.getGitRepos(projectId));
+
+        // Assert
+        assertEquals(400, th.getCode());
+        assert(th.getMessage()).contains(projectId + " is not a valid ID");
+    }
+    
+    @Test
+    void updateGitRepositoryDefaultRefSuccess() throws ApiException {
+        // Arrange
+        String projectId = TestData.VALID_PROJECT_ID_0;
+        String repoId = TestData.VALID_PROJECT_GIT_REPO_ID;
+
+        DominoProjectsApiRepositoriesReferenceDTO newRef = new DominoProjectsApiRepositoriesReferenceDTO();
+        newRef.setType("branches");
+        newRef.setValue("main");
+
+        // Act
+        projectsApi.updateGitRepositoryDefaultRef(projectId, repoId, newRef);
+
+        // Assert
+        List<DominoProjectsApiRepositoriesGitRepositoryDTO> repos = projectsApi.getGitRepos(projectId);
+        assertTrue(repos.size() > 0);
+        DominoProjectsApiRepositoriesGitRepositoryDTO updatedRepo = repos.stream().filter(repo -> repo.getId().equals(repoId)).findFirst().get();
+        DominoProjectsApiRepositoriesReferenceDTO updatedRef = updatedRepo.getRef();
+        assertEquals(newRef.getType(), updatedRef.getType());
+        assertEquals(newRef.getValue(), updatedRef.getValue());
+    }
+    
+    @Test
+    void updateGitRepositoryDefaultRefProjectNotFound() {
+        // Arrange
+        String projectId = TestData.NOT_FOUND_PROJECT_ID;
+        String repoId = TestData.VALID_PROJECT_GIT_REPO_ID;
+
+        DominoProjectsApiRepositoriesReferenceDTO newRef = new DominoProjectsApiRepositoriesReferenceDTO();
+        newRef.setType("branches");
+        newRef.setValue("main");
+
+        // Act
+        ApiException th = assertThrows(ApiException.class, () -> projectsApi.updateGitRepositoryDefaultRef(projectId, repoId, newRef));
+
+        // Assert
+        assertEquals(404, th.getCode());
+    }
+    
+    @Test
+    void updateGitRepositoryDefaultRefProjectInvalidCode() {
+        // Arrange
+        String projectId = TestData.INVALID_PROJECT_ID;
+        String repoId = TestData.VALID_PROJECT_GIT_REPO_ID;
+
+        DominoProjectsApiRepositoriesReferenceDTO newRef = new DominoProjectsApiRepositoriesReferenceDTO();
+        newRef.setType("branches");
+        newRef.setValue("main");
+
+        // Act
+        ApiException th = assertThrows(ApiException.class, () -> projectsApi.updateGitRepositoryDefaultRef(projectId, repoId, newRef));
+
+        // Assert
+        assertEquals(400, th.getCode());
+        assert(th.getMessage()).contains(projectId + " is not a valid ID");
+    }
+
+    /**
+     * Tests adding and removing a user as a collaborator of a Domino project.
+     * 
+     * @throws ApiException if any error code is received from the Domino API.
+     */
+    @Test
     @Tag("Stateful")
     void projectCollaborators() throws ApiException {
         // Assert initial state - project collaborators do not include test data
@@ -312,6 +492,11 @@ class ProjectsApiTest extends TestClientConfigurer {
         assertTrue(collaborators2.stream().noneMatch(user -> user.getId().equals(testCollaboratorId)));
     }
     
+    /**
+     * Tests adding and removing environment variables for a Domino project.
+     * 
+     * @throws ApiException if any error code is received from the Domino API.
+     */
     @Test
     @Tag("Stateful")
     void projectEnvironmentVariables() throws ApiException {
@@ -347,7 +532,66 @@ class ProjectsApiTest extends TestClientConfigurer {
 
         assertEquals(1, envVars2.size());
         assertTrue(envVars2.stream().noneMatch(var -> TestData.ENVIRONMENT_VARIABLES.keySet().contains(var.getName())));
+    }
     
+    /**
+     * Tests adding, updating, and removing an imported git repo for a Domino project.
+     * 
+     * @throws ApiException if any error code is received from the Domino API.
+     */
+    @Test
+    @Tag("Stateful")
+    void importedGitRepos() throws ApiException {
+        // Assert initial state - project imported git repos do not include test data
+        String projectId = TestData.VALID_PROJECT_ID_0;
+        String testRepoUri = TestData.VALID_PROJECT_TEST_REPO;
+        String serviceProvider = "github";
+        List<DominoProjectsApiRepositoriesGitRepositoryDTO> repos0 = projectsApi.getGitRepos(projectId);
+        
+        // Pre-condition: Assert test git repo is not present
+        assertEquals(1, repos0.size(), "Pre-condition failed: project configuration does not include exactly one imported git repository");
+        assertTrue(repos0.stream().noneMatch(repo -> repo.getUri().equals(testRepoUri)), "Pre-condition failed: project configuration includes imported test git repository");
+
+        DominoProjectsApiRepositoriesGitRepositoryDTO testRepo = new DominoProjectsApiRepositoriesGitRepositoryDTO();
+        testRepo.setUri(testRepoUri);
+        testRepo.setServiceProvider(serviceProvider);
+        DominoProjectsApiRepositoriesReferenceDTO ref = new DominoProjectsApiRepositoriesReferenceDTO();
+        ref.setType("head");
+        testRepo.setRef(ref);
+        DominoProjectsApiRepositoriesGitRepositoryDTO result = projectsApi.addGitRepo(projectId, testRepo);
+
+        List<DominoProjectsApiRepositoriesGitRepositoryDTO> repos1 = projectsApi.getGitRepos(projectId);
+
+        // Assert new imported git repo is now present
+        assertEquals(2, repos1.size());
+        DominoProjectsApiRepositoriesGitRepositoryDTO targetRepo0 = repos1.stream().filter(repo -> repo.getId().equals(result.getId())).findFirst().get();
+        assertNotNull(targetRepo0.getName());
+        assertEquals(testRepoUri, targetRepo0.getUri());
+        assertEquals(serviceProvider, targetRepo0.getServiceProvider());
+        assertEquals(ref.getType(), targetRepo0.getRef().getType());
+
+        // Update repo name
+        targetRepo0.setName("foobar");
+        projectsApi.editGitRepo(projectId, result.getId(), targetRepo0);
+
+        List<DominoProjectsApiRepositoriesGitRepositoryDTO> repos2 = projectsApi.getGitRepos(projectId);
+
+        // Assert updated imported git repo is now present
+        assertEquals(2, repos2.size());
+        DominoProjectsApiRepositoriesGitRepositoryDTO targetRepo1 = repos2.stream().filter(repo -> repo.getId().equals(result.getId())).findFirst().get();
+        assertEquals("foobar", targetRepo1.getName());
+        assertEquals(testRepoUri, targetRepo1.getUri());
+        assertEquals(serviceProvider, targetRepo1.getServiceProvider());
+        assertEquals(ref.getType(), targetRepo1.getRef().getType());
+        
+        // Remove test imported git repo
+        projectsApi.archiveGitRepo(projectId, result.getId());
+
+        List<DominoProjectsApiRepositoriesGitRepositoryDTO> repos3 = projectsApi.getGitRepos(projectId);
+
+        // assert new imported git repo is no longer present
+        assertEquals(1, repos3.size());
+        assertTrue(repos3.stream().noneMatch(repo -> repo.getUri().equals(testRepoUri)));
     }
 
 }

@@ -25,4 +25,10 @@ public class TestData {
     /** Test collaborator for project access */
     public static String VALID_PROJECT_COLLABORATOR_ID = "66a90dde501a20571eac34ca";
 
+    /** Valid existing git repository for valid project */
+    public static String VALID_PROJECT_GIT_REPO_ID = "6787f5445ba26145e20f397b";
+
+    /** Test imported git repository for valid project */
+    public static String VALID_PROJECT_TEST_REPO = "https://github.com/ksmpartners/domino-java-client.git";
+
 }
