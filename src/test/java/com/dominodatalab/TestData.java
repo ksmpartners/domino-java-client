@@ -1,5 +1,7 @@
 package com.dominodatalab;
 
+import java.util.Map;
+
 public class TestData {
 
     /** quick-start project */
@@ -10,5 +12,11 @@ public class TestData {
 
     /** Project ID must conform to "^[0-9a-f]{24}$" to pass input validation */
     public static String INVALID_PROJECT_ID = "invalid";
+
+    /** Test environment variables for users or projects */
+    public static Map<String, String> ENVIRONMENT_VARIABLES = Map.of(
+        "INTEGRATION_0_VAL", "First test value for integration tests",
+        "INTEGRATION_1_VAL", "Second test value for integration tests"
+    );
     
 }
