@@ -18,5 +18,8 @@ public class TestData {
         "INTEGRATION_0_VAL", "First test value for integration tests",
         "INTEGRATION_1_VAL", "Second test value for integration tests"
     );
+
+    /** Secondary test project environment variable name */
+    public static String TEST_ENVIRONMENT_VARIABLE = "ISQUICKSTART";
     
 }
