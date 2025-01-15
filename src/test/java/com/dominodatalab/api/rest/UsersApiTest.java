@@ -20,7 +20,7 @@ import com.dominodatalab.api.model.DominoCommonModelsEnvironmentVariable;
 import com.dominodatalab.api.model.DominoCommonModelsEnvironmentVariables;
 import com.dominodatalab.api.model.DominoCommonUserPerson;
 
-public class UsersApiTest extends TestClientConfigurer {
+class UsersApiTest extends TestClientConfigurer {
 
     UsersApi usersApi;
 

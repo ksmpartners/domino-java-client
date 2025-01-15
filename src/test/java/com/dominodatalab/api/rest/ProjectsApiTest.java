@@ -21,7 +21,7 @@ import com.dominodatalab.api.model.DominoCommonModelsEnvironmentVariable;
 import com.dominodatalab.api.model.DominoCommonUserPerson;
 import com.dominodatalab.api.model.DominoProjectsApiProjectSummary;
 
-public class ProjectsApiTest extends TestClientConfigurer {
+class ProjectsApiTest extends TestClientConfigurer {
 
     ProjectsApi projectsApi;
 

@@ -13,7 +13,7 @@ import com.dominodatalab.pub.invoker.ApiException;
 import com.dominodatalab.pub.model.PaginatedGitRepositoriesEnvelopeV1;
 import com.dominodatalab.pub.model.ProjectEnvelopeV1;
 
-public class ProjectsApiTest extends TestClientConfigurer {
+class ProjectsApiTest extends TestClientConfigurer {
     
     ProjectsApi projectsApi;
 
