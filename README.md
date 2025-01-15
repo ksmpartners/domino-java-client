@@ -108,6 +108,26 @@ Install it to your local Maven repository with:
 $ mvn install
 ```
 
+## Running Integration Tests
+
+There are multiple test suites defined under this project. The default tests that run when running `mvn test` are the tests tagged "Unit". 
+
+There are two other groups of tests: "Integration" and "Stateful". The Stateful tests are designed to return to the initial state, but if the tests fail or get shut down in the midst of running, the pre-condition will no longer be met. It will require logging into Domino and reconfiguring whatever project configuration, etc. to match the pre-condition. For this reason, Stateful tests are always excluded by default since they incur changing the state of Domino away from the pre-condition assumption.
+
+These tests are configured to use a particular account for a particular instance of Domino that has been set up with certain projects and configuration. Running the integration tests requires configuration of specific secrets under the `src/test/resources/application.properties` file.
+
+The tests tagged as Integration can be run with the following command:
+
+```shell
+$ mvn -Dtests="Integration" test
+```
+
+To run all tests in the project including the tests tagged as Stateful:
+
+```shell
+$ mvn -Dtests="any()" -DexcludeTests="" test
+```
+
 # Release
 
 - Run `mvn versions:set -DgenerateBackupPoms=false -DnewVersion=5.5.1` to update all modules versions
