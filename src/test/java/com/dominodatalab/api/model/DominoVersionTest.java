@@ -1,6 +1,7 @@
 package com.dominodatalab.api.model;
 
-import org.junit.jupiter.api.Assertions;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
@@ -8,7 +9,7 @@ import org.junit.jupiter.api.Test;
 class DominoVersionTest {
 
     @Test
-    void testPojo() {
+    void pojo() {
         // Arrange
         DominoVersion version = DominoVersion.builder().version("1.0").buildId("123").commitId("commit").build();
 
@@ -17,7 +18,7 @@ class DominoVersionTest {
         int hashCode = version.hashCode();
 
         // Assert
-        Assertions.assertEquals(1871293790, hashCode);
-        Assertions.assertEquals("DominoVersion(buildId=123, buildUrl=null, commitId=commit, commitUrl=null, timestamp=null, version=1.0)", toString);
+        assertEquals(1871293790, hashCode);
+        assertEquals("DominoVersion(buildId=123, buildUrl=null, commitId=commit, commitUrl=null, timestamp=null, version=1.0)", toString);
     }
 }

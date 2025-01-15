@@ -37,7 +37,7 @@ class ProjectsApiTest extends TestClientConfigurer {
     }
 
     @Test
-    void testGetProjectById_notFound() {
+    void getProjectByIdNotFound() {
         // Arrange
         String projectId = TestData.NOT_FOUND_PROJECT_ID;
 
@@ -49,7 +49,7 @@ class ProjectsApiTest extends TestClientConfigurer {
     }
 
     @Test
-    void testGetProjectById_invalidCode() {
+    void getProjectByIdInvalidCode() {
         // Arrange
         String projectId = TestData.INVALID_PROJECT_ID;
 
@@ -62,7 +62,7 @@ class ProjectsApiTest extends TestClientConfigurer {
     }
     
     @Test
-    void testGetImportedRepos_success() throws ApiException {
+    void getImportedReposSuccess() throws ApiException {
         // Arrange
         String projectId = TestData.VALID_PROJECT_ID_0;
 
@@ -74,7 +74,7 @@ class ProjectsApiTest extends TestClientConfigurer {
     }
 
     @Test
-    void testGetImportedRepos_notFound() {
+    void getImportedReposNotFound() {
         // Arrange
         String projectId = TestData.NOT_FOUND_PROJECT_ID;
 
@@ -86,7 +86,7 @@ class ProjectsApiTest extends TestClientConfigurer {
     }
 
     @Test
-    void testGetImportedRepos_invalidCode() {
+    void getImportedReposInvalidCode() {
         // Arrange
         String projectId = TestData.INVALID_PROJECT_ID;
 

@@ -32,7 +32,7 @@ class ProjectsApiTest extends TestClientConfigurer {
     }
 
     @Test
-    void testGetProjectSummary_success() throws ApiException {
+    void getProjectSummarySuccess() throws ApiException {
         // Arrange
         String projectId = TestData.VALID_PROJECT_ID_0;
 
@@ -45,7 +45,7 @@ class ProjectsApiTest extends TestClientConfigurer {
     }
 
     @Test
-    void testGetProjectSummary_notFound() {
+    void getProjectSummaryNotFound() {
         // Arrange
         // projectId must conform to "^[0-9a-f]{24}$" to pass input validation
         String projectId = TestData.NOT_FOUND_PROJECT_ID;
@@ -58,7 +58,7 @@ class ProjectsApiTest extends TestClientConfigurer {
     }
 
     @Test
-    void testGetProjectSummary_invalidCode() {
+    void getProjectSummaryInvalidCode() {
         // Arrange
         String projectId = TestData.INVALID_PROJECT_ID;
 
@@ -71,7 +71,7 @@ class ProjectsApiTest extends TestClientConfigurer {
     }
     
     @Test
-    void testGetProjectCollaborators_success() throws ApiException {
+    void getProjectCollaboratorsSuccess() throws ApiException {
         // Arrange
         String projectId = TestData.VALID_PROJECT_ID_0;
 
@@ -83,7 +83,7 @@ class ProjectsApiTest extends TestClientConfigurer {
     }
 
     @Test
-    void testGetProjectCollaborators_notFound() {
+    void getProjectCollaboratorsNotFound() {
         // Arrange
         String projectId = TestData.NOT_FOUND_PROJECT_ID;
 
@@ -95,7 +95,7 @@ class ProjectsApiTest extends TestClientConfigurer {
     }
 
     @Test
-    void testGetProjectCollaborators_invalidCode() {
+    void getProjectCollaboratorsInvalidCode() {
         // Arrange
         String projectId = TestData.INVALID_PROJECT_ID;
 
@@ -108,7 +108,7 @@ class ProjectsApiTest extends TestClientConfigurer {
     }
     
     @Test
-    void testGetProjectEnvironmentVariables_success() throws ApiException {
+    void getProjectEnvironmentVariablesSuccess() throws ApiException {
         // Arrange
         String projectId = TestData.VALID_PROJECT_ID_0;
 
@@ -121,7 +121,7 @@ class ProjectsApiTest extends TestClientConfigurer {
     }
     
     @Test
-    void testGetProjectEnvironmentVariables_notFound() throws ApiException {
+    void getProjectEnvironmentVariablesNotFound() throws ApiException {
         // Arrange
         String projectId = TestData.NOT_FOUND_PROJECT_ID;
 
@@ -133,7 +133,7 @@ class ProjectsApiTest extends TestClientConfigurer {
     }
     
     @Test
-    void testGetProjectEnvironmentVariables_invalidCode() throws ApiException {
+    void getProjectEnvironmentVariablesInvalidCode() throws ApiException {
         // Arrange
         String projectId = TestData.INVALID_PROJECT_ID;
 
@@ -146,7 +146,7 @@ class ProjectsApiTest extends TestClientConfigurer {
     }
     
     @Test
-    void testUpsertProjectEnvironmentVariable_success() throws ApiException {
+    void upsertProjectEnvironmentVariableSuccess() throws ApiException {
         // Arrange
         String projectId = TestData.VALID_PROJECT_ID_0;
         String varName = TestData.TEST_ENVIRONMENT_VARIABLE;
@@ -163,7 +163,7 @@ class ProjectsApiTest extends TestClientConfigurer {
     }
     
     @Test
-    void testUpsertProjectEnvironmentVariable_notFound() {
+    void upsertProjectEnvironmentVariableNotFound() {
         // Arrange
         String projectId = TestData.NOT_FOUND_PROJECT_ID;
         String varName = TestData.TEST_ENVIRONMENT_VARIABLE;
@@ -179,7 +179,7 @@ class ProjectsApiTest extends TestClientConfigurer {
     }
     
     @Test
-    void testUpsertProjectEnvironmentVariable_invalidCode() {
+    void upsertProjectEnvironmentVariableInvalidCode() {
         // Arrange
         String projectId = TestData.INVALID_PROJECT_ID;
         String varName = TestData.TEST_ENVIRONMENT_VARIABLE;
@@ -196,7 +196,7 @@ class ProjectsApiTest extends TestClientConfigurer {
     }
     
     @Test
-    void testUpsertProjectEnvironmentVariable_nullValue() {
+    void upsertProjectEnvironmentVariableNullValue() {
         // Arrange
         String projectId = TestData.VALID_PROJECT_ID_0;
         String varName = TestData.TEST_ENVIRONMENT_VARIABLE;
@@ -213,7 +213,7 @@ class ProjectsApiTest extends TestClientConfigurer {
     }
     
     @Test
-    void testUpsertProjectEnvironmentVariable_nullName() {
+    void upsertProjectEnvironmentVariableNullName() {
         // Arrange
         String projectId = TestData.VALID_PROJECT_ID_0;
         DominoCommonModelsEnvironmentVariable envVar = new DominoCommonModelsEnvironmentVariable();
@@ -229,7 +229,7 @@ class ProjectsApiTest extends TestClientConfigurer {
     }
     
     @Test
-    void testDeleteProjectEnvironmentVariable_notFound() {
+    void deleteProjectEnvironmentVariableNotFound() {
         // Arrange
         String projectId = TestData.NOT_FOUND_PROJECT_ID;
         String varName = TestData.TEST_ENVIRONMENT_VARIABLE;
@@ -242,7 +242,7 @@ class ProjectsApiTest extends TestClientConfigurer {
     }
     
     @Test
-    void testDeleteProjectEnvironmentVariable_invalidCode() {
+    void deleteProjectEnvironmentVariableInvalidCode() {
         // Arrange
         String projectId = TestData.INVALID_PROJECT_ID;
         String varName = TestData.TEST_ENVIRONMENT_VARIABLE;
@@ -256,7 +256,7 @@ class ProjectsApiTest extends TestClientConfigurer {
     }
     
     @Test
-    void testDeleteProjectEnvironmentVariable_invalidVar() {
+    void deleteProjectEnvironmentVariableInvalidVar() {
         // Arrange
         String projectId = TestData.VALID_PROJECT_ID_0;
         String varName = TestData.INVALID_PROJECT_ID;
@@ -270,7 +270,7 @@ class ProjectsApiTest extends TestClientConfigurer {
     
     @Test
     @Tag("Stateful")
-    void testProjectEnvironmentVariables() throws ApiException {
+    void projectEnvironmentVariables() throws ApiException {
         // Assert initial state - user environment variables do not include test data
         String projectId = TestData.VALID_PROJECT_ID_0;
         List<DominoCommonModelsEnvironmentVariable> envVars0 = projectsApi.getProjectEnvironmentVariables(projectId);

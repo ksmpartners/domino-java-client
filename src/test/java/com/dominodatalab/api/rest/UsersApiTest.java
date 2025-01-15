@@ -31,7 +31,7 @@ class UsersApiTest extends TestClientConfigurer {
     }
 
     @Test
-    void testGetCurrentUser_success() throws ApiException {
+    void getCurrentUserSuccess() throws ApiException {
         // Arrange
 
         // Act
@@ -43,7 +43,7 @@ class UsersApiTest extends TestClientConfigurer {
     }
 
     @Test
-    void testListUsers_userId_success() throws ApiException {
+    void listUsersUserIdSuccess() throws ApiException {
         // Arrange
         DominoCommonUserPerson user = usersApi.getCurrentUser();
 
@@ -56,7 +56,7 @@ class UsersApiTest extends TestClientConfigurer {
     }
 
     @Test
-    void testListUsers_userName_success() throws ApiException {
+    void listUsersUserNameSuccess() throws ApiException {
         // Arrange
         DominoCommonUserPerson user = usersApi.getCurrentUser();
 
@@ -71,7 +71,7 @@ class UsersApiTest extends TestClientConfigurer {
     }
     
     @Test
-    void testListUserEnvironmentVariables_success() throws ApiException {
+    void listUserEnvironmentVariablesSuccess() throws ApiException {
         // Arrange
 
         // Act
@@ -85,7 +85,7 @@ class UsersApiTest extends TestClientConfigurer {
 
     @Test
     @Tag("Stateful")
-    void testUserEnvironmentVariables() throws ApiException {
+    void userEnvironmentVariables() throws ApiException {
         // Assert initial state - user environment variables do not include test data
         DominoCommonModelsEnvironmentVariables currentVars0 = usersApi.listUserEnvironmentVariables();
         List<DominoCommonModelsEnvironmentVariable> envVars0 = currentVars0.getVars();
