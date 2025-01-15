@@ -31,7 +31,8 @@ jobs:
       env:
         DOMINO_API_URL: ${{ secrets.DOMINO_API_URL }}
         DOMINO_API_KEY: ${{ secrets.DOMINO_API_KEY }}
-      run: mvn -Dtests='any()' test
+      # Run all Integration and Unit tests, including Stateful tests
+      run: mvn -Dtests='any()' -DexcludeTests='' test
       if: github.event_name == 'pull_request'
     - name: Build with Maven
       run: mvn -B -V -T1C clean package --file pom.xml
