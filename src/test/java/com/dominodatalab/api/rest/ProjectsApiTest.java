@@ -2,6 +2,7 @@ package com.dominodatalab.api.rest;
 
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -19,7 +20,10 @@ import com.dominodatalab.api.invoker.ApiClient;
 import com.dominodatalab.api.invoker.ApiException;
 import com.dominodatalab.api.model.DominoCommonModelsEnvironmentVariable;
 import com.dominodatalab.api.model.DominoCommonUserPerson;
+import com.dominodatalab.api.model.DominoNucleusProjectModelsCollaborator;
+import com.dominodatalab.api.model.DominoProjectsApiCollaboratorDTO;
 import com.dominodatalab.api.model.DominoProjectsApiProjectSummary;
+import com.dominodatalab.api.model.DominoNucleusProjectModelsCollaborator.ProjectRoleEnum;
 
 class ProjectsApiTest extends TestClientConfigurer {
 
@@ -270,8 +274,48 @@ class ProjectsApiTest extends TestClientConfigurer {
     
     @Test
     @Tag("Stateful")
+    void projectCollaborators() throws ApiException {
+        // Assert initial state - project collaborators do not include test data
+        String projectId = TestData.VALID_PROJECT_ID_0;
+        String testCollaboratorId = TestData.VALID_PROJECT_COLLABORATOR_ID;
+        ProjectRoleEnum targetRole = ProjectRoleEnum.CONTRIBUTOR;
+
+        List<DominoCommonUserPerson> collaborators0 = projectsApi.getProjectCollaborators(projectId, Boolean.FALSE);
+
+        // Pre-condition: Assert test user is not collaborator
+        assertEquals(1, collaborators0.size());
+        assertFalse(collaborators0.stream().anyMatch(user -> user.getId().equals(testCollaboratorId)));
+
+        // Assign test user to project
+        DominoNucleusProjectModelsCollaborator collaborator = new DominoNucleusProjectModelsCollaborator();
+        collaborator.setCollaboratorId(testCollaboratorId);
+        collaborator.setProjectRole(targetRole);
+        projectsApi.addCollaborator(projectId, collaborator);
+
+        DominoProjectsApiProjectSummary summary = projectsApi.getProjectSummary(projectId);
+        // This list does not include owner, so size is one less than getProjectCollaborators would report
+        List<DominoProjectsApiCollaboratorDTO> collaborators1 = summary.getCollaborators();
+
+        // Assert test user is now in list of collaborators and role matches
+        assertEquals(1, collaborators1.size());
+        DominoProjectsApiCollaboratorDTO assignedUser = collaborators1.get(0);
+        assertEquals(testCollaboratorId, assignedUser.getCollaboratorId());
+        assertEquals(targetRole.name(), assignedUser.getProjectRole().name());
+
+        // Remove test user
+        projectsApi.removeCollaborator(projectId, testCollaboratorId);
+
+        List<DominoCommonUserPerson> collaborators2 = projectsApi.getProjectCollaborators(projectId, Boolean.FALSE);
+
+        // Assert test user is not in list of collaborators
+        assertEquals(1, collaborators2.size());
+        assertFalse(collaborators2.stream().anyMatch(user -> user.getId().equals(testCollaboratorId)));
+    }
+    
+    @Test
+    @Tag("Stateful")
     void projectEnvironmentVariables() throws ApiException {
-        // Assert initial state - user environment variables do not include test data
+        // Assert initial state - project environment variables do not include test data
         String projectId = TestData.VALID_PROJECT_ID_0;
         List<DominoCommonModelsEnvironmentVariable> envVars0 = projectsApi.getProjectEnvironmentVariables(projectId);
 

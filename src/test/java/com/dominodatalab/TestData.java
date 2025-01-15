@@ -21,5 +21,8 @@ public class TestData {
 
     /** Secondary test project environment variable name */
     public static String TEST_ENVIRONMENT_VARIABLE = "ISQUICKSTART";
-    
+
+    /** Test collaborator for project access */
+    public static String VALID_PROJECT_COLLABORATOR_ID = "66a90dde501a20571eac34ca";
+
 }
