@@ -1,7 +1,11 @@
 package com.dominodatalab.pub.rest;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
+import java.util.List;
 
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -12,6 +16,7 @@ import com.dominodatalab.pub.invoker.ApiClient;
 import com.dominodatalab.pub.invoker.ApiException;
 import com.dominodatalab.pub.model.PaginatedGitRepositoriesEnvelopeV1;
 import com.dominodatalab.pub.model.ProjectEnvelopeV1;
+import com.dominodatalab.pub.model.ProjectGitRepositoryV1;
 
 class ProjectsApiTest extends TestClientConfigurer {
     
@@ -67,10 +72,12 @@ class ProjectsApiTest extends TestClientConfigurer {
         String projectId = TestData.VALID_PROJECT_ID_0;
 
         // Act
-        PaginatedGitRepositoriesEnvelopeV1 repos = projectsApi.getImportedRepos(projectId, 0, 10);
+        PaginatedGitRepositoriesEnvelopeV1 result = projectsApi.getImportedRepos(projectId, 0, 10);
 
         // Assert
-        assertEquals(0, repos.getRepositories().size());
+        List<ProjectGitRepositoryV1> repos = result.getRepositories();
+        assertNotNull(repos);
+        assertTrue(repos.size() > 0);
     }
 
     @Test
