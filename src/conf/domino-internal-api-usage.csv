@@ -47,6 +47,7 @@ post,/v4,/projects/{projectId}/collaborators
 delete,/v4,/projects/{projectId}/collaborators/{collaboratorId}
 get,/v4,/projects/{projectId}/environmentVariables
 post,/v4,/projects/{projectId}/environmentVariables
+delete,/v4,/projects/{projectId}/environmentVariables/{environmentVariableName}
 get,/v4,/projects/{projectId}/gitRepositories
 post,/v4,/projects/{projectId}/gitRepositories
 delete,/v4,/projects/{projectId}/gitRepositories/{repositoryId}
