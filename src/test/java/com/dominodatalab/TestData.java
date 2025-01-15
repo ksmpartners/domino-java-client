@@ -4,7 +4,7 @@ import java.util.Map;
 
 public class TestData {
 
-    /** quick-start project */
+    /** quick-start project - not git-based */
     public static String VALID_PROJECT_ID_0 = "66313c4cdb6cb00661f1a27b";
 
     /** Project ID must conform to "^[0-9a-f]{24}$" to pass input validation */

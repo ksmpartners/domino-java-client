@@ -91,7 +91,7 @@ class UsersApiTest extends TestClientConfigurer {
         List<DominoCommonModelsEnvironmentVariable> envVars0 = currentVars0.getVars();
 
         // Pre-condition: Assert test variables are not set
-        assertTrue(envVars0.isEmpty() || envVars0.stream().noneMatch(var -> TestData.ENVIRONMENT_VARIABLES.keySet().contains(var.getName())));
+        assertTrue(envVars0.isEmpty() || envVars0.stream().noneMatch(var -> TestData.ENVIRONMENT_VARIABLES.keySet().contains(var.getName())), "Pre-condition failed: User configured environment variables includes test data");
 
         // At the time of writing, setUserEnvironmentVariables only *overwrites*
         // existing vars, so any pre-existing ones are still kept

@@ -283,8 +283,8 @@ class ProjectsApiTest extends TestClientConfigurer {
         List<DominoCommonUserPerson> collaborators0 = projectsApi.getProjectCollaborators(projectId, Boolean.FALSE);
 
         // Pre-condition: Assert test user is not collaborator
-        assertEquals(1, collaborators0.size());
-        assertFalse(collaborators0.stream().anyMatch(user -> user.getId().equals(testCollaboratorId)));
+        assertEquals(1, collaborators0.size(), "Pre-condition failed: project configuration does not include only one collaborator (owner)");
+        assertTrue(collaborators0.stream().noneMatch(user -> user.getId().equals(testCollaboratorId)), "Pre-condition failed: project configuration includes test user as collaborator");
 
         // Assign test user to project
         DominoNucleusProjectModelsCollaborator collaborator = new DominoNucleusProjectModelsCollaborator();
@@ -309,7 +309,7 @@ class ProjectsApiTest extends TestClientConfigurer {
 
         // Assert test user is not in list of collaborators
         assertEquals(1, collaborators2.size());
-        assertFalse(collaborators2.stream().anyMatch(user -> user.getId().equals(testCollaboratorId)));
+        assertTrue(collaborators2.stream().noneMatch(user -> user.getId().equals(testCollaboratorId)));
     }
     
     @Test
@@ -320,8 +320,8 @@ class ProjectsApiTest extends TestClientConfigurer {
         List<DominoCommonModelsEnvironmentVariable> envVars0 = projectsApi.getProjectEnvironmentVariables(projectId);
 
         // Pre-condition: Assert test variables are not set
-        assertEquals(1, envVars0.size());
-        assertTrue(envVars0.stream().noneMatch(var -> TestData.ENVIRONMENT_VARIABLES.keySet().contains(var.getName())));
+        assertEquals(1, envVars0.size(), "Pre-condition failed: project configuration does not include exactly one environment variable");
+        assertTrue(envVars0.stream().noneMatch(var -> TestData.ENVIRONMENT_VARIABLES.keySet().contains(var.getName())), "Pre-condition failed: project configuration includes test environment variables");
 
         for (Entry<String, String> testvar : TestData.ENVIRONMENT_VARIABLES.entrySet()) {
             DominoCommonModelsEnvironmentVariable variable = new DominoCommonModelsEnvironmentVariable();
@@ -346,6 +346,8 @@ class ProjectsApiTest extends TestClientConfigurer {
         List<DominoCommonModelsEnvironmentVariable> envVars2 = projectsApi.getProjectEnvironmentVariables(projectId);
 
         assertEquals(1, envVars2.size());
+        assertTrue(envVars2.stream().noneMatch(var -> TestData.ENVIRONMENT_VARIABLES.keySet().contains(var.getName())));
+    
     }
 
 }
