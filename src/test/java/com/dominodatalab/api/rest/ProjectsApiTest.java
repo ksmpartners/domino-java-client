@@ -56,7 +56,7 @@ class ProjectsApiTest extends TestClientConfigurer {
     void getProjectSummaryNotFound() {
         // Arrange
         // projectId must conform to "^[0-9a-f]{24}$" to pass input validation
-        String projectId = TestData.NOT_FOUND_PROJECT_ID;
+        String projectId = TestData.NOT_FOUND_DOMINO_ID;
 
         // Act
         ApiException th = assertThrows(ApiException.class, () -> projectsApi.getProjectSummary(projectId));
@@ -68,7 +68,7 @@ class ProjectsApiTest extends TestClientConfigurer {
     @Test
     void getProjectSummaryInvalidCode() {
         // Arrange
-        String projectId = TestData.INVALID_PROJECT_ID;
+        String projectId = TestData.INVALID_DOMINO_ID;
 
         // Act
         ApiException th = assertThrows(ApiException.class, () -> projectsApi.getProjectSummary(projectId));
@@ -93,7 +93,7 @@ class ProjectsApiTest extends TestClientConfigurer {
     @Test
     void getProjectCollaboratorsNotFound() {
         // Arrange
-        String projectId = TestData.NOT_FOUND_PROJECT_ID;
+        String projectId = TestData.NOT_FOUND_DOMINO_ID;
 
         // Act
         ApiException th = assertThrows(ApiException.class, () -> projectsApi.getProjectCollaborators(projectId, Boolean.FALSE));
@@ -105,7 +105,7 @@ class ProjectsApiTest extends TestClientConfigurer {
     @Test
     void getProjectCollaboratorsInvalidCode() {
         // Arrange
-        String projectId = TestData.INVALID_PROJECT_ID;
+        String projectId = TestData.INVALID_DOMINO_ID;
 
         // Act
         ApiException th = assertThrows(ApiException.class, () -> projectsApi.getProjectCollaborators(projectId, Boolean.FALSE));
@@ -131,7 +131,7 @@ class ProjectsApiTest extends TestClientConfigurer {
     @Test
     void getProjectEnvironmentVariablesNotFound() throws ApiException {
         // Arrange
-        String projectId = TestData.NOT_FOUND_PROJECT_ID;
+        String projectId = TestData.NOT_FOUND_DOMINO_ID;
 
         // Act
         ApiException th = assertThrows(ApiException.class, () -> projectsApi.getProjectEnvironmentVariables(projectId));
@@ -143,7 +143,7 @@ class ProjectsApiTest extends TestClientConfigurer {
     @Test
     void getProjectEnvironmentVariablesInvalidCode() throws ApiException {
         // Arrange
-        String projectId = TestData.INVALID_PROJECT_ID;
+        String projectId = TestData.INVALID_DOMINO_ID;
 
         // Act
         ApiException th = assertThrows(ApiException.class, () -> projectsApi.getProjectEnvironmentVariables(projectId));
@@ -173,7 +173,7 @@ class ProjectsApiTest extends TestClientConfigurer {
     @Test
     void upsertProjectEnvironmentVariableNotFound() {
         // Arrange
-        String projectId = TestData.NOT_FOUND_PROJECT_ID;
+        String projectId = TestData.NOT_FOUND_DOMINO_ID;
         String varName = TestData.TEST_ENVIRONMENT_VARIABLE;
         DominoCommonModelsEnvironmentVariable envVar = new DominoCommonModelsEnvironmentVariable();
         envVar.setName(varName);
@@ -189,7 +189,7 @@ class ProjectsApiTest extends TestClientConfigurer {
     @Test
     void upsertProjectEnvironmentVariableInvalidCode() {
         // Arrange
-        String projectId = TestData.INVALID_PROJECT_ID;
+        String projectId = TestData.INVALID_DOMINO_ID;
         String varName = TestData.TEST_ENVIRONMENT_VARIABLE;
         DominoCommonModelsEnvironmentVariable envVar = new DominoCommonModelsEnvironmentVariable();
         envVar.setName(varName);
@@ -239,7 +239,7 @@ class ProjectsApiTest extends TestClientConfigurer {
     @Test
     void deleteProjectEnvironmentVariableNotFound() {
         // Arrange
-        String projectId = TestData.NOT_FOUND_PROJECT_ID;
+        String projectId = TestData.NOT_FOUND_DOMINO_ID;
         String varName = TestData.TEST_ENVIRONMENT_VARIABLE;
 
         // Act
@@ -252,7 +252,7 @@ class ProjectsApiTest extends TestClientConfigurer {
     @Test
     void deleteProjectEnvironmentVariableInvalidCode() {
         // Arrange
-        String projectId = TestData.INVALID_PROJECT_ID;
+        String projectId = TestData.INVALID_DOMINO_ID;
         String varName = TestData.TEST_ENVIRONMENT_VARIABLE;
 
         // Act
@@ -267,7 +267,7 @@ class ProjectsApiTest extends TestClientConfigurer {
     void deleteProjectEnvironmentVariableInvalidVar() {
         // Arrange
         String projectId = TestData.VALID_PROJECT_ID_0;
-        String varName = TestData.INVALID_PROJECT_ID;
+        String varName = TestData.INVALID_DOMINO_ID;
 
         // Act
         assertDoesNotThrow(() -> projectsApi.deleteProjectEnvironmentVariable(projectId, varName));
@@ -292,7 +292,7 @@ class ProjectsApiTest extends TestClientConfigurer {
     @Test
     void listHardwareTiersForProjectNotFound() {
         // Arrange
-        String projectId = TestData.NOT_FOUND_PROJECT_ID;
+        String projectId = TestData.NOT_FOUND_DOMINO_ID;
 
         // Act
         ApiException th = assertThrows(ApiException.class, () -> projectsApi.listHardwareTiersForProject(projectId, Boolean.FALSE, Boolean.FALSE));
@@ -304,7 +304,7 @@ class ProjectsApiTest extends TestClientConfigurer {
     @Test
     void listHardwareTiersForProjectInvalidCode() {
         // Arrange
-        String projectId = TestData.INVALID_PROJECT_ID;
+        String projectId = TestData.INVALID_DOMINO_ID;
 
         // Act
         ApiException th = assertThrows(ApiException.class, () -> projectsApi.listHardwareTiersForProject(projectId, Boolean.FALSE, Boolean.FALSE));
@@ -330,7 +330,7 @@ class ProjectsApiTest extends TestClientConfigurer {
     @Test
     void getUseableEnvironmentsNotFound() {
         // Arrange
-        String projectId = TestData.NOT_FOUND_PROJECT_ID;
+        String projectId = TestData.NOT_FOUND_DOMINO_ID;
 
         // Act
         ApiException th = assertThrows(ApiException.class, () -> projectsApi.getUseableEnvironments(projectId));
@@ -342,7 +342,7 @@ class ProjectsApiTest extends TestClientConfigurer {
     @Test
     void getUseableEnvironmentsInvalidCode() {
         // Arrange
-        String projectId = TestData.INVALID_PROJECT_ID;
+        String projectId = TestData.INVALID_DOMINO_ID;
 
         // Act
         ApiException th = assertThrows(ApiException.class, () -> projectsApi.getUseableEnvironments(projectId));
@@ -368,7 +368,7 @@ class ProjectsApiTest extends TestClientConfigurer {
     @Test
     void getGitReposNotFound() {
         // Arrange
-        String projectId = TestData.NOT_FOUND_PROJECT_ID;
+        String projectId = TestData.NOT_FOUND_DOMINO_ID;
 
         // Act
         ApiException th = assertThrows(ApiException.class, () -> projectsApi.getGitRepos(projectId));
@@ -380,7 +380,7 @@ class ProjectsApiTest extends TestClientConfigurer {
     @Test
     void getGitReposInvalidCode() {
         // Arrange
-        String projectId = TestData.INVALID_PROJECT_ID;
+        String projectId = TestData.INVALID_DOMINO_ID;
 
         // Act
         ApiException th = assertThrows(ApiException.class, () -> projectsApi.getGitRepos(projectId));
@@ -415,7 +415,7 @@ class ProjectsApiTest extends TestClientConfigurer {
     @Test
     void updateGitRepositoryDefaultRefProjectNotFound() {
         // Arrange
-        String projectId = TestData.NOT_FOUND_PROJECT_ID;
+        String projectId = TestData.NOT_FOUND_DOMINO_ID;
         String repoId = TestData.VALID_PROJECT_GIT_REPO_ID;
 
         DominoProjectsApiRepositoriesReferenceDTO newRef = new DominoProjectsApiRepositoriesReferenceDTO();
@@ -432,7 +432,7 @@ class ProjectsApiTest extends TestClientConfigurer {
     @Test
     void updateGitRepositoryDefaultRefProjectInvalidCode() {
         // Arrange
-        String projectId = TestData.INVALID_PROJECT_ID;
+        String projectId = TestData.INVALID_DOMINO_ID;
         String repoId = TestData.VALID_PROJECT_GIT_REPO_ID;
 
         DominoProjectsApiRepositoriesReferenceDTO newRef = new DominoProjectsApiRepositoriesReferenceDTO();

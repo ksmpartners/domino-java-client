@@ -53,7 +53,7 @@ class GitCredentialsApiTest extends TestClientConfigurer {
     @Test
     void getGitCredentialsNotFound() {
         // Arrange
-        String userId = TestData.NOT_FOUND_PROJECT_ID;
+        String userId = TestData.NOT_FOUND_DOMINO_ID;
 
         // Act
         ApiException th = assertThrows(ApiException.class, () -> gitCredentialsApi.getGitCredentials(userId));
@@ -65,7 +65,7 @@ class GitCredentialsApiTest extends TestClientConfigurer {
     @Test
     void getGitCredentialsInvalid() {
         // Arrange
-        String userId = TestData.INVALID_PROJECT_ID;
+        String userId = TestData.INVALID_DOMINO_ID;
 
         // Act
         ApiException th = assertThrows(ApiException.class, () -> gitCredentialsApi.getGitCredentials(userId));

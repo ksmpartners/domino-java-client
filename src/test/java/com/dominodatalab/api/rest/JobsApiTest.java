@@ -45,7 +45,7 @@ class JobsApiTest extends TestClientConfigurer {
     @Test
     void getJobNotFound() {
         // Arrange
-        String jobId = TestData.NOT_FOUND_PROJECT_ID;
+        String jobId = TestData.NOT_FOUND_DOMINO_ID;
 
         // Act
         ApiException th = assertThrows(ApiException.class, () -> jobsApi.getJob(jobId));
@@ -57,7 +57,7 @@ class JobsApiTest extends TestClientConfigurer {
     @Test
     void getJobInvalidCode() {
         // Arrange
-        String jobId = TestData.INVALID_PROJECT_ID;
+        String jobId = TestData.INVALID_DOMINO_ID;
 
         // Act
         ApiException th = assertThrows(ApiException.class, () -> jobsApi.getJob(jobId));
@@ -85,7 +85,7 @@ class JobsApiTest extends TestClientConfigurer {
     @Test
     void getRuntimeExecutionDetailsNotFound() {
         // Arrange
-        String jobId = TestData.NOT_FOUND_PROJECT_ID;
+        String jobId = TestData.NOT_FOUND_DOMINO_ID;
 
         // Act
         ApiException th = assertThrows(ApiException.class, () -> jobsApi.getRuntimeExecutionDetails(jobId));
@@ -97,7 +97,7 @@ class JobsApiTest extends TestClientConfigurer {
     @Test
     void getRuntimeExecutionDetailsInvalidCode() {
         // Arrange
-        String jobId = TestData.INVALID_PROJECT_ID;
+        String jobId = TestData.INVALID_DOMINO_ID;
 
         // Act
         ApiException th = assertThrows(ApiException.class, () -> jobsApi.getRuntimeExecutionDetails(jobId));
@@ -126,7 +126,7 @@ class JobsApiTest extends TestClientConfigurer {
     @Test
     void updateJobNotFound() {
         // Arrange
-        String jobId = TestData.NOT_FOUND_PROJECT_ID;
+        String jobId = TestData.NOT_FOUND_DOMINO_ID;
         DominoJobsWebUpdateJobName request = new DominoJobsWebUpdateJobName();
         request.setName("Hello World");
 
@@ -140,7 +140,7 @@ class JobsApiTest extends TestClientConfigurer {
     @Test
     void updateJobInvalidCode() {
         // Arrange
-        String jobId = TestData.INVALID_PROJECT_ID;
+        String jobId = TestData.INVALID_DOMINO_ID;
         DominoJobsWebUpdateJobName request = new DominoJobsWebUpdateJobName();
         request.setName("Hello World");
 
@@ -155,7 +155,7 @@ class JobsApiTest extends TestClientConfigurer {
     @Test
     void startJobProjectNotFound() {
         // Arrange
-        String projectId = TestData.NOT_FOUND_PROJECT_ID;
+        String projectId = TestData.NOT_FOUND_DOMINO_ID;
         String command = "echo 'Hello, world!'";
 
         DominoJobsWebStartJobRequest request = new DominoJobsWebStartJobRequest();
@@ -172,7 +172,7 @@ class JobsApiTest extends TestClientConfigurer {
     @Test
     void startJobProjectInvalidCode() {
         // Arrange
-        String projectId = TestData.INVALID_PROJECT_ID;
+        String projectId = TestData.INVALID_DOMINO_ID;
         String command = "echo 'Hello, world!'";
 
         DominoJobsWebStartJobRequest request = new DominoJobsWebStartJobRequest();

@@ -80,7 +80,7 @@ class GatewayApiTest extends TestClientConfigurer {
     @Test
     void listProjectsInvalidRelationship() {
         // Arrange
-        String relationship = TestData.INVALID_PROJECT_ID;
+        String relationship = TestData.INVALID_DOMINO_ID;
 
         // Act
         ApiException th = assertThrows(ApiException.class, () -> gatewayApi.listProjects(relationship, Boolean.TRUE, null));

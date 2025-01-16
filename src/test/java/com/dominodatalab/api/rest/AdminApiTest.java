@@ -62,7 +62,7 @@ class AdminApiTest extends TestClientConfigurer {
     @Test
     void getExecutionSupportBundleNotFound() {
         // Arrange
-        String executionId = TestData.NOT_FOUND_PROJECT_ID;
+        String executionId = TestData.NOT_FOUND_DOMINO_ID;
 
         // Act
         ApiException th = assertThrows(ApiException.class, () -> adminApi.getExecutionSupportBundle(executionId));
@@ -74,7 +74,7 @@ class AdminApiTest extends TestClientConfigurer {
     @Test
     void getExecutionSupportBundleInvalid() {
         // Arrange
-        String executionId = TestData.INVALID_PROJECT_ID;
+        String executionId = TestData.INVALID_DOMINO_ID;
 
         // Act
         ApiException th = assertThrows(ApiException.class, () -> adminApi.getExecutionSupportBundle(executionId));

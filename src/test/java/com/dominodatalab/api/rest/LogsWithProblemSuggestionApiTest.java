@@ -60,7 +60,7 @@ class LogsWithProblemSuggestionApiTest extends TestClientConfigurer {
     @Test
     void getLogsWithProblemSuggestionsNotFound() {
         // Arrange
-        String jobId = TestData.NOT_FOUND_PROJECT_ID;
+        String jobId = TestData.NOT_FOUND_DOMINO_ID;
         String logType = "stdout";
         BigDecimal limit = new BigDecimal(10000l);
         BigDecimal offset = BigDecimal.ZERO;
@@ -76,7 +76,7 @@ class LogsWithProblemSuggestionApiTest extends TestClientConfigurer {
     @Test
     void getLogsWithProblemSuggestionsInvalidCode() {
         // Arrange
-        String jobId = TestData.INVALID_PROJECT_ID;
+        String jobId = TestData.INVALID_DOMINO_ID;
         String logType = "stdout";
         BigDecimal limit = new BigDecimal(10000l);
         BigDecimal offset = BigDecimal.ZERO;

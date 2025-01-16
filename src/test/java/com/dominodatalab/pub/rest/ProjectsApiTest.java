@@ -44,7 +44,7 @@ class ProjectsApiTest extends TestClientConfigurer {
     @Test
     void getProjectByIdNotFound() {
         // Arrange
-        String projectId = TestData.NOT_FOUND_PROJECT_ID;
+        String projectId = TestData.NOT_FOUND_DOMINO_ID;
 
         // Act
         ApiException th = assertThrows(ApiException.class, () -> projectsApi.getProjectById(projectId));
@@ -56,7 +56,7 @@ class ProjectsApiTest extends TestClientConfigurer {
     @Test
     void getProjectByIdInvalidCode() {
         // Arrange
-        String projectId = TestData.INVALID_PROJECT_ID;
+        String projectId = TestData.INVALID_DOMINO_ID;
 
         // Act
         ApiException th = assertThrows(ApiException.class, () -> projectsApi.getProjectById(projectId));
@@ -83,7 +83,7 @@ class ProjectsApiTest extends TestClientConfigurer {
     @Test
     void getImportedReposNotFound() {
         // Arrange
-        String projectId = TestData.NOT_FOUND_PROJECT_ID;
+        String projectId = TestData.NOT_FOUND_DOMINO_ID;
 
         // Act
         ApiException th = assertThrows(ApiException.class, () -> projectsApi.getImportedRepos(projectId, 0, 10));
@@ -95,7 +95,7 @@ class ProjectsApiTest extends TestClientConfigurer {
     @Test
     void getImportedReposInvalidCode() {
         // Arrange
-        String projectId = TestData.INVALID_PROJECT_ID;
+        String projectId = TestData.INVALID_DOMINO_ID;
 
         // Act
         ApiException th = assertThrows(ApiException.class, () -> projectsApi.getImportedRepos(projectId, 0, 10));
