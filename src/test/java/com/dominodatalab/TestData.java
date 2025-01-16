@@ -31,4 +31,7 @@ public class TestData {
     /** Test imported git repository for valid project */
     public static String VALID_PROJECT_TEST_REPO = "https://github.com/ksmpartners/domino-java-client.git";
 
+    /** Existing job started under quick-start project */
+    public static String VALID_PROJECT_JOB_ID = "6789227e9d9d9d5fffc4657d";
+
 }
