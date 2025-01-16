@@ -40,4 +40,7 @@ public class TestData {
     /** Default dataset under quick-start project */
     public static String VALID_DATASET_ID_0 = "66313c52db6cb00661f1a27f";
 
+    /** Default dataset under TestIntgr project - can be mounted as shared dataset */
+    public static String VALID_DATASET_ID_1 = "678981ae9d9d9d5fffc466e7";
+
 }
