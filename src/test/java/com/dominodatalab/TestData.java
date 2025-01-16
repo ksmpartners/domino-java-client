@@ -37,4 +37,7 @@ public class TestData {
     /** Name for test credential on user profile */
     public static String USER_TEST_CREDENTIAL_NAME = "Integration Test Cred";
 
+    /** Default dataset under quick-start project */
+    public static String VALID_DATASET_ID_0 = "66313c52db6cb00661f1a27f";
+
 }

@@ -18,6 +18,8 @@ get,/v4,/datasetrw/mounts-v2/{projectId}/shared
 delete,/v4,/datasetrw/snapshot/{snapshotId}
 get,/v4,/datasetrw/snapshot/{snapshotId}
 put,/v4,/datasetrw/snapshot/{snapshotId}
+post,/v4,/datasetrw/snapshot/{snapshotId}/download
+get,/v4,/datasetrw/snapshot/{snapshotId}/download/{taskId}
 get,/v4,/datasetrw/snapshot/{snapshotId}/download-local/{taskKey}
 get,/v4,/datasetrw/snapshot/{snapshotId}/file/raw
 get,/v4,/datasetrw/snapshots/{datasetId}
