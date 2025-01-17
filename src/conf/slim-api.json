@@ -742,6 +742,24 @@
           "lastModified"
         ]
       },
+      "domino.datasetrw.api.DatasetRwFiletaskTaskDto": {
+        "properties": {
+          "taskId": {
+            "type": "string"
+          },
+          "taskKey": {
+            "type": "string"
+          },
+          "taskStatus": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "taskId",
+          "taskKey",
+          "taskStatus"
+        ]
+      },
       "domino.datasetrw.api.DatasetRwGrant": {
         "properties": {
           "targetId": {
@@ -1200,6 +1218,19 @@
           "datasetName",
           "projectId",
           "usedForModelMonitoring"
+        ]
+      },
+      "domino.datasetrw.web.CreateDownloadArchiveRequest": {
+        "properties": {
+          "relativePaths": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          }
+        },
+        "required": [
+          "relativePaths"
         ]
       },
       "domino.datasetrw.web.UpdateDatasetGrantsRequest": {
@@ -5390,6 +5421,62 @@
         ]
       }
     },
+    "/datasetrw/snapshot/{snapshotId}/download": {
+      "post": {
+        "operationId": "createDownloadArchive",
+        "parameters": [
+          {
+            "description": "Id of the dataset snapshot where files are downloaded from",
+            "in": "path",
+            "name": "snapshotId",
+            "required": true,
+            "schema": {
+              "pattern": "^[0-9a-f]{24}$",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/domino.datasetrw.web.CreateDownloadArchiveRequest"
+              }
+            }
+          },
+          "description": "Request body with relative paths of the files/directories to be downloaded from",
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/domino.datasetrw.api.DatasetRwFiletaskTaskDto"
+                }
+              }
+            },
+            "description": "success"
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalError"
+          }
+        },
+        "summary": "Create download task",
+        "tags": [
+          "DatasetRw"
+        ]
+      }
+    },
     "/datasetrw/snapshot/{snapshotId}/download-local/{taskKey}": {
       "get": {
         "operationId": "downloadArchiveToLocal",
@@ -5440,6 +5527,60 @@
           }
         },
         "summary": "Download archive file from Domino to local",
+        "tags": [
+          "DatasetRw"
+        ]
+      }
+    },
+    "/datasetrw/snapshot/{snapshotId}/download/{taskId}": {
+      "get": {
+        "operationId": "getDownloadTaskStatus",
+        "parameters": [
+          {
+            "description": "Id of the dataset snapshot where files are downloaded from",
+            "in": "path",
+            "name": "snapshotId",
+            "required": true,
+            "schema": {
+              "pattern": "^[0-9a-f]{24}$",
+              "type": "string"
+            }
+          },
+          {
+            "description": "Id of the download task to be polled",
+            "in": "path",
+            "name": "taskId",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/domino.datasetrw.api.DatasetRwFiletaskTaskDto"
+                }
+              }
+            },
+            "description": "success"
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalError"
+          }
+        },
+        "summary": "Get the status of download task",
         "tags": [
           "DatasetRw"
         ]
@@ -7017,6 +7158,53 @@
           }
         },
         "summary": "sets the specified project's environment variables",
+        "tags": [
+          "Projects"
+        ]
+      }
+    },
+    "/projects/{projectId}/environmentVariables/{environmentVariableName}": {
+      "delete": {
+        "operationId": "deleteProjectEnvironmentVariable",
+        "parameters": [
+          {
+            "description": "Id of the project to remove environment variables",
+            "in": "path",
+            "name": "projectId",
+            "required": true,
+            "schema": {
+              "pattern": "^[0-9a-f]{24}$",
+              "type": "string"
+            }
+          },
+          {
+            "description": "name of the environment variable to remove",
+            "in": "path",
+            "name": "environmentVariableName",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "success"
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalError"
+          }
+        },
+        "summary": "deletes the environment variable from the specified project",
         "tags": [
           "Projects"
         ]

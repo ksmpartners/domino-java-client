@@ -27,5 +27,14 @@ jobs:
         java-version: ${{ matrix.java }}
         distribution: 'temurin'
         cache: maven
+    - name: Run compile to generate from OpenAPI Specs
+      run: mvn -B -V -T1C clean compile --file pom.xml
+    - name: Run integration tests
+      env:
+        DOMINO_API_URL: ${{ secrets.DOMINO_API_URL }}
+        DOMINO_API_KEY: ${{ secrets.DOMINO_API_KEY }}
+      # Run all Integration and Unit tests, excluding Stateful tests
+      run: mvn -B -V -Dtests='any()' test --file pom.xml
+      if: github.event_name == 'pull_request'
     - name: Build with Maven
-      run: mvn -B -V -T1C clean package --file pom.xml
+      run: mvn -B -V -T1C package --file pom.xml
