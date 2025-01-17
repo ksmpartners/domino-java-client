@@ -9,9 +9,9 @@ import lombok.experimental.SuperBuilder;
 @EqualsAndHashCode(callSuper = true)
 public class PasswordGitCredentialDto extends GitCredentialDto {
 
-    final String accessType = "password";
+    private final String accessType = "password";
 
-    final String type = "PasswordGitCredentialDto";
+    private final String type = "PasswordGitCredentialDto";
     
     private String username;
 
