@@ -7,6 +7,9 @@ public class TestData {
     /** quick-start project - not git-based */
     public static String VALID_PROJECT_ID_0 = "66313c4cdb6cb00661f1a27b";
 
+    /** TestIntgr project - git-based */
+    public static String VALID_PROJECT_ID_1 = "678981aa9d9d9d5fffc466e1";
+
     /** Domino IDs must conform to "^[0-9a-f]{24}$" to pass input validation */
     public static String NOT_FOUND_DOMINO_ID = "000000000000000000000000";
 

@@ -32,11 +32,13 @@ import com.dominodatalab.api.model.DominoNucleusProjectModelsCollaborator.Projec
 class ProjectsApiTest extends TestClientConfigurer {
 
     ProjectsApi projectsApi;
+    GitApi gitApi;
 
     @BeforeAll
     void configureApi() {
         ApiClient client = getInternalTestClient();
         projectsApi = new ProjectsApi(client);
+        gitApi = new GitApi(client);
     }
 
     @Test
@@ -574,6 +576,12 @@ class ProjectsApiTest extends TestClientConfigurer {
         targetRepo0.setName("foobar");
         projectsApi.editGitRepo(projectId, result.getId(), targetRepo0);
 
+        // Update repo ref
+        DominoProjectsApiRepositoriesReferenceDTO newRef = new DominoProjectsApiRepositoriesReferenceDTO();
+        newRef.setType("branches");
+        newRef.setValue("main");
+        gitApi.updateGitRepositoryDefaultRef(projectId, targetRepo0.getId(), newRef);
+
         List<DominoProjectsApiRepositoriesGitRepositoryDTO> repos2 = projectsApi.getGitRepos(projectId);
 
         // Assert updated imported git repo is now present
@@ -582,7 +590,8 @@ class ProjectsApiTest extends TestClientConfigurer {
         assertEquals("foobar", targetRepo1.getName());
         assertEquals(testRepoUri, targetRepo1.getUri());
         assertEquals(serviceProvider, targetRepo1.getServiceProvider());
-        assertEquals(ref.getType(), targetRepo1.getRef().getType());
+        assertEquals(newRef.getType(), targetRepo1.getRef().getType());
+        assertEquals(newRef.getValue(), targetRepo1.getRef().getValue());
         
         // Remove test imported git repo
         projectsApi.archiveGitRepo(projectId, result.getId());
