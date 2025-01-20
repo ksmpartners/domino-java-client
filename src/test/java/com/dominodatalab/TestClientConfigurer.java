@@ -6,6 +6,7 @@ import java.net.URI;
 import java.net.http.HttpRequest.Builder;
 import java.util.Properties;
 
+import org.apache.commons.lang3.StringUtils;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.TestInstance;
 
@@ -55,7 +56,7 @@ public class TestClientConfigurer {
         testClient.setRequestInterceptor(this::attachDominoApiKey);
 
         String basePath = URI.create(testClient.getBaseUri()).getRawPath();
-        if (basePath == null || basePath.equals("")) {
+        if (StringUtils.isBlank(basePath)) {
             testClient.setBasePath(DEFAULT_DOMINO_API_BASE_PATH);
         }
 
@@ -96,7 +97,7 @@ public class TestClientConfigurer {
         String property = System.getProperty(propertyName);
         String envvar = System.getenv(envify(propertyName));
 
-        if ((property == null || "".equals(property)) && (envvar == null || "".equals(envvar))) {
+        if (StringUtils.isAllBlank(property, envvar)) {
             throw new IllegalStateException("Property '" + propertyName + "' is not set!");
         }
 
