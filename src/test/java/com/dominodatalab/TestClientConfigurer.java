@@ -5,6 +5,7 @@ import java.io.InputStream;
 import java.net.URI;
 import java.net.http.HttpRequest.Builder;
 import java.util.Properties;
+import java.util.logging.Level;
 
 import org.apache.commons.lang3.StringUtils;
 import org.junit.jupiter.api.Tag;
@@ -46,11 +47,11 @@ public class TestClientConfigurer {
         }
     }
 
-    public com.dominodatalab.api.invoker.ApiClient getInternalTestClient() {
+    protected com.dominodatalab.api.invoker.ApiClient getInternalTestClient() {
         com.dominodatalab.api.invoker.ApiClient testClient = DominoApiClient.createApiClient();
 
         String apiUrl = getDominoApiUrl();
-        log.fine("Creating Internal API client using Domino API URL: " + apiUrl);
+        log.log(Level.INFO, "Creating Internal API client using Domino API URL: {0}", apiUrl);
     
         testClient.updateBaseUri(apiUrl);
         testClient.setRequestInterceptor(this::attachDominoApiKey);
@@ -63,11 +64,11 @@ public class TestClientConfigurer {
         return testClient;
     }
 
-    public com.dominodatalab.pub.invoker.ApiClient getPublicTestClient() {
+    protected com.dominodatalab.pub.invoker.ApiClient getPublicTestClient() {
         com.dominodatalab.pub.invoker.ApiClient testClient = DominoPublicClient.createApiClient();
 
         String apiUrl = getDominoApiUrl();
-        log.fine("Creating Public API client using Domino API URL: " + apiUrl);
+        log.log(Level.INFO, "Creating Public API client using Domino API URL: {0}", apiUrl);
 
         testClient.updateBaseUri(apiUrl);
         testClient.setRequestInterceptor(this::attachDominoApiKey);
