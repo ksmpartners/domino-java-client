@@ -103,7 +103,7 @@ public class TestClientConfigurer {
 
         // Use property over environment variable - since these are integration tests
         // user's set environment may not align with expected test environment
-        return property != null ? property : envvar;
+        return StringUtils.defaultIfBlank(property, envvar);
     }
 
     /**
