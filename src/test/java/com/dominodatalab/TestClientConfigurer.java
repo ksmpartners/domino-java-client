@@ -96,7 +96,7 @@ public class TestClientConfigurer {
         String property = System.getProperty(propertyName);
         String envvar = System.getenv(envify(propertyName));
 
-        if (property == null && envvar == null) {
+        if ((property == null || "".equals(property)) && (envvar == null || "".equals(envvar))) {
             throw new IllegalStateException("Property '" + propertyName + "' is not set!");
         }
 
