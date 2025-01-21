@@ -4674,7 +4674,7 @@
             "$ref": "#/components/responses/InternalError"
           }
         },
-        "summary": "Gets a zipfile containing useful information about an executionId, FIXME should this path be /executions/executionId/supportbundle",
+        "summary": "Gets a zipfile containing useful information about an executionId",
         "tags": [
           "Admin"
         ]
