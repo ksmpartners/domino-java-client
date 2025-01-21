@@ -6,6 +6,7 @@ import java.net.URI;
 import java.net.http.HttpRequest.Builder;
 import java.util.Properties;
 import java.util.logging.Level;
+import java.util.logging.LogManager;
 
 import org.apache.commons.lang3.StringUtils;
 import org.junit.jupiter.api.Tag;
@@ -35,16 +36,23 @@ public class TestClientConfigurer {
     public TestClientConfigurer() {
         try {
             Properties properties = new Properties();
-            InputStream inputStream = getClass().getClassLoader().getResourceAsStream("application.properties");
+            ClassLoader cl = getClass().getClassLoader();
+            InputStream appProperties = cl.getResourceAsStream("application.properties");
 
-            if (inputStream != null) {
-                properties.load(inputStream);
+            if (appProperties != null) {
+                properties.load(appProperties);
 
                 System.getProperties().putAll(properties);
+            }
+            
+            InputStream logProperties = cl.getResourceAsStream("logging.properties");
+            if (logProperties != null) {
+                LogManager.getLogManager().readConfiguration(logProperties);
             }
         } catch (IOException e) {
             e.printStackTrace();
         }
+        log.log(Level.FINER, "TestClientConfigurer initiated");
     }
 
     protected com.dominodatalab.api.invoker.ApiClient getInternalTestClient() {
