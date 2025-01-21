@@ -36,6 +36,9 @@ public class TestData {
 
     /** Existing job started under quick-start project */
     public static String VALID_PROJECT_JOB_ID = "6789227e9d9d9d5fffc4657d";
+    
+    /** Existing goal under quick-start project */
+    public static String VALID_PROJECT_GOAL_ID = "678fea2218fb6338893705c1";
 
     /** Name for test credential on user profile */
     public static String USER_TEST_CREDENTIAL_NAME = "Integration Test Cred";

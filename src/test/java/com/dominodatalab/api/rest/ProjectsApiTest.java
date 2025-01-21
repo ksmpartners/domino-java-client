@@ -23,6 +23,7 @@ import com.dominodatalab.api.model.DominoCommonUserPerson;
 import com.dominodatalab.api.model.DominoHardwaretierApiHardwareTierWithCapacityDto;
 import com.dominodatalab.api.model.DominoNucleusProjectModelsCollaborator;
 import com.dominodatalab.api.model.DominoProjectsApiCollaboratorDTO;
+import com.dominodatalab.api.model.DominoProjectsApiProjectGoal;
 import com.dominodatalab.api.model.DominoProjectsApiProjectSummary;
 import com.dominodatalab.api.model.DominoProjectsApiRepositoriesGitRepositoryDTO;
 import com.dominodatalab.api.model.DominoProjectsApiRepositoriesReferenceDTO;
@@ -447,6 +448,78 @@ class ProjectsApiTest extends TestClientConfigurer {
         // Assert
         assertEquals(400, th.getCode());
         assert(th.getMessage()).contains(projectId + " is not a valid ID");
+    }
+    
+    @Test
+    void markProjectGoalCompleteSuccess() throws ApiException {
+        // Arrange
+        String projectId = TestData.VALID_PROJECT_ID_0;
+        String goalId = TestData.VALID_PROJECT_GOAL_ID;
+
+        // Act
+        DominoProjectsApiProjectGoal goal = projectsApi.markProjectGoalComplete(projectId, goalId);
+
+        // Assert
+        assertNotNull(goal);
+        assertEquals(goalId, goal.getId());
+        assertEquals(projectId, goal.getProjectId());
+        assertTrue(goal.getIsComplete());
+    }
+    
+    @Test
+    void markProjectGoalCompleteProjectNotFound() {
+        // Arrange
+        String projectId = TestData.NOT_FOUND_DOMINO_ID;
+        String goalId = TestData.VALID_PROJECT_GOAL_ID;
+
+        // Act
+        ApiException th = assertThrows(ApiException.class, () -> projectsApi.markProjectGoalComplete(projectId, goalId));
+
+        // Assert
+        assertEquals(400, th.getCode());
+        assert(th.getMessage()).contains("Could not find project with ID '" + projectId + "'");
+    }
+    
+    @Test
+    void markProjectGoalCompleteProjectInvalidCode() {
+        // Arrange
+        String projectId = TestData.INVALID_DOMINO_ID;
+        String goalId = TestData.VALID_PROJECT_GOAL_ID;
+
+        // Act
+        ApiException th = assertThrows(ApiException.class, () -> projectsApi.markProjectGoalComplete(projectId, goalId));
+
+        // Assert
+        assertEquals(400, th.getCode());
+        assert(th.getMessage()).contains(projectId + " is not a valid ID");
+    }
+    
+    @Test
+    void markProjectGoalCompleteGoalNotFound() {
+        // Arrange
+        String projectId = TestData.VALID_PROJECT_ID_0;
+        String goalId = TestData.NOT_FOUND_DOMINO_ID;
+
+        // Act
+        ApiException th = assertThrows(ApiException.class, () -> projectsApi.markProjectGoalComplete(projectId, goalId));
+
+        // Assert
+        assertEquals(400, th.getCode());
+        assert(th.getMessage()).contains("Cannot find project goal with id '" + goalId + "'");
+    }
+    
+    @Test
+    void markProjectGoalCompleteGoalInvalidCode() {
+        // Arrange
+        String projectId = TestData.VALID_PROJECT_ID_0;
+        String goalId = TestData.INVALID_DOMINO_ID;
+
+        // Act
+        ApiException th = assertThrows(ApiException.class, () -> projectsApi.markProjectGoalComplete(projectId, goalId));
+
+        // Assert
+        assertEquals(400, th.getCode());
+        assert(th.getMessage()).contains(goalId + " is not a valid ID");
     }
 
     /**
