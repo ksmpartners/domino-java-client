@@ -101,6 +101,7 @@ class GatewayApiTest extends TestClientConfigurer {
 
         // Assert
         DominoCommonProjectId projectId = graph.getSelectedProjectId();
+        assertNotNull(projectId);
         assertEquals(ownerName, projectId.getOwnerUsername());
         assertEquals(projectName, projectId.getProjectName());
 
@@ -125,6 +126,7 @@ class GatewayApiTest extends TestClientConfigurer {
 
         // Assert
         DominoCommonProjectId projectId = graph.getSelectedProjectId();
+        assertNotNull(projectId);
         assertEquals(ownerName, projectId.getOwnerUsername());
         assertEquals(projectName, projectId.getProjectName());
 

@@ -1,6 +1,7 @@
 package com.dominodatalab.api.rest;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import org.junit.jupiter.api.BeforeAll;
@@ -10,7 +11,7 @@ import com.dominodatalab.TestClientConfigurer;
 import com.dominodatalab.TestData;
 import com.dominodatalab.api.invoker.ApiClient;
 import com.dominodatalab.api.invoker.ApiException;
-import com.dominodatalab.api.model.DominoProjectsApiProjectSummary;
+import com.dominodatalab.api.model.DominoProjectsApiProjectGitRepositoryTemp;
 import com.dominodatalab.api.model.DominoProjectsApiRepositoriesReferenceDTO;
 
 class GitApiTest extends TestClientConfigurer {
@@ -33,15 +34,17 @@ class GitApiTest extends TestClientConfigurer {
         String repoId = "_";
 
         // Get project summary to find current default ref
-        DominoProjectsApiProjectSummary project = projectsApi.getProjectSummary(projectId);
-        DominoProjectsApiRepositoriesReferenceDTO existingRef = project.getMainRepository().getDefaultRef();
+        DominoProjectsApiProjectGitRepositoryTemp mainRepo = projectsApi.getProjectSummary(projectId).getMainRepository();
+        assertNotNull(mainRepo);
+        DominoProjectsApiRepositoriesReferenceDTO existingRef = mainRepo.getDefaultRef();
 
         // Act
         gitApi.updateGitRepositoryDefaultRef(projectId, repoId, existingRef);
 
         // Assert
-        DominoProjectsApiProjectSummary updatedProject = projectsApi.getProjectSummary(projectId);
-        DominoProjectsApiRepositoriesReferenceDTO newRef = updatedProject.getMainRepository().getDefaultRef();
+        DominoProjectsApiProjectGitRepositoryTemp updatedMainRepo = projectsApi.getProjectSummary(projectId).getMainRepository();
+        assertNotNull(updatedMainRepo);
+        DominoProjectsApiRepositoriesReferenceDTO newRef = updatedMainRepo.getDefaultRef();
 
         assertEquals(existingRef.getType(), newRef.getType());
         assertEquals(existingRef.getValue(), newRef.getValue());
