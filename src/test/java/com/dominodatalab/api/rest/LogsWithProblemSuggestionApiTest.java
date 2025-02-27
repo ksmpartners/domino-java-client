@@ -37,7 +37,7 @@ class LogsWithProblemSuggestionApiTest extends TestClientConfigurer {
         String logType = "stdout";
         BigDecimal limit = new BigDecimal(10000l);
         BigDecimal offset = BigDecimal.ZERO;
-        String latestTimeNano = "0";
+        String latestTimeNano = null;
 
         // Act
         DominoJobsInterfaceLogsWithProblemSuggestion logs = logsWithProblemSuggestionApi.getLogsWithProblemSuggestions(jobId, logType, limit, offset, latestTimeNano);
