@@ -5,6 +5,8 @@ import java.io.InputStream;
 import java.net.URI;
 import java.net.http.HttpRequest.Builder;
 import java.util.Properties;
+import java.util.logging.Level;
+import java.util.logging.LogManager;
 
 import org.apache.commons.lang3.StringUtils;
 import org.junit.jupiter.api.Tag;
@@ -34,23 +36,30 @@ public class TestClientConfigurer {
     public TestClientConfigurer() {
         try {
             Properties properties = new Properties();
-            InputStream inputStream = getClass().getClassLoader().getResourceAsStream("application.properties");
+            ClassLoader cl = getClass().getClassLoader();
+            InputStream appProperties = cl.getResourceAsStream("application.properties");
 
-            if (inputStream != null) {
-                properties.load(inputStream);
+            if (appProperties != null) {
+                properties.load(appProperties);
 
                 System.getProperties().putAll(properties);
+            }
+            
+            InputStream logProperties = cl.getResourceAsStream("logging.properties");
+            if (logProperties != null) {
+                LogManager.getLogManager().readConfiguration(logProperties);
             }
         } catch (IOException e) {
             e.printStackTrace();
         }
+        log.finer("TestClientConfigurer initiated");
     }
 
-    public com.dominodatalab.api.invoker.ApiClient getInternalTestClient() {
+    protected com.dominodatalab.api.invoker.ApiClient getInternalTestClient() {
         com.dominodatalab.api.invoker.ApiClient testClient = DominoApiClient.createApiClient();
 
         String apiUrl = getDominoApiUrl();
-        log.fine("Creating Internal API client using Domino API URL: " + apiUrl);
+        log.log(Level.INFO, "Creating Internal API client using Domino API URL: {0}", apiUrl);
     
         testClient.updateBaseUri(apiUrl);
         testClient.setRequestInterceptor(this::attachDominoApiKey);
@@ -63,11 +72,11 @@ public class TestClientConfigurer {
         return testClient;
     }
 
-    public com.dominodatalab.pub.invoker.ApiClient getPublicTestClient() {
+    protected com.dominodatalab.pub.invoker.ApiClient getPublicTestClient() {
         com.dominodatalab.pub.invoker.ApiClient testClient = DominoPublicClient.createApiClient();
 
         String apiUrl = getDominoApiUrl();
-        log.fine("Creating Public API client using Domino API URL: " + apiUrl);
+        log.log(Level.INFO, "Creating Public API client using Domino API URL: {0}", apiUrl);
 
         testClient.updateBaseUri(apiUrl);
         testClient.setRequestInterceptor(this::attachDominoApiKey);
@@ -103,7 +112,7 @@ public class TestClientConfigurer {
 
         // Use property over environment variable - since these are integration tests
         // user's set environment may not align with expected test environment
-        return property != null ? property : envvar;
+        return StringUtils.defaultIfBlank(property, envvar);
     }
 
     /**

@@ -4,7 +4,11 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import java.util.logging.Level;
+
+import org.apache.commons.lang3.StringUtils;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
@@ -13,11 +17,16 @@ import com.dominodatalab.TestClientConfigurer;
 import com.dominodatalab.TestData;
 import com.dominodatalab.api.invoker.ApiClient;
 import com.dominodatalab.api.invoker.ApiException;
+import com.dominodatalab.api.model.DominoJobsInterfaceComputeClusterConfigSpecDtoComputeEnvironmentRevisionSpecOneOf;
+import com.dominodatalab.api.model.DominoJobsInterfaceEnvironmentEnvironmentRevisionSpec;
 import com.dominodatalab.api.model.DominoJobsInterfaceJob;
 import com.dominodatalab.api.model.DominoJobsInterfaceJobRuntimeExecutionDetails;
 import com.dominodatalab.api.model.DominoJobsWebStartJobRequest;
 import com.dominodatalab.api.model.DominoJobsWebUpdateJobName;
 
+import lombok.extern.java.Log;
+
+@Log
 class JobsApiTest extends TestClientConfigurer {
     
     JobsApi jobsApi;
@@ -80,6 +89,22 @@ class JobsApiTest extends TestClientConfigurer {
         assert(executionDetails.getEnvironment().getEnvironmentName()).contains("Domino Standard Environment");
         assertEquals(1, executionDetails.getEnvironment().getRevisionNumber());
         assertEquals("Small", executionDetails.getHardwareTier().getName());
+
+        // The spec schema for this response object includes component
+        // domino.jobs.interface.Environment, which uses a oneOf in the OpenAPI
+        // spec. The type switches if the environment is ever upgraded to a new
+        // revision, so this is a best effort to provide "good enough"
+        // validation that the response object is parsed as expected.
+        DominoJobsInterfaceEnvironmentEnvironmentRevisionSpec revisionSpec = executionDetails.getEnvironment().getEnvironmentRevisionSpec();
+        assertNotNull(revisionSpec);
+        log.log(Level.FINE, "Found environment revision spec [{0}] for Domino Standard Environment", revisionSpec.toUrlQueryString());
+
+        Object spec = revisionSpec.getActualInstance();
+        if (spec instanceof String) {
+            assertTrue(StringUtils.equalsAny((String) spec, "ActiveRevision", "LatestRevision", "RestrictedRevision"));
+        } else {
+            assertEquals(executionDetails.getEnvironment().getEnvironmentRevisionId(), ((DominoJobsInterfaceComputeClusterConfigSpecDtoComputeEnvironmentRevisionSpecOneOf) spec).getRevisionId());
+        }
     }
 
     @Test

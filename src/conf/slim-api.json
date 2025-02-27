@@ -3081,6 +3081,17 @@
           "goalId"
         ]
       },
+      "domino.projectManagement.web.UnlinkJobFromGoalRequest": {
+        "properties": {
+          "goalId": {
+            "pattern": "^[0-9a-f]{24}$",
+            "type": "string"
+          }
+        },
+        "required": [
+          "goalId"
+        ]
+      },
       "domino.projects.api.BillingTag": {
         "properties": {
           "tag": {
@@ -4663,7 +4674,7 @@
             "$ref": "#/components/responses/InternalError"
           }
         },
-        "summary": "Gets a zipfile containing useful information about an executionId, FIXME should this path be /executions/executionId/supportbundle",
+        "summary": "Gets a zipfile containing useful information about an executionId",
         "tags": [
           "Admin"
         ]
@@ -6672,6 +6683,64 @@
           }
         },
         "summary": "Link job to goal",
+        "tags": [
+          "ProjectManagement"
+        ]
+      }
+    },
+    "/projectManagement/{jobId}/unlinkJobFromGoal": {
+      "post": {
+        "operationId": "unlinkManageJobFromGoal",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "jobId",
+            "required": true,
+            "schema": {
+              "pattern": "^[0-9a-f]{24}$",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/domino.projectManagement.web.UnlinkJobFromGoalRequest"
+              }
+            }
+          },
+          "description": "JSON object with information for unlinking goal from job",
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/domino.projectManagement.api.ResponseMessage"
+                }
+              }
+            },
+            "description": "success"
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "409": {
+            "$ref": "#/components/responses/ProjectManagementErrorResponse"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalError"
+          }
+        },
+        "summary": "Unlink job from goal",
         "tags": [
           "ProjectManagement"
         ]
