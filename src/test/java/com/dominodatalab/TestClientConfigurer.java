@@ -52,7 +52,7 @@ public class TestClientConfigurer {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        log.log(Level.FINER, "TestClientConfigurer initiated");
+        log.finer("TestClientConfigurer initiated");
     }
 
     protected com.dominodatalab.api.invoker.ApiClient getInternalTestClient() {
