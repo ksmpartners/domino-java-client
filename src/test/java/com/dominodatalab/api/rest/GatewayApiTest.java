@@ -15,9 +15,6 @@ import com.dominodatalab.TestClientConfigurer;
 import com.dominodatalab.TestData;
 import com.dominodatalab.api.invoker.ApiClient;
 import com.dominodatalab.api.invoker.ApiException;
-import com.dominodatalab.api.model.DominoCommonProjectId;
-import com.dominodatalab.api.model.DominoNucleusGatewayUsersModelsProjectDependencyView;
-import com.dominodatalab.api.model.DominoNucleusGatewayUsersModelsProjectsDependencyGraph;
 import com.dominodatalab.api.model.DominoServerProjectsApiProjectGatewayOverview;
 import com.dominodatalab.api.model.DominoServerProjectsApiProjectGatewaySummary;
 
