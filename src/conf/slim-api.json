@@ -154,20 +154,6 @@
         },
         "type": "object"
       },
-      "domino.common.ProjectId": {
-        "properties": {
-          "ownerUsername": {
-            "type": "string"
-          },
-          "projectName": {
-            "type": "string"
-          }
-        },
-        "required": [
-          "ownerUsername",
-          "projectName"
-        ]
-      },
       "domino.common.models.EnvironmentVariable": {
         "properties": {
           "name": {
@@ -2922,49 +2908,6 @@
         },
         "required": [
           "name"
-        ]
-      },
-      "domino.nucleus.gateway.users.models.ProjectDependencyView": {
-        "properties": {
-          "dependencies": {
-            "items": {
-              "$ref": "#/components/schemas/domino.common.ProjectId"
-            },
-            "type": "array"
-          },
-          "projectId": {
-            "$ref": "#/components/schemas/domino.common.ProjectId"
-          },
-          "projectType": {
-            "enum": [
-              "Analytic",
-              "DataSet",
-              "Template"
-            ],
-            "type": "string"
-          }
-        },
-        "required": [
-          "projectId",
-          "projectType",
-          "dependencies"
-        ]
-      },
-      "domino.nucleus.gateway.users.models.ProjectsDependencyGraph": {
-        "properties": {
-          "nodes": {
-            "items": {
-              "$ref": "#/components/schemas/domino.nucleus.gateway.users.models.ProjectDependencyView"
-            },
-            "type": "array"
-          },
-          "selectedProjectId": {
-            "$ref": "#/components/schemas/domino.common.ProjectId",
-            "nullable": true
-          }
-        },
-        "required": [
-          "nodes"
         ]
       },
       "domino.nucleus.project.models.Collaborator": {
@@ -6314,56 +6257,6 @@
         "summary": "Retrieves a project for the Project Overview UI",
         "tags": [
           "Gateway"
-        ]
-      }
-    },
-    "/gateway/users/projectsDependencyGraph": {
-      "get": {
-        "operationId": "projectsDependencyGraph",
-        "parameters": [
-          {
-            "description": "Owner username of the project, if dependency graph is being requested for a specific project.",
-            "in": "query",
-            "name": "ownerUsername",
-            "required": false,
-            "schema": {
-              "nullable": true,
-              "type": "string"
-            }
-          },
-          {
-            "description": "Project name for which a dependency graph is being requested. When not provided, the dependency graph is for all projects for the current user.",
-            "in": "query",
-            "name": "projectName",
-            "required": false,
-            "schema": {
-              "nullable": true,
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/domino.nucleus.gateway.users.models.ProjectsDependencyGraph"
-                }
-              }
-            },
-            "description": "success"
-          },
-          "401": {
-            "$ref": "#/components/responses/Unauthorized"
-          },
-          "500": {
-            "$ref": "#/components/responses/InternalError"
-          }
-        },
-        "summary": "Retrieves projects dependency graph for a user, and optionally for a specific project",
-        "tags": [
-          "Gateway",
-          "Users"
         ]
       }
     },
