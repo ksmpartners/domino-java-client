@@ -23,6 +23,7 @@ get,/v4,/datasetrw/snapshot/{snapshotId}/download/{taskId}
 get,/v4,/datasetrw/snapshot/{snapshotId}/download-local/{taskKey}
 get,/v4,/datasetrw/snapshot/{snapshotId}/file/raw
 get,/v4,/datasetrw/snapshots/{datasetId}
+get,/v4,/datasetrw/datasets/name/{datasetName}
 get,/v4,/datasource/audit/download
 get,/v4,/datasource/audit/download/runs
 delete,/v4,/datasource/{dataSourceId}/projects/{projectId}

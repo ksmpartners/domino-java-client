@@ -580,6 +580,72 @@
           "requiresUpgrade"
         ]
       },
+      "domino.datasetrw.api.DatasetRwDetailsDto": {
+        "properties": {
+          "author": {
+            "nullable": true,
+            "pattern": "^[0-9a-f]{24}$",
+            "type": "string"
+          },
+          "datasetPath": {
+            "type": "string"
+          },
+          "description": {
+            "nullable": true,
+            "type": "string"
+          },
+          "id": {
+            "pattern": "^[0-9a-f]{24}$",
+            "type": "string"
+          },
+          "lifecycleStatus": {
+            "enum": [
+              "Pending",
+              "Deleted",
+              "DeletionInProgress",
+              "Failed",
+              "Active",
+              "MarkedForDeletion"
+            ],
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "projects": {
+            "$ref": "#/components/schemas/domino.datasetrw.api.DatasetRwProjectDetailsDto"
+          },
+          "readWriteSnapshotId": {
+            "pattern": "^[0-9a-f]{24}$",
+            "type": "string"
+          },
+          "snapshotIds": {
+            "items": {
+              "pattern": "^[0-9a-f]{24}$",
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "tags": {
+            "additionalProperties": {
+              "pattern": "^[0-9a-f]{24}$",
+              "type": "string"
+            },
+            "type": "object"
+          }
+        },
+        "required": [
+          "id",
+          "name",
+          "snapshotIds",
+          "tags",
+          "projects",
+          "lifecycleStatus",
+          "readWriteSnapshotId",
+          "datasetPath"
+        ],
+        "type": "object"
+      },
       "domino.datasetrw.api.DatasetRwDto": {
         "properties": {
           "activeROSnapshotCount": {
@@ -824,6 +890,47 @@
         },
         "required": [
           "datasetRwDto"
+        ]
+      },
+      "domino.datasetrw.api.DatasetRwProjectDetailsDto": {
+        "properties": {
+          "sharedProjectIds": {
+            "items": {
+              "pattern": "^[0-9a-f]{24}$",
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "sharedProjectNames": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "sharedProjectOwnerUsernames": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "sourceProjectId": {
+            "pattern": "^[0-9a-f]{24}$",
+            "type": "string"
+          },
+          "sourceProjectName": {
+            "type": "string"
+          },
+          "sourceProjectOwnerUsername": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "sourceProjectName",
+          "sourceProjectId",
+          "sourceProjectOwnerUsername",
+          "sharedProjectNames",
+          "sharedProjectIds",
+          "sharedProjectOwnerUsernames"
         ]
       },
       "domino.datasetrw.api.DatasetRwProjectInfoDto": {
@@ -5105,6 +5212,68 @@
           }
         },
         "summary": "Get Datasets",
+        "tags": [
+          "DatasetRw"
+        ]
+      }
+    },
+    "/datasetrw/datasets/name/{datasetName}": {
+      "get": {
+        "operationId": "getActiveDatasetByName",
+        "parameters": [
+          {
+            "description": "project owner",
+            "in": "query",
+            "name": "projectOwner",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "description": "project name",
+            "in": "query",
+            "name": "projectName",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "description": "dataset name",
+            "in": "path",
+            "name": "datasetName",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/domino.datasetrw.api.DatasetRwDetailsDto"
+                }
+              }
+            },
+            "description": "success"
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalError"
+          }
+        },
+        "summary": "Lookup dataset by project and name",
         "tags": [
           "DatasetRw"
         ]
