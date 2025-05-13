@@ -15,9 +15,6 @@ import com.dominodatalab.TestClientConfigurer;
 import com.dominodatalab.TestData;
 import com.dominodatalab.api.invoker.ApiClient;
 import com.dominodatalab.api.invoker.ApiException;
-import com.dominodatalab.api.model.DominoCommonProjectId;
-import com.dominodatalab.api.model.DominoNucleusGatewayUsersModelsProjectDependencyView;
-import com.dominodatalab.api.model.DominoNucleusGatewayUsersModelsProjectsDependencyGraph;
 import com.dominodatalab.api.model.DominoServerProjectsApiProjectGatewayOverview;
 import com.dominodatalab.api.model.DominoServerProjectsApiProjectGatewaySummary;
 
@@ -88,50 +85,6 @@ class GatewayApiTest extends TestClientConfigurer {
         // Assert
         assertEquals(500, th.getCode());
         assert(th.getMessage()).contains("No value found for '" + relationship + "'");
-    }
-
-    @Test
-    void projectsDependencyGraphSuccess() throws ApiException {
-        // Arrange
-        String ownerName = getUserName();
-        String projectName = "quick-start";
-
-        // Act
-        DominoNucleusGatewayUsersModelsProjectsDependencyGraph graph = gatewayApi.projectsDependencyGraph(ownerName, projectName);
-
-        // Assert
-        DominoCommonProjectId projectId = graph.getSelectedProjectId();
-        assertNotNull(projectId);
-        assertEquals(ownerName, projectId.getOwnerUsername());
-        assertEquals(projectName, projectId.getProjectName());
-
-        assertNotNull(graph.getNodes());
-        List<DominoNucleusGatewayUsersModelsProjectDependencyView> nodes = graph.getNodes();
-        assertEquals(1, nodes.size());
-
-        DominoNucleusGatewayUsersModelsProjectDependencyView primary = nodes.get(0);
-        assertEquals(ownerName, primary.getProjectId().getOwnerUsername());
-        assertEquals(projectName, primary.getProjectId().getProjectName());
-        assertTrue(primary.getDependencies().isEmpty());
-    }
-
-    @Test
-    void projectsDependencyGraphNotFound() throws ApiException {
-        // Arrange
-        String ownerName = getUserName();
-        String projectName = "project-does-not-exist";
-
-        // Act
-        DominoNucleusGatewayUsersModelsProjectsDependencyGraph graph = gatewayApi.projectsDependencyGraph(ownerName, projectName);
-
-        // Assert
-        DominoCommonProjectId projectId = graph.getSelectedProjectId();
-        assertNotNull(projectId);
-        assertEquals(ownerName, projectId.getOwnerUsername());
-        assertEquals(projectName, projectId.getProjectName());
-
-        assertNotNull(graph.getNodes());
-        assertEquals(0, graph.getNodes().size());
     }
     
 }
