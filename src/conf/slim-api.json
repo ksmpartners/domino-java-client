@@ -154,6 +154,215 @@
         },
         "type": "object"
       },
+      "domino.common.gateway.search.EntityHighlight": {
+        "properties": {
+          "entityName": {
+            "type": "string"
+          },
+          "highlightedEntityName": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "entityName",
+          "highlightedEntityName"
+        ]
+      },
+      "domino.common.gateway.search.FeatureHighlight": {
+        "properties": {
+          "featureName": {
+            "type": "string"
+          },
+          "highlightedFeatureName": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "featureName",
+          "highlightedFeatureName"
+        ]
+      },
+      "domino.common.gateway.search.FeatureViewSearchResultDTO": {
+        "properties": {
+          "author": {
+            "type": "string"
+          },
+          "created": {
+            "format": "int64",
+            "type": "integer"
+          },
+          "description": {
+            "type": "string"
+          },
+          "entities": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "featureViewId": {
+            "pattern": "^[0-9a-f]{24}$",
+            "type": "string"
+          },
+          "featureViewName": {
+            "type": "string"
+          },
+          "features": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "highlightInfo": {
+            "$ref": "#/components/schemas/domino.common.gateway.search.FuzzyHighlightInfo"
+          },
+          "lastUpdated": {
+            "format": "int64",
+            "type": "integer"
+          },
+          "projectIds": {
+            "items": {
+              "pattern": "^[0-9a-f]{24}$",
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "tags": {
+            "additionalProperties": {
+              "type": "string"
+            },
+            "type": "object"
+          }
+        },
+        "required": [
+          "featureViewId",
+          "highlightInfo",
+          "featureViewName",
+          "description",
+          "entities",
+          "features",
+          "tags",
+          "author",
+          "lastUpdated",
+          "created",
+          "projectIds"
+        ]
+      },
+      "domino.common.gateway.search.FuzzyHighlightInfo": {
+        "properties": {
+          "highlightedEntities": {
+            "items": {
+              "$ref": "#/components/schemas/domino.common.gateway.search.EntityHighlight"
+            },
+            "type": "array"
+          },
+          "highlightedFeatures": {
+            "items": {
+              "$ref": "#/components/schemas/domino.common.gateway.search.FeatureHighlight"
+            },
+            "type": "array"
+          },
+          "highlightedTagKeys": {
+            "items": {
+              "$ref": "#/components/schemas/domino.common.gateway.search.TagKeyHighlight"
+            },
+            "type": "array"
+          },
+          "highlightedTagValues": {
+            "items": {
+              "$ref": "#/components/schemas/domino.common.gateway.search.TagValueHighlight"
+            },
+            "type": "array"
+          },
+          "maybeHighlightedDescription": {
+            "type": "string"
+          },
+          "maybeHighlightedFeatureViewName": {
+            "type": "string"
+          },
+          "maybeHighlightedModelAuthor": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "maybeHighlightedFeatureViewName",
+          "maybeHighlightedDescription",
+          "highlightedEntities",
+          "highlightedFeatures",
+          "highlightedTagKeys",
+          "highlightedTagValues",
+          "maybeHighlightedModelAuthor"
+        ]
+      },
+      "domino.common.gateway.search.SearchResultGatewayDTO": {
+        "properties": {
+          "area": {
+            "type": "string"
+          },
+          "displayText": {
+            "nullable": true,
+            "type": "string"
+          },
+          "featureViewInfo": {
+            "$ref": "#/components/schemas/domino.common.gateway.search.FeatureViewSearchResultDTO",
+            "nullable": true
+          },
+          "id": {
+            "nullable": true,
+            "pattern": "^[0-9a-f]{24}$",
+            "type": "string"
+          },
+          "link": {
+            "type": "string"
+          },
+          "ownerId": {
+            "nullable": true,
+            "pattern": "^[0-9a-f]{24}$",
+            "type": "string"
+          },
+          "path": {
+            "nullable": true,
+            "type": "string"
+          },
+          "projectId": {
+            "nullable": true,
+            "pattern": "^[0-9a-f]{24}$",
+            "type": "string"
+          }
+        },
+        "required": [
+          "link",
+          "area"
+        ]
+      },
+      "domino.common.gateway.search.TagKeyHighlight": {
+        "properties": {
+          "highlightedTagKey": {
+            "type": "string"
+          },
+          "tagKey": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "tagKey",
+          "highlightedTagKey"
+        ]
+      },
+      "domino.common.gateway.search.TagValueHighlight": {
+        "properties": {
+          "highlightedTagValue": {
+            "type": "string"
+          },
+          "tagValue": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "tagValue",
+          "highlightedTagValue"
+        ]
+      },
       "domino.common.models.EnvironmentVariable": {
         "properties": {
           "name": {
@@ -6257,6 +6466,74 @@
         "summary": "Retrieves a project for the Project Overview UI",
         "tags": [
           "Gateway"
+        ]
+      }
+    },
+    "/gateway/search": {
+      "get": {
+        "operationId": "search",
+        "parameters": [
+          {
+            "description": "Search term.",
+            "in": "query",
+            "name": "query",
+            "required": true,
+            "schema": {
+              "nullable": true,
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "area",
+            "required": false,
+            "schema": {
+              "nullable": true,
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "page",
+            "required": false,
+            "schema": {
+              "format": "int32",
+              "nullable": true,
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/domino.common.gateway.search.SearchResultGatewayDTO"
+                  },
+                  "type": "array"
+                }
+              }
+            },
+            "description": "success"
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalError"
+          }
+        },
+        "summary": "searches for the specified terms in the relevant areas with a limit on the number of results",
+        "tags": [
+          "Gateway",
+          "Search"
         ]
       }
     },

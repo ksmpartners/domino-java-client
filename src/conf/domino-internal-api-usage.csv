@@ -30,6 +30,7 @@ delete,/v4,/datasource/{dataSourceId}/projects/{projectId}
 post,/v4,/datasource/{dataSourceId}/projects/{projectId}
 get,/v4,/gateway/projects
 get,/v4,/gateway/projects/findProjectByOwnerAndName
+get,v4/,/gateway/search
 get,/v4,/jobs/{jobId}
 get,/v4,/jobs/{jobId}/logsWithProblemSuggestions
 post,/v4,/jobs/{jobId}/name
