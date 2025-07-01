@@ -540,6 +540,70 @@
         ],
         "type": "object"
       },
+      "domino.common.user.PersonWithRoles": {
+        "properties": {
+          "avatarUrl": {
+            "description": "Url of the person's avatar",
+            "type": "string"
+          },
+          "companyName": {
+            "description": "Person's company name",
+            "nullable": true,
+            "type": "string"
+          },
+          "email": {
+            "description": "Person email",
+            "nullable": true,
+            "type": "string"
+          },
+          "firstName": {
+            "description": "Person first name",
+            "type": "string"
+          },
+          "fullName": {
+            "description": "Person full name",
+            "type": "string"
+          },
+          "id": {
+            "description": "Person user id",
+            "pattern": "^[0-9a-f]{24}$",
+            "type": "string"
+          },
+          "idpId": {
+            "nullable": true,
+            "type": "string"
+          },
+          "lastName": {
+            "description": "Person last name",
+            "type": "string"
+          },
+          "phoneNumber": {
+            "description": "Person phone number",
+            "nullable": true,
+            "type": "string"
+          },
+          "roles": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "userName": {
+            "description": "Person username",
+            "type": "string"
+          }
+        },
+        "required": [
+          "firstName",
+          "lastName",
+          "fullName",
+          "userName",
+          "avatarUrl",
+          "id",
+          "roles"
+        ],
+        "type": "object"
+      },
       "domino.datamount.api.DataMountDto": {
         "properties": {
           "dataPlanes": {
@@ -744,6 +808,12 @@
       },
       "domino.dataplane.DataPlaneStatus": {
         "properties": {
+          "agentVersion": {
+            "type": "string"
+          },
+          "catalogVersion": {
+            "type": "string"
+          },
           "lastHeartbeatTimestamp": {
             "format": "int64",
             "nullable": true,
@@ -764,15 +834,17 @@
             ],
             "type": "string"
           },
-          "version": {
-            "type": "string"
+          "supportsUpgrade": {
+            "type": "boolean"
           }
         },
         "required": [
           "state",
           "message",
-          "version",
-          "requiresUpgrade"
+          "agentVersion",
+          "catalogVersion",
+          "requiresUpgrade",
+          "supportsUpgrade"
         ]
       },
       "domino.datasetrw.api.DatasetRwDetailsDto": {
@@ -937,6 +1009,10 @@
               "type": "string"
             },
             "type": "object"
+          },
+          "uniqueName": {
+            "nullable": true,
+            "type": "string"
           }
         },
         "required": [
@@ -1230,6 +1306,10 @@
             "format": "int64",
             "nullable": true,
             "type": "integer"
+          },
+          "uniqueName": {
+            "nullable": true,
+            "type": "string"
           },
           "versionNumber": {
             "format": "int32",
@@ -1667,6 +1747,7 @@
               "BigQueryConfig",
               "ClickHouseConfig",
               "DatabricksConfig",
+              "DatasetConfig",
               "DB2Config",
               "DruidConfig",
               "GCSConfig",
@@ -2369,6 +2450,32 @@
           "mount"
         ]
       },
+      "domino.jobs.interface.DependentNetAppVolumeMount": {
+        "properties": {
+          "pvcName": {
+            "type": "string"
+          },
+          "snapshotMount": {
+            "$ref": "#/components/schemas/domino.jobs.interface.VolumeMount"
+          },
+          "volumeId": {
+            "type": "string"
+          },
+          "volumeMount": {
+            "$ref": "#/components/schemas/domino.jobs.interface.VolumeMount"
+          },
+          "volumeName": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "pvcName",
+          "volumeId",
+          "volumeName",
+          "volumeMount",
+          "snapshotMount"
+        ]
+      },
       "domino.jobs.interface.DependentProject": {
         "properties": {
           "commitId": {
@@ -2575,6 +2682,12 @@
             },
             "type": "array"
           },
+          "dependentNetAppVolumeMounts": {
+            "items": {
+              "$ref": "#/components/schemas/domino.jobs.interface.DependentNetAppVolumeMount"
+            },
+            "type": "array"
+          },
           "dependentProjects": {
             "items": {
               "$ref": "#/components/schemas/domino.jobs.interface.DependentProject"
@@ -2680,6 +2793,7 @@
           "suggestDatasets",
           "goalIds",
           "dependentExternalVolumeMounts",
+          "dependentNetAppVolumeMounts",
           "snapshotDatasetsOnCompletion"
         ]
       },
@@ -3077,6 +3191,13 @@
           "mainRepoGitRef": {
             "$ref": "#/components/schemas/domino.projects.api.repositories.ReferenceDTO",
             "nullable": true
+          },
+          "netAppVolumeIds": {
+            "items": {
+              "type": "string"
+            },
+            "nullable": true,
+            "type": "array"
           },
           "onDemandSparkClusterProperties": {
             "$ref": "#/components/schemas/domino.projects.api.OnDemandSparkClusterPropertiesSpec",
@@ -3608,6 +3729,11 @@
             "pattern": "^[0-9a-f]{24}$",
             "type": "string"
           },
+          "commentCount": {
+            "format": "int32",
+            "nullable": true,
+            "type": "integer"
+          },
           "createdAt": {
             "format": "int64",
             "type": "integer"
@@ -3798,6 +3924,13 @@
           "ownerUsername": {
             "type": "string"
           },
+          "projectType": {
+            "enum": [
+              "Analytic",
+              "Template"
+            ],
+            "type": "string"
+          },
           "stageId": {
             "pattern": "^[0-9a-f]{24}$",
             "type": "string"
@@ -3832,7 +3965,8 @@
           "collaborators",
           "tags",
           "stageId",
-          "status"
+          "status",
+          "projectType"
         ]
       },
       "domino.projects.api.ProjectTagDTO": {
@@ -4424,10 +4558,6 @@
             "description": "sum of run times of all executions in the project, in ISO8601 duration format including only seconds and milliseconds",
             "type": "string"
           },
-          "updatedAt": {
-            "format": "date-time",
-            "type": "string"
-          },
           "visibility": {
             "enum": [
               "Public",
@@ -4448,7 +4578,6 @@
           "allowedOperations",
           "visibility",
           "tags",
-          "updatedAt",
           "numComments",
           "runsCountByType",
           "totalRunTime",
@@ -4464,13 +4593,22 @@
             "nullable": true,
             "type": "boolean"
           },
+          "projectType": {
+            "enum": [
+              "Analytic",
+              "DataSet",
+              "Template"
+            ],
+            "type": "string"
+          },
           "updatedAt": {
             "format": "date-time",
             "type": "string"
           }
         },
         "required": [
-          "updatedAt"
+          "updatedAt",
+          "projectType"
         ]
       },
       "domino.server.projects.api.ProjectGatewayRunCountForType": {
@@ -4509,7 +4647,7 @@
             "type": "string"
           },
           "details": {
-            "$ref": "#/components/schemas/domino.server.projects.api.ProjectGatewayOverviewDetails"
+            "$ref": "#/components/schemas/domino.server.projects.api.ProjectGatewaySummaryDetails"
           },
           "id": {
             "pattern": "^[0-9a-f]{24}$",
@@ -4616,6 +4754,21 @@
           "stageId",
           "status",
           "details"
+        ]
+      },
+      "domino.server.projects.api.ProjectGatewaySummaryDetails": {
+        "properties": {
+          "isRestricted": {
+            "nullable": true,
+            "type": "boolean"
+          },
+          "updatedAt": {
+            "format": "date-time",
+            "type": "string"
+          }
+        },
+        "required": [
+          "updatedAt"
         ]
       },
       "domino.server.projects.api.ProjectGatewayTag": {
@@ -5186,7 +5339,7 @@
             "$ref": "#/components/responses/InternalError"
           }
         },
-        "summary": "gets dataset's current dataset's grants details",
+        "summary": "Gets dataset's current dataset's grants details",
         "tags": [
           "DatasetRw"
         ]
@@ -8358,7 +8511,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/domino.common.user.Person"
+                  "$ref": "#/components/schemas/domino.common.user.PersonWithRoles"
                 }
               }
             },
