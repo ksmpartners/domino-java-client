@@ -2,7 +2,7 @@ package com.dominodatalab.test;
 
 import com.dominodatalab.api.invoker.ApiClient;
 import com.dominodatalab.api.invoker.ApiException;
-import com.dominodatalab.api.model.DominoCommonUserPerson;
+import com.dominodatalab.api.model.DominoCommonUserPersonWithRoles;
 import com.dominodatalab.api.rest.UsersApi;
 import com.dominodatalab.client.DominoApiClient;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -22,7 +22,7 @@ public class DominoTest {
 
             // call the get current user API
             UsersApi api = new UsersApi(client);
-            DominoCommonUserPerson user = api.getCurrentUser();
+            DominoCommonUserPersonWithRoles user = api.getCurrentUser();
 
             // print response as JSON
             ObjectMapper mapper = DominoApiClient.createDefaultObjectMapper();

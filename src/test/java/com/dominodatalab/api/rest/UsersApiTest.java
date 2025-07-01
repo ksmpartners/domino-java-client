@@ -19,6 +19,7 @@ import com.dominodatalab.api.invoker.ApiException;
 import com.dominodatalab.api.model.DominoCommonModelsEnvironmentVariable;
 import com.dominodatalab.api.model.DominoCommonModelsEnvironmentVariables;
 import com.dominodatalab.api.model.DominoCommonUserPerson;
+import com.dominodatalab.api.model.DominoCommonUserPersonWithRoles;
 
 class UsersApiTest extends TestClientConfigurer {
 
@@ -35,7 +36,7 @@ class UsersApiTest extends TestClientConfigurer {
         // Arrange
 
         // Act
-        DominoCommonUserPerson user = usersApi.getCurrentUser();
+        DominoCommonUserPersonWithRoles user = usersApi.getCurrentUser();
 
         // Assert
         assertNotNull(user.getId());
@@ -45,7 +46,7 @@ class UsersApiTest extends TestClientConfigurer {
     @Test
     void listUsersUserIdSuccess() throws ApiException {
         // Arrange
-        DominoCommonUserPerson user = usersApi.getCurrentUser();
+        DominoCommonUserPersonWithRoles user = usersApi.getCurrentUser();
 
         // Act
         List<DominoCommonUserPerson> users = usersApi.listUsers(List.of(user.getId()), null, null, null);
@@ -58,7 +59,7 @@ class UsersApiTest extends TestClientConfigurer {
     @Test
     void listUsersUserNameSuccess() throws ApiException {
         // Arrange
-        DominoCommonUserPerson user = usersApi.getCurrentUser();
+        DominoCommonUserPersonWithRoles user = usersApi.getCurrentUser();
 
         // Act
         List<DominoCommonUserPerson> users = usersApi.listUsers(null, user.getUserName(), null, null);
