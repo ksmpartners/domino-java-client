@@ -1,5 +1,160 @@
 {
   "components": {
+    "parameters": {
+      "actorId": {
+        "in": "query",
+        "name": "actorId",
+        "required": false,
+        "schema": {
+          "type": "string"
+        }
+      },
+      "actorName": {
+        "in": "query",
+        "name": "actorName",
+        "required": false,
+        "schema": {
+          "type": "string"
+        }
+      },
+      "columns": {
+        "description": "the name of a column that should be included in the csv download. This parameter can be repeated to include multiple columns. The order in which the column names are provided dictates the order of the columns in the csv. This will cause a 400 if the Accept header is not csv or if the column name is unsupported",
+        "example": "date_time",
+        "in": "query",
+        "name": "column",
+        "required": false,
+        "schema": {
+          "enum": [
+            "date_time",
+            "user_name",
+            "first_name",
+            "last_name",
+            "event",
+            "reason_for_change",
+            "reason_for_change_additional_info",
+            "electronically_signed",
+            "target_name",
+            "project_name",
+            "dataset_name",
+            "file_name",
+            "target_user",
+            "before_value",
+            "after_value",
+            "feature_flag",
+            "jobs",
+            "environment",
+            "workspace"
+          ],
+          "type": "string"
+        }
+      },
+      "endTimestamp": {
+        "description": "unix timestamp in milliseconds",
+        "in": "query",
+        "name": "endTimestamp",
+        "required": false,
+        "schema": {
+          "type": "integer"
+        }
+      },
+      "event": {
+        "in": "query",
+        "name": "event",
+        "required": false,
+        "schema": {
+          "type": "string"
+        }
+      },
+      "limit": {
+        "description": "Maximum number of records to return.",
+        "in": "query",
+        "name": "limit",
+        "required": false,
+        "schema": {
+          "default": 50,
+          "format": "int32",
+          "type": "integer"
+        }
+      },
+      "offset": {
+        "description": "Zero-based; indicates how many events to skip over before",
+        "in": "query",
+        "name": "offset",
+        "required": false,
+        "schema": {
+          "default": 0,
+          "format": "int32",
+          "type": "integer"
+        }
+      },
+      "sort": {
+        "description": "a comma separated list of fields, each prefixed with either a + or - to indicates asc or desc (no prefix defaults to asc). The list of supported sort fields are timestamp, actorId, actorName, withinProjectId, withinProjectName, event, targetType, and targetName",
+        "example": "-timestamp,+actorId",
+        "in": "query",
+        "name": "sort",
+        "required": false,
+        "schema": {
+          "type": "string"
+        }
+      },
+      "startTimestamp": {
+        "description": "unix timestamp in milliseconds",
+        "in": "query",
+        "name": "startTimestamp",
+        "required": false,
+        "schema": {
+          "type": "integer"
+        }
+      },
+      "targetId": {
+        "description": "all events in which the target's id matches",
+        "example": "dataset_id",
+        "in": "query",
+        "name": "targetId",
+        "required": false,
+        "schema": {
+          "type": "string"
+        }
+      },
+      "targetName": {
+        "description": "all events in which the target's name matches",
+        "example": "my_dataset_name",
+        "in": "query",
+        "name": "targetName",
+        "required": false,
+        "schema": {
+          "type": "string"
+        }
+      },
+      "targetType": {
+        "description": "all events in which the target's type matches",
+        "example": "dataset",
+        "in": "query",
+        "name": "targetType",
+        "required": false,
+        "schema": {
+          "type": "string"
+        }
+      },
+      "withinProjectId": {
+        "description": "events that occurred within the context of a project with this id",
+        "in": "query",
+        "name": "withinProjectId",
+        "required": false,
+        "schema": {
+          "type": "string"
+        }
+      },
+      "withinProjectName": {
+        "description": "events that occurred within the context of a project with this name",
+        "in": "query",
+        "name": "withinProjectName",
+        "required": false,
+        "schema": {
+          "type": "string"
+        }
+      }
+    },
     "responses": {
       "400": {
         "content": {
@@ -195,6 +350,637 @@
           "$ref": "#/components/schemas/Entity"
         },
         "type": "array"
+      },
+      "AppAccessStatus": {
+        "properties": {
+          "status": {
+            "enum": [
+              "ALLOWED",
+              "DENIED",
+              "PENDING"
+            ],
+            "type": "string"
+          },
+          "userId": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "userId",
+          "status"
+        ],
+        "type": "object"
+      },
+      "AppCreationRequest": {
+        "properties": {
+          "accessStatuses": {
+            "items": {
+              "$ref": "#/components/schemas/AppAccessStatus"
+            },
+            "type": "array"
+          },
+          "description": {
+            "type": "string"
+          },
+          "discoverable": {
+            "type": "boolean"
+          },
+          "entryPoint": {
+            "type": "string"
+          },
+          "mountDatasets": {
+            "type": "boolean"
+          },
+          "name": {
+            "type": "string"
+          },
+          "projectId": {
+            "type": "string"
+          },
+          "renderIFrame": {
+            "type": "boolean"
+          },
+          "version": {
+            "$ref": "#/components/schemas/AppVersionCreationRequest"
+          },
+          "visibility": {
+            "enum": [
+              "AUTHENTICATED",
+              "GRANT_BASED",
+              "GRANT_BASED_STRICT",
+              "PUBLIC"
+            ],
+            "type": "string"
+          }
+        },
+        "required": [
+          "name",
+          "projectId",
+          "visibility",
+          "version"
+        ],
+        "type": "object"
+      },
+      "AppInstanceLogsResponse": {
+        "properties": {
+          "isComplete": {
+            "type": "boolean"
+          },
+          "logContent": {
+            "items": {
+              "properties": {
+                "log": {
+                  "type": "string"
+                },
+                "logType": {
+                  "type": "string"
+                },
+                "size": {
+                  "type": "number"
+                },
+                "timestamp": {
+                  "format": "int64",
+                  "type": "integer"
+                }
+              },
+              "required": [
+                "timestamp",
+                "logType",
+                "log",
+                "size"
+              ],
+              "type": "object"
+            },
+            "type": "array"
+          },
+          "pagination": {
+            "properties": {
+              "latestTime": {
+                "type": "string"
+              },
+              "limit": {
+                "type": "integer"
+              },
+              "offset": {
+                "type": "integer"
+              }
+            },
+            "required": [
+              "limit",
+              "offset",
+              "latestTime"
+            ],
+            "type": "object"
+          }
+        },
+        "required": [
+          "logContent",
+          "isComplete",
+          "pagination"
+        ],
+        "type": "object"
+      },
+      "AppInstanceResourceUsage": {
+        "properties": {
+          "cpu": {
+            "type": "string"
+          },
+          "memory": {
+            "type": "string"
+          },
+          "timestamp": {
+            "format": "int64",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "timestamp",
+          "cpu",
+          "memory"
+        ],
+        "type": "object"
+      },
+      "AppInstanceResourceUsageTimeseries": {
+        "items": {
+          "$ref": "#/components/schemas/AppInstanceResourceUsage"
+        },
+        "type": "array"
+      },
+      "AppInstanceResponse": {
+        "properties": {
+          "createdAt": {
+            "format": "int64",
+            "type": "integer"
+          },
+          "id": {
+            "type": "string"
+          },
+          "resourceUsage": {
+            "$ref": "#/components/schemas/AppInstanceResourceUsageTimeseries"
+          },
+          "status": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "createdAt",
+          "resourceUsage",
+          "status"
+        ],
+        "type": "object"
+      },
+      "AppInstanceSummaryResponse": {
+        "properties": {
+          "createdAt": {
+            "format": "int64",
+            "type": "integer"
+          },
+          "describeUrl": {
+            "type": "string"
+          },
+          "id": {
+            "type": "string"
+          },
+          "status": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "createdAt",
+          "status"
+        ],
+        "type": "object"
+      },
+      "AppProjectResponse": {
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "ownerId": {
+            "type": "string"
+          },
+          "ownerUsername": {
+            "type": "string"
+          },
+          "projectType": {
+            "enum": [
+              "Analytic",
+              "Dataset",
+              "Template"
+            ],
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "projectType",
+          "name",
+          "ownerId",
+          "ownerUsername"
+        ],
+        "type": "object"
+      },
+      "AppResponse": {
+        "properties": {
+          "accessStatuses": {
+            "items": {
+              "$ref": "#/components/schemas/AppAccessStatus"
+            },
+            "type": "array"
+          },
+          "currentVersion": {
+            "$ref": "#/components/schemas/AppVersionResponse"
+          },
+          "description": {
+            "type": "string"
+          },
+          "discoverable": {
+            "type": "boolean"
+          },
+          "entryPoint": {
+            "type": "string"
+          },
+          "id": {
+            "type": "string"
+          },
+          "mountDatasets": {
+            "type": "boolean"
+          },
+          "name": {
+            "type": "string"
+          },
+          "project": {
+            "$ref": "#/components/schemas/AppProjectResponse"
+          },
+          "publisher": {
+            "$ref": "#/components/schemas/AppUserResponse"
+          },
+          "renderIFrame": {
+            "type": "boolean"
+          },
+          "updatedAt": {
+            "format": "int64",
+            "type": "integer"
+          },
+          "url": {
+            "type": "string"
+          },
+          "vanityUrl": {
+            "type": "string"
+          },
+          "views": {
+            "type": "number"
+          },
+          "visibility": {
+            "enum": [
+              "AUTHENTICATED",
+              "GRANT_BASED",
+              "GRANT_BASED_STRICT",
+              "PUBLIC"
+            ],
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "name",
+          "project",
+          "entryPoint",
+          "renderIFrame",
+          "url",
+          "visibility",
+          "accessStatuses",
+          "discoverable",
+          "mountDatasets",
+          "views"
+        ],
+        "type": "object"
+      },
+      "AppSummaryResponse": {
+        "properties": {
+          "accessStatuses": {
+            "items": {
+              "$ref": "#/components/schemas/AppAccessStatus"
+            },
+            "type": "array"
+          },
+          "currentVersion": {
+            "$ref": "#/components/schemas/AppVersionResponse"
+          },
+          "description": {
+            "type": "string"
+          },
+          "discoverable": {
+            "type": "boolean"
+          },
+          "entryPoint": {
+            "type": "string"
+          },
+          "id": {
+            "type": "string"
+          },
+          "mountDatasets": {
+            "type": "boolean"
+          },
+          "name": {
+            "type": "string"
+          },
+          "project": {
+            "$ref": "#/components/schemas/AppProjectResponse"
+          },
+          "publisher": {
+            "$ref": "#/components/schemas/AppUserResponse"
+          },
+          "renderIFrame": {
+            "type": "boolean"
+          },
+          "updatedAt": {
+            "format": "int64",
+            "type": "integer"
+          },
+          "url": {
+            "type": "string"
+          },
+          "vanityUrl": {
+            "type": "string"
+          },
+          "views": {
+            "type": "number"
+          },
+          "visibility": {
+            "enum": [
+              "AUTHENTICATED",
+              "GRANT_BASED",
+              "GRANT_BASED_STRICT",
+              "PUBLIC"
+            ],
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "name",
+          "project",
+          "entryPoint",
+          "renderIFrame",
+          "url",
+          "visibility",
+          "accessStatuses",
+          "discoverable",
+          "mountDatasets",
+          "views"
+        ],
+        "type": "object"
+      },
+      "AppUpdateRequest": {
+        "properties": {
+          "accessStatuses": {
+            "items": {
+              "$ref": "#/components/schemas/AppAccessStatus"
+            },
+            "type": "array"
+          },
+          "description": {
+            "type": "string"
+          },
+          "discoverable": {
+            "type": "boolean"
+          },
+          "entryPoint": {
+            "type": "string"
+          },
+          "mountDatasets": {
+            "type": "boolean"
+          },
+          "name": {
+            "type": "string"
+          },
+          "renderIFrame": {
+            "type": "boolean"
+          },
+          "version": {
+            "$ref": "#/components/schemas/AppVersionCreationRequest"
+          },
+          "visibility": {
+            "enum": [
+              "AUTHENTICATED",
+              "GRANT_BASED",
+              "GRANT_BASED_STRICT",
+              "PUBLIC"
+            ],
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      "AppUserResponse": {
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "name"
+        ],
+        "type": "object"
+      },
+      "AppVersionCreationRequest": {
+        "properties": {
+          "dfsCommitId": {
+            "type": "string"
+          },
+          "environmentId": {
+            "type": "string"
+          },
+          "environmentRevisionId": {
+            "type": "string"
+          },
+          "externalVolumeMountIds": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "gitRef": {
+            "$ref": "#/components/schemas/GitRef"
+          },
+          "hardwareTierId": {
+            "type": "string"
+          },
+          "netAppVolumeIds": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "vanityUrl": {
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      "AppVersionResponse": {
+        "properties": {
+          "createdAt": {
+            "format": "int64",
+            "type": "integer"
+          },
+          "currentInstance": {
+            "$ref": "#/components/schemas/AppInstanceSummaryResponse"
+          },
+          "dfsCommitId": {
+            "type": "string"
+          },
+          "environmentId": {
+            "type": "string"
+          },
+          "environmentRevisionId": {
+            "type": "string"
+          },
+          "externalVolumeMountIds": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "gitRef": {
+            "$ref": "#/components/schemas/GitRef"
+          },
+          "hardwareTierId": {
+            "type": "string"
+          },
+          "id": {
+            "type": "string"
+          },
+          "netAppVolumeIds": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "publisher": {
+            "$ref": "#/components/schemas/AppUserResponse"
+          },
+          "updatedAt": {
+            "format": "int64",
+            "type": "integer"
+          },
+          "vanityUrl": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "environmentId",
+          "environmentRevisionId",
+          "hardwareTierId",
+          "externalVolumeMountIds",
+          "netAppVolumeIds",
+          "createdAt",
+          "updatedAt"
+        ],
+        "type": "object"
+      },
+      "AppVersionUpdateRequest": {
+        "properties": {
+          "vanityUrl": {
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      "AppViewsResponse": {
+        "properties": {
+          "count": {
+            "format": "int64",
+            "type": "integer"
+          },
+          "timeseries": {
+            "items": {
+              "$ref": "#/components/schemas/AppViewsTimeseries"
+            },
+            "type": "array"
+          },
+          "users": {
+            "additionalProperties": {
+              "type": "integer"
+            },
+            "type": "object"
+          },
+          "versions": {
+            "items": {
+              "properties": {
+                "count": {
+                  "format": "int64",
+                  "type": "integer"
+                },
+                "id": {
+                  "type": "string"
+                },
+                "timeseries": {
+                  "items": {
+                    "$ref": "#/components/schemas/AppViewsTimeseries"
+                  },
+                  "type": "array"
+                },
+                "users": {
+                  "additionalProperties": {
+                    "type": "integer"
+                  },
+                  "type": "object"
+                }
+              },
+              "required": [
+                "id",
+                "count",
+                "users",
+                "timeseries"
+              ],
+              "type": "object"
+            },
+            "type": "array"
+          }
+        },
+        "required": [
+          "count",
+          "users",
+          "versions",
+          "timeseries"
+        ],
+        "type": "object"
+      },
+      "AppViewsTimeseries": {
+        "properties": {
+          "count": {
+            "format": "int64",
+            "type": "integer"
+          },
+          "timestamp": {
+            "format": "int64",
+            "type": "integer"
+          },
+          "users": {
+            "additionalProperties": {
+              "type": "integer"
+            },
+            "type": "object"
+          }
+        },
+        "required": [
+          "timestamp",
+          "count",
+          "users"
+        ],
+        "type": "object"
       },
       "AsyncPredictionEnvelopeV1": {
         "properties": {
@@ -474,6 +1260,31 @@
         ],
         "type": "object"
       },
+      "CloudCostDetailsV2": {
+        "properties": {
+          "cost": {
+            "type": "number"
+          },
+          "kubernetesPercent": {
+            "type": "number"
+          }
+        },
+        "type": "object"
+      },
+      "CloudCostEnvelopeV2": {
+        "properties": {
+          "data": {
+            "items": {
+              "$ref": "#/components/schemas/CloudCostV2"
+            },
+            "type": "array"
+          }
+        },
+        "required": [
+          "data"
+        ],
+        "type": "object"
+      },
       "CloudCostMetricsV1": {
         "description": "Determines which cloud cost metric type will be returned",
         "enum": [
@@ -483,6 +1294,32 @@
           "NetCost"
         ],
         "type": "string"
+      },
+      "CloudCostV2": {
+        "properties": {
+          "amortizedCost": {
+            "$ref": "#/components/schemas/CloudCostDetailsV2"
+          },
+          "amortizedNetCost": {
+            "$ref": "#/components/schemas/CloudCostDetailsV2"
+          },
+          "invoicedCost": {
+            "$ref": "#/components/schemas/CloudCostDetailsV2"
+          },
+          "key": {
+            "$ref": "#/components/schemas/CostKeyV2"
+          },
+          "listCost": {
+            "$ref": "#/components/schemas/CloudCostDetailsV2"
+          },
+          "netCost": {
+            "$ref": "#/components/schemas/CloudCostDetailsV2"
+          },
+          "window": {
+            "$ref": "#/components/schemas/CostTimeWindowV2"
+          }
+        },
+        "type": "object"
       },
       "ClusterTypeV1": {
         "description": "Type of compute cluster",
@@ -593,6 +1430,52 @@
         ],
         "type": "object"
       },
+      "CostActivationStatusEnvelopeV1": {
+        "description": "Activation status of the Domino cost functionality",
+        "properties": {
+          "activation": {
+            "$ref": "#/components/schemas/CostActivationStatusV1"
+          }
+        },
+        "required": [
+          "activation"
+        ],
+        "type": "object"
+      },
+      "CostActivationStatusV1": {
+        "description": "Determines the activation state of the Domino cost functionality",
+        "enum": [
+          "Partial",
+          "Full"
+        ],
+        "type": "string"
+      },
+      "CostAllocationCpuV2": {
+        "properties": {
+          "coreHours": {
+            "type": "number"
+          },
+          "coreRequestAverage": {
+            "type": "number"
+          },
+          "coreUsageAverage": {
+            "type": "number"
+          },
+          "cores": {
+            "type": "number"
+          },
+          "cost": {
+            "type": "number"
+          },
+          "costAdjustment": {
+            "type": "number"
+          },
+          "efficiency": {
+            "type": "number"
+          }
+        },
+        "type": "object"
+      },
       "CostAllocationEnvelopeV1": {
         "properties": {
           "data": {
@@ -605,6 +1488,338 @@
         "required": [
           "data"
         ],
+        "type": "object"
+      },
+      "CostAllocationEnvelopeV2": {
+        "properties": {
+          "data": {
+            "items": {
+              "$ref": "#/components/schemas/CostAllocationV2"
+            },
+            "type": "array"
+          }
+        },
+        "required": [
+          "data"
+        ],
+        "type": "object"
+      },
+      "CostAllocationGpuV2": {
+        "properties": {
+          "cost": {
+            "type": "number"
+          },
+          "costAdjustment": {
+            "type": "number"
+          },
+          "count": {
+            "type": "number"
+          },
+          "hours": {
+            "type": "number"
+          }
+        },
+        "type": "object"
+      },
+      "CostAllocationLoadBalancerV2": {
+        "properties": {
+          "cost": {
+            "type": "number"
+          },
+          "costAdjustment": {
+            "type": "number"
+          }
+        },
+        "type": "object"
+      },
+      "CostAllocationNetworkV2": {
+        "properties": {
+          "cost": {
+            "type": "number"
+          },
+          "costAdjustment": {
+            "type": "number"
+          },
+          "crossRegionCost": {
+            "type": "number"
+          },
+          "crossZoneCost": {
+            "type": "number"
+          },
+          "internetCost": {
+            "type": "number"
+          },
+          "receiveBytes": {
+            "type": "number"
+          },
+          "transferBytes": {
+            "type": "number"
+          }
+        },
+        "type": "object"
+      },
+      "CostAllocationPvV2": {
+        "properties": {
+          "byteHours": {
+            "type": "number"
+          },
+          "bytes": {
+            "type": "number"
+          },
+          "cost": {
+            "type": "number"
+          },
+          "costAdjustment": {
+            "type": "number"
+          },
+          "pvs": {
+            "additionalProperties": {
+              "properties": {
+                "byteHours": {
+                  "type": "number"
+                },
+                "cost": {
+                  "type": "number"
+                }
+              },
+              "type": "object"
+            },
+            "type": "object"
+          }
+        },
+        "type": "object"
+      },
+      "CostAllocationRamV2": {
+        "properties": {
+          "byteHours": {
+            "type": "number"
+          },
+          "byteRequestAverage": {
+            "type": "number"
+          },
+          "byteUsageAverage": {
+            "type": "number"
+          },
+          "bytes": {
+            "type": "number"
+          },
+          "cost": {
+            "type": "number"
+          },
+          "costAdjustment": {
+            "type": "number"
+          },
+          "efficiency": {
+            "type": "number"
+          }
+        },
+        "type": "object"
+      },
+      "CostAllocationSummaryCpuV2": {
+        "properties": {
+          "coreRequestAverage": {
+            "type": "number"
+          },
+          "coreUsageAverage": {
+            "type": "number"
+          },
+          "cost": {
+            "type": "number"
+          }
+        },
+        "type": "object"
+      },
+      "CostAllocationSummaryEnvelopeV1": {
+        "properties": {
+          "data": {
+            "items": {
+              "$ref": "#/components/schemas/CostAllocationSummaryV1"
+            },
+            "type": "array"
+          }
+        },
+        "required": [
+          "data"
+        ],
+        "type": "object"
+      },
+      "CostAllocationSummaryEnvelopeV2": {
+        "properties": {
+          "data": {
+            "items": {
+              "$ref": "#/components/schemas/CostAllocationSummaryV2"
+            },
+            "type": "array"
+          }
+        },
+        "required": [
+          "data"
+        ],
+        "type": "object"
+      },
+      "CostAllocationSummaryGpuV2": {
+        "properties": {
+          "cost": {
+            "type": "number"
+          }
+        },
+        "type": "object"
+      },
+      "CostAllocationSummaryLoadBalancerV2": {
+        "properties": {
+          "cost": {
+            "type": "number"
+          }
+        },
+        "type": "object"
+      },
+      "CostAllocationSummaryNetworkV2": {
+        "properties": {
+          "cost": {
+            "type": "number"
+          }
+        },
+        "type": "object"
+      },
+      "CostAllocationSummaryPvV2": {
+        "properties": {
+          "cost": {
+            "type": "number"
+          }
+        },
+        "type": "object"
+      },
+      "CostAllocationSummaryRamV2": {
+        "properties": {
+          "byteRequestAverage": {
+            "type": "number"
+          },
+          "byteUsageAverage": {
+            "type": "number"
+          },
+          "cost": {
+            "type": "number"
+          }
+        },
+        "type": "object"
+      },
+      "CostAllocationSummaryV1": {
+        "properties": {
+          "cpuCoreRequestAverage": {
+            "format": "double",
+            "type": "number"
+          },
+          "cpuCoreUsageAverage": {
+            "format": "double",
+            "type": "number"
+          },
+          "cpuCost": {
+            "format": "double",
+            "type": "number"
+          },
+          "gpuCost": {
+            "format": "double",
+            "type": "number"
+          },
+          "loadBalancerCost": {
+            "format": "double",
+            "type": "number"
+          },
+          "name": {
+            "type": "string"
+          },
+          "networkCost": {
+            "format": "double",
+            "type": "number"
+          },
+          "pvCost": {
+            "format": "double",
+            "type": "number"
+          },
+          "ramCost": {
+            "format": "double",
+            "type": "number"
+          },
+          "totalCost": {
+            "format": "double",
+            "type": "number"
+          },
+          "window": {
+            "properties": {
+              "end": {
+                "type": "string"
+              },
+              "minutes": {
+                "format": "double",
+                "type": "number"
+              },
+              "start": {
+                "type": "string"
+              }
+            },
+            "type": "object"
+          }
+        },
+        "type": "object"
+      },
+      "CostAllocationSummaryV2": {
+        "properties": {
+          "allocationProperties": {
+            "$ref": "#/components/schemas/CostPropertiesV2"
+          },
+          "cpu": {
+            "$ref": "#/components/schemas/CostAllocationSummaryCpuV2"
+          },
+          "end": {
+            "type": "string"
+          },
+          "externalCost": {
+            "nullable": true,
+            "type": "number"
+          },
+          "gpu": {
+            "$ref": "#/components/schemas/CostAllocationSummaryGpuV2"
+          },
+          "key": {
+            "$ref": "#/components/schemas/CostKeyV2"
+          },
+          "labels": {
+            "$ref": "#/components/schemas/CostLabelsV2"
+          },
+          "loadBalancer": {
+            "$ref": "#/components/schemas/CostAllocationSummaryLoadBalancerV2"
+          },
+          "minutes": {
+            "type": "number"
+          },
+          "network": {
+            "$ref": "#/components/schemas/CostAllocationSummaryNetworkV2"
+          },
+          "pv": {
+            "$ref": "#/components/schemas/CostAllocationSummaryPvV2"
+          },
+          "ram": {
+            "$ref": "#/components/schemas/CostAllocationSummaryRamV2"
+          },
+          "sharedCost": {
+            "nullable": true,
+            "type": "number"
+          },
+          "start": {
+            "type": "string"
+          },
+          "totalCost": {
+            "nullable": true,
+            "type": "number"
+          },
+          "totalEfficiency": {
+            "nullable": true,
+            "type": "number"
+          },
+          "window": {
+            "$ref": "#/components/schemas/CostTimeWindowV2"
+          }
+        },
         "type": "object"
       },
       "CostAllocationV1": {
@@ -776,6 +1991,117 @@
         },
         "type": "object"
       },
+      "CostAllocationV2": {
+        "properties": {
+          "allocationProperties": {
+            "$ref": "#/components/schemas/CostPropertiesV2"
+          },
+          "cpu": {
+            "$ref": "#/components/schemas/CostAllocationCpuV2"
+          },
+          "end": {
+            "type": "string"
+          },
+          "externalCost": {
+            "type": "number"
+          },
+          "gpu": {
+            "$ref": "#/components/schemas/CostAllocationGpuV2"
+          },
+          "key": {
+            "$ref": "#/components/schemas/CostKeyV2"
+          },
+          "labels": {
+            "$ref": "#/components/schemas/CostLabelsV2"
+          },
+          "loadBalancer": {
+            "$ref": "#/components/schemas/CostAllocationLoadBalancerV2"
+          },
+          "minutes": {
+            "type": "number"
+          },
+          "network": {
+            "$ref": "#/components/schemas/CostAllocationNetworkV2"
+          },
+          "pv": {
+            "$ref": "#/components/schemas/CostAllocationPvV2"
+          },
+          "ram": {
+            "$ref": "#/components/schemas/CostAllocationRamV2"
+          },
+          "sharedCost": {
+            "type": "number"
+          },
+          "start": {
+            "type": "string"
+          },
+          "totalCost": {
+            "type": "number"
+          },
+          "totalEfficiency": {
+            "type": "number"
+          },
+          "window": {
+            "$ref": "#/components/schemas/CostTimeWindowV2"
+          }
+        },
+        "type": "object"
+      },
+      "CostAssetsBreakdownV2": {
+        "properties": {
+          "idle": {
+            "type": "number"
+          },
+          "other": {
+            "type": "number"
+          },
+          "system": {
+            "type": "number"
+          },
+          "user": {
+            "type": "number"
+          }
+        },
+        "type": "object"
+      },
+      "CostAssetsByteV2": {
+        "properties": {
+          "breakdown": {
+            "$ref": "#/components/schemas/CostAssetsBreakdownV2"
+          },
+          "count": {
+            "type": "number"
+          },
+          "hours": {
+            "type": "number"
+          },
+          "hoursUsed": {
+            "nullable": true,
+            "type": "number"
+          },
+          "usageMax": {
+            "type": "number"
+          }
+        },
+        "type": "object"
+      },
+      "CostAssetsCpuV2": {
+        "properties": {
+          "breakdown": {
+            "$ref": "#/components/schemas/CostAssetsBreakdownV2"
+          },
+          "coreHours": {
+            "type": "number"
+          },
+          "cores": {
+            "type": "number"
+          },
+          "cost": {
+            "type": "number"
+          }
+        },
+        "type": "object"
+      },
       "CostAssetsEnvelopeV1": {
         "properties": {
           "data": {
@@ -788,6 +2114,105 @@
         "required": [
           "data"
         ],
+        "type": "object"
+      },
+      "CostAssetsEnvelopeV2": {
+        "properties": {
+          "data": {
+            "items": {
+              "$ref": "#/components/schemas/CostAssetsV2"
+            },
+            "type": "array"
+          }
+        },
+        "required": [
+          "data"
+        ],
+        "type": "object"
+      },
+      "CostAssetsGpuV2": {
+        "properties": {
+          "cost": {
+            "type": "number"
+          },
+          "count": {
+            "type": "number"
+          },
+          "hours": {
+            "type": "number"
+          }
+        },
+        "type": "object"
+      },
+      "CostAssetsLabelsV2": {
+        "properties": {
+          "instance": {
+            "type": "string"
+          },
+          "job": {
+            "type": "string"
+          },
+          "label_dominodatalab_com_domino_node": {
+            "type": "string"
+          },
+          "label_dominodatalab_com_node_pool": {
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      "CostAssetsOverheadV2": {
+        "properties": {
+          "CpuOverheadFraction": {
+            "type": "number"
+          },
+          "OverheadCostFraction": {
+            "type": "number"
+          },
+          "RamOverheadFraction": {
+            "type": "number"
+          }
+        },
+        "type": "object"
+      },
+      "CostAssetsRamV2": {
+        "properties": {
+          "breakdown": {
+            "$ref": "#/components/schemas/CostAssetsBreakdownV2"
+          },
+          "byteHours": {
+            "type": "number"
+          },
+          "bytes": {
+            "type": "number"
+          },
+          "cost": {
+            "type": "number"
+          }
+        },
+        "type": "object"
+      },
+      "CostAssetsStorageV2": {
+        "properties": {
+          "claimName": {
+            "type": "string"
+          },
+          "claimNamespace": {
+            "type": "string"
+          },
+          "class": {
+            "type": "string"
+          },
+          "nodeType": {
+            "type": "string"
+          },
+          "pool": {
+            "type": "string"
+          },
+          "volumeName": {
+            "type": "string"
+          }
+        },
         "type": "object"
       },
       "CostAssetsV1": {
@@ -852,10 +2277,7 @@
             "type": "string"
           },
           "window": {
-            "schema": {
-              "$ref": "#/components/schemas/CostAssetsV1Window"
-            },
-            "type": "object"
+            "$ref": "#/components/schemas/CostAssetsV1Window"
           }
         },
         "type": "object"
@@ -868,6 +2290,126 @@
           "minutes": {
             "format": "double",
             "type": "number"
+          },
+          "start": {
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      "CostAssetsV2": {
+        "properties": {
+          "adjustment": {
+            "type": "number"
+          },
+          "assetProperties": {
+            "$ref": "#/components/schemas/CostPropertiesV2"
+          },
+          "assetType": {
+            "type": "string"
+          },
+          "byte": {
+            "$ref": "#/components/schemas/CostAssetsByteV2"
+          },
+          "cpu": {
+            "$ref": "#/components/schemas/CostAssetsCpuV2"
+          },
+          "discount": {
+            "type": "number"
+          },
+          "end": {
+            "type": "string"
+          },
+          "gpu": {
+            "$ref": "#/components/schemas/CostAssetsGpuV2"
+          },
+          "key": {
+            "$ref": "#/components/schemas/CostKeyV2"
+          },
+          "labels": {
+            "$ref": "#/components/schemas/CostAssetsLabelsV2"
+          },
+          "minutes": {
+            "type": "number"
+          },
+          "overhead": {
+            "$ref": "#/components/schemas/CostAssetsOverheadV2"
+          },
+          "preemptible": {
+            "type": "number"
+          },
+          "ram": {
+            "$ref": "#/components/schemas/CostAssetsRamV2"
+          },
+          "start": {
+            "type": "string"
+          },
+          "storage": {
+            "$ref": "#/components/schemas/CostAssetsStorageV2"
+          },
+          "totalCost": {
+            "type": "number"
+          },
+          "window": {
+            "$ref": "#/components/schemas/CostTimeWindowV2"
+          }
+        },
+        "type": "object"
+      },
+      "CostKeyV2": {
+        "additionalProperties": {
+          "type": "string"
+        },
+        "type": "object"
+      },
+      "CostLabelsV2": {
+        "properties": {
+          "billingTag": {
+            "type": "string"
+          },
+          "organizationId": {
+            "type": "string"
+          },
+          "organizationName": {
+            "type": "string"
+          },
+          "projectId": {
+            "type": "string"
+          },
+          "projectName": {
+            "type": "string"
+          },
+          "projectOwnerId": {
+            "type": "string"
+          },
+          "projectOwnerName": {
+            "type": "string"
+          },
+          "startingUserId": {
+            "type": "string"
+          },
+          "startingUserName": {
+            "type": "string"
+          },
+          "workloadId": {
+            "type": "string"
+          },
+          "workloadType": {
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      "CostPropertiesV2": {
+        "additionalProperties": {
+          "type": "string"
+        },
+        "type": "object"
+      },
+      "CostTimeWindowV2": {
+        "properties": {
+          "end": {
+            "type": "string"
           },
           "start": {
             "type": "string"
@@ -2289,6 +3831,14 @@
         ],
         "type": "object"
       },
+      "EnvironmentRebuildOnBaseChangesV1": {
+        "description": "Whether to build a new revision when the base environment changes.",
+        "enum": [
+          "never",
+          "followActive"
+        ],
+        "type": "string"
+      },
       "EnvironmentRevision": {
         "properties": {
           "environment": {
@@ -2463,6 +4013,9 @@
           "owner": {
             "$ref": "#/components/schemas/EnvironmentOwnerV1"
           },
+          "rebuildOnBaseChanges": {
+            "$ref": "#/components/schemas/EnvironmentRebuildOnBaseChangesV1"
+          },
           "restrictedRevision": {
             "$ref": "#/components/schemas/EnvironmentRevisionV1"
           },
@@ -2483,6 +4036,7 @@
           "id",
           "name",
           "visibility",
+          "rebuildOnBaseChanges",
           "supportedClusters",
           "archived"
         ],
@@ -2520,10 +4074,16 @@
           {
             "properties": {
               "errors": {
+                "description": "What caused the request to fail",
                 "items": {
                   "type": "string"
                 },
                 "type": "array"
+              },
+              "requestId": {
+                "description": "Id used to correlate a request with server actions.",
+                "example": "bbd78579-93c4-45ee-a983-0d5c8da6d5b1",
+                "type": "string"
               }
             },
             "required": [
@@ -2663,6 +4223,27 @@
           "domain",
           "fingerprint",
           "protocol"
+        ],
+        "type": "object"
+      },
+      "GitRef": {
+        "properties": {
+          "type": {
+            "enum": [
+              "head",
+              "commitId",
+              "branches",
+              "tags",
+              "custom"
+            ],
+            "type": "string"
+          },
+          "value": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "type"
         ],
         "type": "object"
       },
@@ -3328,6 +4909,12 @@
           "mainRepoGitRef": {
             "$ref": "#/components/schemas/GitRefV1"
           },
+          "netAppVolumeMounts": {
+            "items": {
+              "$ref": "#/components/schemas/NetAppVolumeMountV1"
+            },
+            "type": "array"
+          },
           "number": {
             "type": "integer"
           },
@@ -3382,6 +4969,7 @@
           "gitRepos",
           "datasetMounts",
           "externalVolumeMounts",
+          "netAppVolumeMounts",
           "goalIds"
         ],
         "type": "object"
@@ -3519,6 +5107,12 @@
           "mainRepoGitRef": {
             "$ref": "#/components/schemas/GitRefV1"
           },
+          "netAppVolumeMounts": {
+            "items": {
+              "$ref": "#/components/schemas/NetAppVolumeMountV1"
+            },
+            "type": "array"
+          },
           "number": {
             "type": "integer"
           },
@@ -3561,7 +5155,8 @@
           "projects",
           "gitRepos",
           "datasetMounts",
-          "externalVolumeMounts"
+          "externalVolumeMounts",
+          "netAppVolumeMounts"
         ],
         "type": "object"
       },
@@ -3631,6 +5226,60 @@
           "projectId",
           "title",
           "currentStage"
+        ],
+        "type": "object"
+      },
+      "ListAppInstancesResponse": {
+        "properties": {
+          "items": {
+            "items": {
+              "$ref": "#/components/schemas/AppInstanceSummaryResponse"
+            },
+            "type": "array"
+          },
+          "metadata": {
+            "$ref": "#/components/schemas/PaginatedMetadataV1"
+          }
+        },
+        "required": [
+          "items",
+          "metadata"
+        ],
+        "type": "object"
+      },
+      "ListAppVersionsResponse": {
+        "properties": {
+          "items": {
+            "items": {
+              "$ref": "#/components/schemas/AppVersionResponse"
+            },
+            "type": "array"
+          },
+          "metadata": {
+            "$ref": "#/components/schemas/PaginatedMetadataV1"
+          }
+        },
+        "required": [
+          "items",
+          "metadata"
+        ],
+        "type": "object"
+      },
+      "ListAppsResponse": {
+        "properties": {
+          "items": {
+            "items": {
+              "$ref": "#/components/schemas/AppSummaryResponse"
+            },
+            "type": "array"
+          },
+          "metadata": {
+            "$ref": "#/components/schemas/PaginatedMetadataV1"
+          }
+        },
+        "required": [
+          "items",
+          "metadata"
         ],
         "type": "object"
       },
@@ -4371,6 +6020,11 @@
       },
       "ModelApiVersionBuildLogs": {
         "properties": {
+          "buildId": {
+            "description": "The id of the build of the Model API Version",
+            "nullable": false,
+            "type": "string"
+          },
           "logs": {
             "description": "The build logs.",
             "items": {
@@ -4379,12 +6033,33 @@
             "nullable": false,
             "type": "array"
           },
+          "modelId": {
+            "description": "The id of the Model API",
+            "nullable": false,
+            "type": "string"
+          },
+          "modelVersionId": {
+            "description": "The id of the Model API Version",
+            "nullable": false,
+            "type": "string"
+          },
+          "sinceTimeNano": {
+            "description": "The start date of the logs.",
+            "nullable": false,
+            "type": "string"
+          },
           "status": {
             "description": "The status of the build.",
             "nullable": false,
             "type": "string"
           }
-        }
+        },
+        "required": [
+          "modelId",
+          "modelVersionId",
+          "status",
+          "logs"
+        ]
       },
       "ModelApiVersionCreationRequest": {
         "properties": {
@@ -4494,17 +6169,33 @@
             "nullable": false,
             "type": "array"
           },
+          "modelId": {
+            "description": "The id of the Model API",
+            "nullable": false,
+            "type": "string"
+          },
+          "modelVersionId": {
+            "description": "The id of the Model API Version",
+            "nullable": false,
+            "type": "string"
+          },
           "sinceTimeNano": {
             "description": "The start date of the logs.",
             "nullable": false,
-            "type": "integer"
+            "type": "string"
           },
           "status": {
             "description": "The status of the export.",
             "nullable": false,
             "type": "string"
           }
-        }
+        },
+        "required": [
+          "modelId",
+          "modelVersionId",
+          "status",
+          "logs"
+        ]
       },
       "ModelApiVersionInstanceLogs": {
         "properties": {
@@ -4520,6 +6211,21 @@
             "nullable": false,
             "type": "array"
           },
+          "maxResults": {
+            "description": "The maximum number of logs to retrieve",
+            "nullable": false,
+            "type": "integer"
+          },
+          "modelId": {
+            "description": "The id of the Model API",
+            "nullable": false,
+            "type": "string"
+          },
+          "modelVersionId": {
+            "description": "The id of the Model API Version",
+            "nullable": false,
+            "type": "string"
+          },
           "podName": {
             "description": "The name of the pod the Model API Version is deployed to.",
             "type": "string"
@@ -4527,25 +6233,28 @@
           "sinceTimeNano": {
             "description": "The start date of the logs.",
             "nullable": false,
-            "type": "integer"
-          },
-          "status": {
-            "description": "The status of the instance.",
-            "nullable": false,
             "type": "string"
+          },
+          "tail": {
+            "description": "Whether to fetch from tail or not",
+            "type": "boolean"
           }
-        }
+        },
+        "required": [
+          "modelId",
+          "modelVersionId",
+          "maxResults",
+          "logs"
+        ]
       },
       "ModelApiVersionLogLine": {
         "properties": {
           "log": {
             "description": "The content of the log line.",
-            "nullable": false,
             "type": "string"
           },
           "streamType": {
             "description": "The type of stream the log line is sourced from.",
-            "nullable": false,
             "type": "string"
           },
           "tags": {
@@ -4557,15 +6266,20 @@
           },
           "timeNano": {
             "description": "The time in nanoseconds of the log line.",
-            "nullable": false,
-            "type": "integer"
+            "type": "number"
           },
           "timestamp": {
             "description": "The timestamp of the log line.",
-            "nullable": false,
-            "type": "integer"
+            "type": "number"
           }
-        }
+        },
+        "required": [
+          "timestamp",
+          "timeNano",
+          "log",
+          "streamType",
+          "tags"
+        ]
       },
       "ModelApiVersionLogTag": {
         "properties": {
@@ -4579,7 +6293,11 @@
             "nullable": false,
             "type": "string"
           }
-        }
+        },
+        "required": [
+          "key",
+          "value"
+        ]
       },
       "ModelApiVersionMetadata": {
         "properties": {
@@ -5256,6 +6974,53 @@
         ],
         "type": "object"
       },
+      "NetAppVolumeMountV1": {
+        "properties": {
+          "name": {
+            "description": "Name of Domino NetApp Volume to mount.",
+            "example": "MyVolume",
+            "type": "string"
+          },
+          "snapshotMountPath": {
+            "description": "Path to mount the Snapshot directory of the Volume at.",
+            "example": "/path/to/my/snapshot",
+            "type": "string"
+          },
+          "snapshotReadOnly": {
+            "description": "Whether to mount the Snapshot directory as read only.",
+            "example": false,
+            "type": "boolean"
+          },
+          "snapshotSubPath": {
+            "description": "Path within the Snapshot directory to mount. The entire Snapshot directory will be mounted if not specified.",
+            "example": "/my/snapshot/subPath",
+            "type": "string"
+          },
+          "volumeMountPath": {
+            "description": "Path to mount the Domino NetApp Volume at.",
+            "example": "/path/to/my/volume",
+            "type": "string"
+          },
+          "volumeReadOnly": {
+            "description": "Whether to mount the Volume as read only.",
+            "example": false,
+            "type": "boolean"
+          },
+          "volumeSubPath": {
+            "description": "Path within the Domino NetApp Volume to mount. The entire Volume will be mounted if not specified.",
+            "example": "/my/volume/subPath",
+            "type": "string"
+          }
+        },
+        "required": [
+          "name",
+          "volumeMountPath",
+          "volumeReadOnly",
+          "snapshotMountPath",
+          "snapshotReadOnly"
+        ],
+        "type": "object"
+      },
       "NewAsyncPredictionV1": {
         "properties": {
           "parameters": {
@@ -5585,6 +7350,9 @@
                 "description": "Sets an Organization as the Environment owner. Only used if visibility is 'Private', as 'Global' environments don't have owners.",
                 "type": "string"
               },
+              "rebuildOnBaseChanges": {
+                "$ref": "#/components/schemas/EnvironmentRebuildOnBaseChangesV1"
+              },
               "visibility": {
                 "$ref": "#/components/schemas/NewEnvironmentVisibilityV1"
               }
@@ -5726,7 +7494,7 @@
             "$ref": "#/components/schemas/EnvironmentRevisionSpecV1"
           },
           "externalVolumeMountIds": {
-            "description": "Id's of external volumes to be mounted on this job.",
+            "description": "Ids of external volumes to be mounted on this job.",
             "example": [
               "6231327c7a0af0281c01a69b",
               "623132867a0af0281c01a69c"
@@ -5743,6 +7511,17 @@
           },
           "mainRepoGitRef": {
             "$ref": "#/components/schemas/GitRefV1"
+          },
+          "netAppVolumeIds": {
+            "description": "Ids of NetApp volumes to be mounted on this job.",
+            "example": [
+              "31c4a22a-5571-4e9b-b7ac-921d241acd00",
+              "31c4a22a-5571-4e9b-b7ac-921d241acd01"
+            ],
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
           },
           "projectId": {
             "description": "Id of project to create job in.",
@@ -6243,6 +8022,14 @@
             "default": [],
             "items": {
               "description": "External volume mount IDs",
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "netAppVolumeMounts": {
+            "default": [],
+            "items": {
+              "description": "NetApp ONTAP Volume IDs to mount",
               "type": "string"
             },
             "type": "array"
@@ -8846,6 +10633,12 @@
           "phoneNumber": {
             "type": "string"
           },
+          "roles": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          },
           "userName": {
             "type": "string"
           }
@@ -10203,6 +11996,1171 @@
         ]
       }
     },
+    "/api/apps/beta/apps": {
+      "get": {
+        "description": "List all Apps",
+        "operationId": "listApps",
+        "parameters": [
+          {
+            "description": "The id of the project to retrieve apps for. If not provided, all apps will be retrieved.",
+            "in": "query",
+            "name": "projectId",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "description": "The name filter for the apps to retrieve. If not provided, all apps will be retrieved.",
+            "in": "query",
+            "name": "name",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "description": "Whether to include template apps in the response. Defaults to false.",
+            "in": "query",
+            "name": "includeTemplateApps",
+            "required": false,
+            "schema": {
+              "default": false,
+              "type": "boolean"
+            }
+          },
+          {
+            "description": "The field to sort the apps for. The available fields are:\n  `name` - The name of the app.\n  `lastUpdated` - The last updated timestamp of the app.\n  `status` - The current status of the app.\n  `views` - The number of views the app has.\n   Defaults to `name`.\n",
+            "in": "query",
+            "name": "sortField",
+            "required": false,
+            "schema": {
+              "default": "name",
+              "enum": [
+                "name",
+                "lastUpdated",
+                "status",
+                "views"
+              ],
+              "type": "string"
+            }
+          },
+          {
+            "description": "The order to sort the apps in. Can be `asc` or `desc`. Defaults to `asc`.",
+            "in": "query",
+            "name": "sortOrder",
+            "required": false,
+            "schema": {
+              "default": "asc",
+              "enum": [
+                "asc",
+                "desc"
+              ],
+              "type": "string"
+            }
+          },
+          {
+            "description": "The maximum number of apps to retrieve. Defaults to no limit.",
+            "in": "query",
+            "name": "limit",
+            "required": false,
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "description": "The offset to start retrieving apps from. Defaults to 0.",
+            "in": "query",
+            "name": "offset",
+            "required": false,
+            "schema": {
+              "default": 0,
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ListAppsResponse"
+                }
+              }
+            },
+            "description": "Success"
+          },
+          "400": {
+            "$ref": "#/components/responses/400"
+          },
+          "401": {
+            "$ref": "#/components/responses/401"
+          },
+          "403": {
+            "$ref": "#/components/responses/403"
+          },
+          "404": {
+            "$ref": "#/components/responses/404"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
+          }
+        },
+        "summary": "List Apps",
+        "tags": [
+          "Apps"
+        ]
+      },
+      "post": {
+        "description": "Create an App",
+        "operationId": "createApp",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AppCreationRequest"
+              }
+            }
+          },
+          "description": "Request to create an app",
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AppResponse"
+                }
+              }
+            },
+            "description": "Success"
+          },
+          "400": {
+            "$ref": "#/components/responses/400"
+          },
+          "401": {
+            "$ref": "#/components/responses/401"
+          },
+          "403": {
+            "$ref": "#/components/responses/403"
+          },
+          "404": {
+            "$ref": "#/components/responses/404"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
+          }
+        },
+        "summary": "Create App",
+        "tags": [
+          "Apps"
+        ]
+      }
+    },
+    "/api/apps/beta/apps/vanityUrls/{vanityUrl}": {
+      "get": {
+        "description": "Retrieve an App by Vanity URL",
+        "operationId": "getAppByVanityUrl",
+        "parameters": [
+          {
+            "description": "The vanity URL of the app to retrieve.",
+            "in": "path",
+            "name": "vanityUrl",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AppResponse"
+                }
+              }
+            },
+            "description": "Success"
+          },
+          "400": {
+            "$ref": "#/components/responses/400"
+          },
+          "401": {
+            "$ref": "#/components/responses/401"
+          },
+          "403": {
+            "$ref": "#/components/responses/403"
+          },
+          "404": {
+            "$ref": "#/components/responses/404"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
+          }
+        },
+        "summary": "Get App by Vanity URL",
+        "tags": [
+          "Apps"
+        ]
+      }
+    },
+    "/api/apps/beta/apps/{appId}": {
+      "delete": {
+        "description": "Delete an App",
+        "operationId": "deleteApp",
+        "parameters": [
+          {
+            "description": "The id of the app to delete.",
+            "in": "path",
+            "name": "appId",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "400": {
+            "$ref": "#/components/responses/400"
+          },
+          "401": {
+            "$ref": "#/components/responses/401"
+          },
+          "403": {
+            "$ref": "#/components/responses/403"
+          },
+          "404": {
+            "$ref": "#/components/responses/404"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
+          }
+        },
+        "summary": "Delete App",
+        "tags": [
+          "Apps"
+        ]
+      },
+      "get": {
+        "description": "Retrieve an App",
+        "operationId": "getApp",
+        "parameters": [
+          {
+            "description": "The id of the app to retrieve.",
+            "in": "path",
+            "name": "appId",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AppResponse"
+                }
+              }
+            },
+            "description": "Success"
+          },
+          "400": {
+            "$ref": "#/components/responses/400"
+          },
+          "401": {
+            "$ref": "#/components/responses/401"
+          },
+          "403": {
+            "$ref": "#/components/responses/403"
+          },
+          "404": {
+            "$ref": "#/components/responses/404"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
+          }
+        },
+        "summary": "Get App",
+        "tags": [
+          "Apps"
+        ]
+      },
+      "patch": {
+        "description": "Update an App",
+        "operationId": "updateApp",
+        "parameters": [
+          {
+            "description": "The id of the app to update.",
+            "in": "path",
+            "name": "appId",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AppUpdateRequest"
+              }
+            }
+          },
+          "description": "Request to update an app",
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AppResponse"
+                }
+              }
+            },
+            "description": "Success"
+          },
+          "400": {
+            "$ref": "#/components/responses/400"
+          },
+          "401": {
+            "$ref": "#/components/responses/401"
+          },
+          "403": {
+            "$ref": "#/components/responses/403"
+          },
+          "404": {
+            "$ref": "#/components/responses/404"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
+          }
+        },
+        "summary": "Update App",
+        "tags": [
+          "Apps"
+        ]
+      }
+    },
+    "/api/apps/beta/apps/{appId}/access/requests": {
+      "post": {
+        "description": "Request access to an App",
+        "operationId": "requestAccessToApp",
+        "parameters": [
+          {
+            "description": "The id of the app to request access to.",
+            "in": "path",
+            "name": "appId",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "400": {
+            "$ref": "#/components/responses/400"
+          },
+          "401": {
+            "$ref": "#/components/responses/401"
+          },
+          "403": {
+            "$ref": "#/components/responses/403"
+          },
+          "404": {
+            "$ref": "#/components/responses/404"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
+          }
+        },
+        "summary": "Request Access to App",
+        "tags": [
+          "Apps"
+        ]
+      }
+    },
+    "/api/apps/beta/apps/{appId}/versions": {
+      "get": {
+        "description": "List all app versions",
+        "operationId": "listAppVersions",
+        "parameters": [
+          {
+            "description": "The id of the app to retrieve the versions for.",
+            "in": "path",
+            "name": "appId",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ListAppVersionsResponse"
+                }
+              }
+            },
+            "description": "Success"
+          },
+          "400": {
+            "$ref": "#/components/responses/400"
+          },
+          "401": {
+            "$ref": "#/components/responses/401"
+          },
+          "403": {
+            "$ref": "#/components/responses/403"
+          },
+          "404": {
+            "$ref": "#/components/responses/404"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
+          }
+        },
+        "summary": "List App Versions",
+        "tags": [
+          "AppVersions"
+        ]
+      },
+      "post": {
+        "description": "Create an App Version",
+        "operationId": "createAppVersion",
+        "parameters": [
+          {
+            "description": "The id of the app to retrieve the versions for.",
+            "in": "path",
+            "name": "appId",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AppVersionCreationRequest"
+              }
+            }
+          },
+          "description": "Request to create an app version",
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AppVersionResponse"
+                }
+              }
+            },
+            "description": "Success"
+          },
+          "400": {
+            "$ref": "#/components/responses/400"
+          },
+          "401": {
+            "$ref": "#/components/responses/401"
+          },
+          "403": {
+            "$ref": "#/components/responses/403"
+          },
+          "404": {
+            "$ref": "#/components/responses/404"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
+          }
+        },
+        "summary": "Create App Version",
+        "tags": [
+          "AppVersions"
+        ]
+      }
+    },
+    "/api/apps/beta/apps/{appId}/versions/{versionId}": {
+      "get": {
+        "description": "Retrieve an App Version",
+        "operationId": "getAppVersion",
+        "parameters": [
+          {
+            "description": "The id of the app to retrieve a version for.",
+            "in": "path",
+            "name": "appId",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "description": "The id of the app version to retrieve.",
+            "in": "path",
+            "name": "versionId",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AppVersionResponse"
+                }
+              }
+            },
+            "description": "Success"
+          },
+          "400": {
+            "$ref": "#/components/responses/400"
+          },
+          "401": {
+            "$ref": "#/components/responses/401"
+          },
+          "403": {
+            "$ref": "#/components/responses/403"
+          },
+          "404": {
+            "$ref": "#/components/responses/404"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
+          }
+        },
+        "summary": "Get App Version",
+        "tags": [
+          "AppVersions"
+        ]
+      },
+      "patch": {
+        "description": "Update an App Version",
+        "operationId": "updateAppVersion",
+        "parameters": [
+          {
+            "description": "The id of the app to update a version for.",
+            "in": "path",
+            "name": "appId",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "description": "The id of the app version to update.",
+            "in": "path",
+            "name": "versionId",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AppVersionUpdateRequest"
+              }
+            }
+          },
+          "description": "Request to update an app version",
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AppVersionResponse"
+                }
+              }
+            },
+            "description": "Success"
+          },
+          "400": {
+            "$ref": "#/components/responses/400"
+          },
+          "401": {
+            "$ref": "#/components/responses/401"
+          },
+          "403": {
+            "$ref": "#/components/responses/403"
+          },
+          "404": {
+            "$ref": "#/components/responses/404"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
+          }
+        },
+        "summary": "Update App Version",
+        "tags": [
+          "AppVersions"
+        ]
+      }
+    },
+    "/api/apps/beta/apps/{appId}/versions/{versionId}/instances": {
+      "get": {
+        "description": "List all app instances",
+        "operationId": "listAppInstances",
+        "parameters": [
+          {
+            "description": "The id of the app to retrieve the instances for.",
+            "in": "path",
+            "name": "appId",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "description": "The id of the app version to retrieve the instances for.",
+            "in": "path",
+            "name": "versionId",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ListAppInstancesResponse"
+                }
+              }
+            },
+            "description": "Success"
+          },
+          "400": {
+            "$ref": "#/components/responses/400"
+          },
+          "401": {
+            "$ref": "#/components/responses/401"
+          },
+          "403": {
+            "$ref": "#/components/responses/403"
+          },
+          "404": {
+            "$ref": "#/components/responses/404"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
+          }
+        },
+        "summary": "List App Instances",
+        "tags": [
+          "AppInstances"
+        ]
+      }
+    },
+    "/api/apps/beta/apps/{appId}/versions/{versionId}/instances/{instanceId}": {
+      "delete": {
+        "description": "Stop an App Instance",
+        "operationId": "stopAppInstance",
+        "parameters": [
+          {
+            "description": "The id of the app to stop an instance for.",
+            "in": "path",
+            "name": "appId",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "description": "The id of the app version to stop an instance for.",
+            "in": "path",
+            "name": "versionId",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "description": "The id of the app instance to stop.",
+            "in": "path",
+            "name": "instanceId",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "400": {
+            "$ref": "#/components/responses/400"
+          },
+          "401": {
+            "$ref": "#/components/responses/401"
+          },
+          "403": {
+            "$ref": "#/components/responses/403"
+          },
+          "404": {
+            "$ref": "#/components/responses/404"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
+          }
+        },
+        "summary": "Stop App Instance",
+        "tags": [
+          "AppInstances"
+        ]
+      },
+      "get": {
+        "description": "Retrieve an App Instance",
+        "operationId": "getAppInstance",
+        "parameters": [
+          {
+            "description": "The id of the app to retrieve an instance for.",
+            "in": "path",
+            "name": "appId",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "description": "The id of the app version to retrieve an instance for.",
+            "in": "path",
+            "name": "versionId",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "description": "The id of the app instance to retrieve.",
+            "in": "path",
+            "name": "instanceId",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AppInstanceResponse"
+                }
+              }
+            },
+            "description": "Success"
+          },
+          "400": {
+            "$ref": "#/components/responses/400"
+          },
+          "401": {
+            "$ref": "#/components/responses/401"
+          },
+          "403": {
+            "$ref": "#/components/responses/403"
+          },
+          "404": {
+            "$ref": "#/components/responses/404"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
+          }
+        },
+        "summary": "Get App Instance",
+        "tags": [
+          "AppInstances"
+        ]
+      }
+    },
+    "/api/apps/beta/apps/{appId}/versions/{versionId}/instances/{instanceId}/logs": {
+      "get": {
+        "description": "Retrieve an App Instance Logs",
+        "operationId": "getAppInstanceLogs",
+        "parameters": [
+          {
+            "description": "The id of the app to retrieve an instance's logs for.",
+            "in": "path",
+            "name": "appId",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "description": "The id of the app version to retrieve an instance's logs for.",
+            "in": "path",
+            "name": "versionId",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "description": "The id of the app instance to retrieve logs for.",
+            "in": "path",
+            "name": "instanceId",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "description": "The type of log to retrieve. The available types of logs are: `complete` - This is the default if the value is not provided. All logs lines displayed in the app instance's runtime environment. `stdout` - Log lines displayed in the stdout of the app instance's runtime environment. `stderr` - Log lines displayed in the stderr of the app instance's runtime environment. `prepareoutput` - Log lines generated by the environment preparing the app instance. Defaults to `complete`.\n",
+            "in": "query",
+            "name": "logType",
+            "required": false,
+            "schema": {
+              "default": "complete",
+              "enum": [
+                "complete",
+                "prepareoutput",
+                "stdout",
+                "stderr"
+              ],
+              "type": "string"
+            }
+          },
+          {
+            "description": "The maximum number of result to retrieve. Defaults to 10000.",
+            "in": "query",
+            "name": "limit",
+            "required": false,
+            "schema": {
+              "default": 10000,
+              "type": "integer"
+            }
+          },
+          {
+            "description": "The offset from the first result. Defaults to 0.",
+            "in": "query",
+            "name": "offset",
+            "required": false,
+            "schema": {
+              "default": 0,
+              "type": "integer"
+            }
+          },
+          {
+            "description": "The epoch timestamp after which to return logs in nanoseconds. Defaults to 0.",
+            "in": "query",
+            "name": "latestTime",
+            "required": false,
+            "schema": {
+              "default": "0",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AppInstanceLogsResponse"
+                }
+              }
+            },
+            "description": "Success"
+          },
+          "400": {
+            "$ref": "#/components/responses/400"
+          },
+          "401": {
+            "$ref": "#/components/responses/401"
+          },
+          "403": {
+            "$ref": "#/components/responses/403"
+          },
+          "404": {
+            "$ref": "#/components/responses/404"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
+          }
+        },
+        "summary": "Get App Instance Logs",
+        "tags": [
+          "AppInstances"
+        ]
+      }
+    },
+    "/api/apps/beta/apps/{appId}/versions/{versionId}/instances/{instanceId}/realTimeLogs": {
+      "get": {
+        "description": "Retrieve an App Instance Real Time Logs",
+        "operationId": "getAppInstanceRealTimeLogs",
+        "parameters": [
+          {
+            "description": "The id of the app to retrieve an instance's real time logs for.",
+            "in": "path",
+            "name": "appId",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "description": "The id of the app version to retrieve an instance's real time logs for.",
+            "in": "path",
+            "name": "versionId",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "description": "The id of the app instance to retrieve real time logs for.",
+            "in": "path",
+            "name": "instanceId",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "description": "The type of log to retrieve. The available types of logs are: `complete` - This is the default if the value is not provided. All logs lines displayed in the app instance's runtime environment. `stdout` - Log lines displayed in the stdout of the app instance's runtime environment. `stderr` - Log lines displayed in the stderr of the app instance's runtime environment. `prepareoutput` - Log lines generated by the environment preparing the app instance. Defaults to `complete`.\n",
+            "in": "query",
+            "name": "logType",
+            "required": false,
+            "schema": {
+              "default": "complete",
+              "enum": [
+                "complete",
+                "prepareoutput",
+                "stdout",
+                "stderr"
+              ],
+              "type": "string"
+            }
+          },
+          {
+            "description": "The maximum number of result to retrieve. Defaults to 10000.",
+            "in": "query",
+            "name": "limit",
+            "required": false,
+            "schema": {
+              "default": 10000,
+              "type": "integer"
+            }
+          },
+          {
+            "description": "The offset from the first result. Defaults to 0.",
+            "in": "query",
+            "name": "offset",
+            "required": false,
+            "schema": {
+              "default": 0,
+              "type": "integer"
+            }
+          },
+          {
+            "description": "The epoch timestamp after which to return logs in nanoseconds. Defaults to 0.",
+            "in": "query",
+            "name": "latestTime",
+            "required": false,
+            "schema": {
+              "default": "0",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AppInstanceLogsResponse"
+                }
+              }
+            },
+            "description": "Success"
+          },
+          "400": {
+            "$ref": "#/components/responses/400"
+          },
+          "401": {
+            "$ref": "#/components/responses/401"
+          },
+          "403": {
+            "$ref": "#/components/responses/403"
+          },
+          "404": {
+            "$ref": "#/components/responses/404"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
+          }
+        },
+        "summary": "Get App Instance Real Time Logs",
+        "tags": [
+          "AppInstances"
+        ]
+      }
+    },
+    "/api/apps/beta/apps/{appId}/versions/{versionId}/instances/{instanceId}/views": {
+      "post": {
+        "description": "Record an App Instance View",
+        "operationId": "recordAppInstanceView",
+        "parameters": [
+          {
+            "description": "The id of the app to record a view for.",
+            "in": "path",
+            "name": "appId",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "description": "The id of the app version to record a view for.",
+            "in": "path",
+            "name": "versionId",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "description": "The id of the app instance to record a view for.",
+            "in": "path",
+            "name": "instanceId",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "400": {
+            "$ref": "#/components/responses/400"
+          },
+          "401": {
+            "$ref": "#/components/responses/401"
+          },
+          "403": {
+            "$ref": "#/components/responses/403"
+          },
+          "404": {
+            "$ref": "#/components/responses/404"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
+          }
+        },
+        "summary": "Record App Instance View",
+        "tags": [
+          "AppInstances"
+        ]
+      }
+    },
+    "/api/apps/beta/apps/{appId}/views": {
+      "get": {
+        "description": "Retrieve an App's Views",
+        "operationId": "getAppViews",
+        "parameters": [
+          {
+            "description": "The id of the app to retrieve views for.",
+            "in": "path",
+            "name": "appId",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "description": "The start epoch timestamp in milliseconds to retrieve views for. Defaults to 30 days ago.",
+            "in": "query",
+            "name": "startTimestamp",
+            "required": false,
+            "schema": {
+              "format": "int64",
+              "type": "integer"
+            }
+          },
+          {
+            "description": "The end epoch timestamp in milliseconds to retrieve views for. Defaults to the current time.",
+            "in": "query",
+            "name": "endTimestamp",
+            "required": false,
+            "schema": {
+              "format": "int64",
+              "type": "integer"
+            }
+          },
+          {
+            "description": "The granularity in milliseconds to return the timeseries in. Defaults to 1 day.",
+            "in": "query",
+            "name": "granularity",
+            "required": false,
+            "schema": {
+              "default": 86400000,
+              "format": "int64",
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AppViewsResponse"
+                }
+              }
+            },
+            "description": "Success"
+          },
+          "400": {
+            "$ref": "#/components/responses/400"
+          },
+          "401": {
+            "$ref": "#/components/responses/401"
+          },
+          "403": {
+            "$ref": "#/components/responses/403"
+          },
+          "404": {
+            "$ref": "#/components/responses/404"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
+          }
+        },
+        "summary": "Get App Views",
+        "tags": [
+          "Apps"
+        ]
+      }
+    },
     "/api/cost/v1/allocation": {
       "get": {
         "description": "Retrieve cost allocation",
@@ -10362,6 +13320,162 @@
         ]
       }
     },
+    "/api/cost/v1/allocation/summary": {
+      "get": {
+        "description": "Retrieve cost allocation summary. Faster than the full allocation, but may include less details.",
+        "operationId": "getCostAllocationSummary",
+        "parameters": [
+          {
+            "description": "Duration of time over which to query. Accepts words like today, week, month, yesterday, lastweek, lastmonth; durations like 30m, 12h, 7d, or time like 2021-03-10T00:00:00Z,2021-03-11T00:00:00Z",
+            "in": "query",
+            "name": "window",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "description": "Aggregate the cost allocation. Accepts kubecost aggregates cluster, namespace, pod, deployment, service, daemonset, statefulset, job, cronjob, replicaset, node, container, pv, pvc, storageclass, cluster",
+            "in": "query",
+            "name": "aggregate",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "description": "if the result will be accumulated. Default is false. If true, the result will be accumulated from the start time to the end time.",
+            "in": "query",
+            "name": "accumulate",
+            "required": false,
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "description": "filter the result by the kubecost filter like cluster, namespace, pod, deployment, service, daemonset, statefulset, job, cronjob, replicaset, node, container, pv, pvc, storageclass, cluster.",
+            "in": "query",
+            "name": "filter",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "description": "if the idle cost will be shared",
+            "in": "query",
+            "name": "shareIdle",
+            "required": false,
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "description": "list of namespaces to share the costs",
+            "in": "query",
+            "name": "shareNamespaces",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "description": "determines how to split shared costs among non-idle, unshared allocations.",
+            "in": "query",
+            "name": "shareSplit",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "description": "the cost to share",
+            "in": "query",
+            "name": "shareCost",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "description": "the label to share the cost",
+            "in": "query",
+            "name": "shareLabels",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "description": "if the cost will be reconciled",
+            "in": "query",
+            "name": "reconcile",
+            "required": false,
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "description": "if the tenancy costs will be shared",
+            "in": "query",
+            "name": "shareTenancyCosts",
+            "required": false,
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "description": "if the idle cost will be calculated",
+            "in": "query",
+            "name": "idle",
+            "required": false,
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "description": "if the external cost will be calculated",
+            "in": "query",
+            "name": "external",
+            "required": false,
+            "schema": {
+              "type": "boolean"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CostAllocationSummaryEnvelopeV1"
+                }
+              }
+            },
+            "description": "Success"
+          },
+          "400": {
+            "$ref": "#/components/responses/400"
+          },
+          "401": {
+            "$ref": "#/components/responses/401"
+          },
+          "403": {
+            "$ref": "#/components/responses/403"
+          },
+          "404": {
+            "$ref": "#/components/responses/404"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
+          }
+        },
+        "summary": "Get the cost allocation summary over a time window",
+        "tags": [
+          "Cost"
+        ]
+      }
+    },
     "/api/cost/v1/asset": {
       "get": {
         "description": "Retrieve asset cost",
@@ -10488,171 +13602,171 @@
         ]
       }
     },
+    "/api/cost/v1/billingtagSettings/mode": {
+      "get": {
+        "description": "Get mode setting of the billing tags",
+        "operationId": "getBillingTagMode",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BillingTagsModeEnvelopeV1"
+                }
+              }
+            },
+            "description": "Success"
+          },
+          "400": {
+            "$ref": "#/components/responses/400"
+          },
+          "401": {
+            "$ref": "#/components/responses/401"
+          },
+          "403": {
+            "$ref": "#/components/responses/403"
+          },
+          "404": {
+            "$ref": "#/components/responses/404"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
+          }
+        },
+        "summary": "Get mode setting of the billing tags",
+        "tags": [
+          "BillingTagSettings"
+        ]
+      },
+      "put": {
+        "description": "Update mode setting of the billing tags",
+        "operationId": "updateBillingTagMode",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/BillingTagsModeV1"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BillingTagsModeEnvelopeV1"
+                }
+              }
+            },
+            "description": "Success"
+          },
+          "400": {
+            "$ref": "#/components/responses/400"
+          },
+          "401": {
+            "$ref": "#/components/responses/401"
+          },
+          "403": {
+            "$ref": "#/components/responses/403"
+          },
+          "404": {
+            "$ref": "#/components/responses/404"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
+          }
+        },
+        "summary": "Update mode setting of the billing tags",
+        "tags": [
+          "BillingTagSettings"
+        ]
+      }
+    },
+    "/api/cost/v1/billingtagSettings/notifications": {
+      "get": {
+        "description": "Get notifications setting of the billing tags",
+        "operationId": "getBillingTagNotification",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BillingTagsNotificationsEnvelopeV1"
+                }
+              }
+            },
+            "description": "Success"
+          },
+          "400": {
+            "$ref": "#/components/responses/400"
+          },
+          "401": {
+            "$ref": "#/components/responses/401"
+          },
+          "403": {
+            "$ref": "#/components/responses/403"
+          },
+          "404": {
+            "$ref": "#/components/responses/404"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
+          }
+        },
+        "summary": "Get notifications setting of the billing tags",
+        "tags": [
+          "BillingTagSettings"
+        ]
+      },
+      "put": {
+        "description": "Update notifications setting of the billing tags",
+        "operationId": "updateBillingTagNotification",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/BillingTagsNotificationsV1"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BillingTagsNotificationsEnvelopeV1"
+                }
+              }
+            },
+            "description": "Success"
+          },
+          "400": {
+            "$ref": "#/components/responses/400"
+          },
+          "401": {
+            "$ref": "#/components/responses/401"
+          },
+          "403": {
+            "$ref": "#/components/responses/403"
+          },
+          "404": {
+            "$ref": "#/components/responses/404"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
+          }
+        },
+        "summary": "Update notifications setting of the billing tags",
+        "tags": [
+          "BillingTagSettings"
+        ]
+      }
+    },
     "/api/cost/v1/billingtagSettings": {
-      "/api/cost/v1/billingtagSettings/mode": {
-        "get": {
-          "description": "Get mode setting of the billing tags",
-          "operationId": "getBillingTagMode",
-          "responses": {
-            "200": {
-              "content": {
-                "application/json": {
-                  "schema": {
-                    "$ref": "#/components/schemas/BillingTagsModeEnvelopeV1"
-                  }
-                }
-              },
-              "description": "Success"
-            },
-            "400": {
-              "$ref": "#/components/responses/400"
-            },
-            "401": {
-              "$ref": "#/components/responses/401"
-            },
-            "403": {
-              "$ref": "#/components/responses/403"
-            },
-            "404": {
-              "$ref": "#/components/responses/404"
-            },
-            "500": {
-              "$ref": "#/components/responses/500"
-            }
-          },
-          "summary": "Get mode setting of the billing tags",
-          "tags": [
-            "BillingTagSettings"
-          ]
-        },
-        "put": {
-          "description": "Update mode setting of the billing tags",
-          "operationId": "updateBillingTagMode",
-          "requestBody": {
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/BillingTagsModeV1"
-                }
-              }
-            },
-            "required": true
-          },
-          "responses": {
-            "200": {
-              "content": {
-                "application/json": {
-                  "schema": {
-                    "$ref": "#/components/schemas/BillingTagsModeEnvelopeV1"
-                  }
-                }
-              },
-              "description": "Success"
-            },
-            "400": {
-              "$ref": "#/components/responses/400"
-            },
-            "401": {
-              "$ref": "#/components/responses/401"
-            },
-            "403": {
-              "$ref": "#/components/responses/403"
-            },
-            "404": {
-              "$ref": "#/components/responses/404"
-            },
-            "500": {
-              "$ref": "#/components/responses/500"
-            }
-          },
-          "summary": "Update mode setting of the billing tags",
-          "tags": [
-            "BillingTagSettings"
-          ]
-        }
-      },
-      "/api/cost/v1/billingtagSettings/notifications": {
-        "get": {
-          "description": "Get notifications setting of the billing tags",
-          "operationId": "getBillingTagNotification",
-          "responses": {
-            "200": {
-              "content": {
-                "application/json": {
-                  "schema": {
-                    "$ref": "#/components/schemas/BillingTagsNotificationsEnvelopeV1"
-                  }
-                }
-              },
-              "description": "Success"
-            },
-            "400": {
-              "$ref": "#/components/responses/400"
-            },
-            "401": {
-              "$ref": "#/components/responses/401"
-            },
-            "403": {
-              "$ref": "#/components/responses/403"
-            },
-            "404": {
-              "$ref": "#/components/responses/404"
-            },
-            "500": {
-              "$ref": "#/components/responses/500"
-            }
-          },
-          "summary": "Get notifications setting of the billing tags",
-          "tags": [
-            "BillingTagSettings"
-          ]
-        },
-        "put": {
-          "description": "Update notifications setting of the billing tags",
-          "operationId": "updateBillingTagNotification",
-          "requestBody": {
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/BillingTagsNotificationsV1"
-                }
-              }
-            },
-            "required": true
-          },
-          "responses": {
-            "200": {
-              "content": {
-                "application/json": {
-                  "schema": {
-                    "$ref": "#/components/schemas/BillingTagsNotificationsEnvelopeV1"
-                  }
-                }
-              },
-              "description": "Success"
-            },
-            "400": {
-              "$ref": "#/components/responses/400"
-            },
-            "401": {
-              "$ref": "#/components/responses/401"
-            },
-            "403": {
-              "$ref": "#/components/responses/403"
-            },
-            "404": {
-              "$ref": "#/components/responses/404"
-            },
-            "500": {
-              "$ref": "#/components/responses/500"
-            }
-          },
-          "summary": "Update notifications setting of the billing tags",
-          "tags": [
-            "BillingTagSettings"
-          ]
-        }
-      },
       "get": {
         "description": "Get  billing tags setting",
         "operationId": "getBillingTagSettings",
@@ -11041,6 +14155,43 @@
         ]
       }
     },
+    "/api/cost/v1/costActivationStatus": {
+      "get": {
+        "description": "Get the activation status of the cost feature",
+        "operationId": "getCostActivationStatus",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CostActivationStatusEnvelopeV1"
+                }
+              }
+            },
+            "description": "Success"
+          },
+          "400": {
+            "$ref": "#/components/responses/400"
+          },
+          "401": {
+            "$ref": "#/components/responses/401"
+          },
+          "403": {
+            "$ref": "#/components/responses/403"
+          },
+          "404": {
+            "$ref": "#/components/responses/404"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
+          }
+        },
+        "summary": "Get the activation status of the cost feature",
+        "tags": [
+          "Cost"
+        ]
+      }
+    },
     "/api/cost/v1/licenseKey": {
       "put": {
         "description": "Add kubecost license key",
@@ -11084,6 +14235,1062 @@
           }
         },
         "summary": "Add kubecost license key",
+        "tags": [
+          "Cost"
+        ]
+      }
+    },
+    "/api/cost/v2/allocation": {
+      "get": {
+        "description": "Retrieve cost allocation v2",
+        "operationId": "getCostAllocationV2",
+        "parameters": [
+          {
+            "description": "Duration of time over which to query. Accepts words like today, week, month, yesterday, lastweek, lastmonth; durations like 30m, 12h, 7d, or time like 2021-03-10T00:00:00Z,2021-03-11T00:00:00Z",
+            "in": "query",
+            "name": "window",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "description": "Aggregate the cost allocation. Accepts kubecost aggregates cluster, namespace, pod, deployment, service, daemonset, statefulset, job, cronjob, replicaset, node, container, pv, pvc, storageclass, cluster",
+            "in": "query",
+            "name": "aggregate",
+            "required": false,
+            "schema": {
+              "items": {
+                "type": "string"
+              },
+              "type": "array"
+            }
+          },
+          {
+            "description": "filter the result by the kubecost filter like cluster, namespace, pod, deployment, service, daemonset, statefulset, job, cronjob, replicaset, node, container, pv, pvc, storageclass, cluster.",
+            "in": "query",
+            "name": "filter",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "description": "if the idle cost will be shared",
+            "in": "query",
+            "name": "shareIdle",
+            "required": false,
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "description": "list of namespaces to share the costs",
+            "in": "query",
+            "name": "shareNamespaces",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "description": "determines how to split shared costs among non-idle, unshared allocations.",
+            "in": "query",
+            "name": "shareSplit",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "description": "the cost to share",
+            "in": "query",
+            "name": "shareCost",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "description": "the label to share the cost",
+            "in": "query",
+            "name": "shareLabels",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "description": "if the cost will be reconciled",
+            "in": "query",
+            "name": "reconcile",
+            "required": false,
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "description": "if the tenancy costs will be shared",
+            "in": "query",
+            "name": "shareTenancyCosts",
+            "required": false,
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "description": "if the idle cost will be calculated",
+            "in": "query",
+            "name": "idle",
+            "required": false,
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "description": "if the external cost will be calculated",
+            "in": "query",
+            "name": "external",
+            "required": false,
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "description": "Max number of rows to fetch. Defaults to 1000.",
+            "in": "query",
+            "name": "limit",
+            "required": false,
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "description": "How many rows from the start to skip. Defaults to 0.",
+            "in": "query",
+            "name": "offset",
+            "required": false,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CostAllocationEnvelopeV2"
+                }
+              }
+            },
+            "description": "Success"
+          },
+          "400": {
+            "$ref": "#/components/responses/400"
+          },
+          "401": {
+            "$ref": "#/components/responses/401"
+          },
+          "403": {
+            "$ref": "#/components/responses/403"
+          },
+          "404": {
+            "$ref": "#/components/responses/404"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
+          }
+        },
+        "summary": "Get the cost allocation over a time window",
+        "tags": [
+          "Cost"
+        ]
+      }
+    },
+    "/api/cost/v2/allocation/accumulated": {
+      "get": {
+        "description": "Retrieve cost allocation accumulated v2",
+        "operationId": "getAccumulatedCostAllocationV2",
+        "parameters": [
+          {
+            "description": "Duration of time over which to query. Accepts words like today, week, month, yesterday, lastweek, lastmonth; durations like 30m, 12h, 7d, or time like 2021-03-10T00:00:00Z,2021-03-11T00:00:00Z",
+            "in": "query",
+            "name": "window",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "description": "Aggregate the cost allocation. Accepts kubecost aggregates cluster, namespace, pod, deployment, service, daemonset, statefulset, job, cronjob, replicaset, node, container, pv, pvc, storageclass, cluster",
+            "in": "query",
+            "name": "aggregate",
+            "required": false,
+            "schema": {
+              "items": {
+                "type": "string"
+              },
+              "type": "array"
+            }
+          },
+          {
+            "description": "Interval to accumulate the costs. Accepts hour, day, week",
+            "in": "query",
+            "name": "interval",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "description": "filter the result by the kubecost filter like cluster, namespace, pod, deployment, service, daemonset, statefulset, job, cronjob, replicaset, node, container, pv, pvc, storageclass, cluster.",
+            "in": "query",
+            "name": "filter",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "description": "if the idle cost will be shared",
+            "in": "query",
+            "name": "shareIdle",
+            "required": false,
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "description": "list of namespaces to share the costs",
+            "in": "query",
+            "name": "shareNamespaces",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "description": "determines how to split shared costs among non-idle, unshared allocations.",
+            "in": "query",
+            "name": "shareSplit",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "description": "the cost to share",
+            "in": "query",
+            "name": "shareCost",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "description": "the label to share the cost",
+            "in": "query",
+            "name": "shareLabels",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "description": "if the cost will be reconciled",
+            "in": "query",
+            "name": "reconcile",
+            "required": false,
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "description": "if the tenancy costs will be shared",
+            "in": "query",
+            "name": "shareTenancyCosts",
+            "required": false,
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "description": "if the idle cost will be calculated",
+            "in": "query",
+            "name": "idle",
+            "required": false,
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "description": "if the external cost will be calculated",
+            "in": "query",
+            "name": "external",
+            "required": false,
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "description": "Max number of rows to fetch. Defaults to 1000.",
+            "in": "query",
+            "name": "limit",
+            "required": false,
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "description": "How many rows from the start to skip. Defaults to 0.",
+            "in": "query",
+            "name": "offset",
+            "required": false,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CostAllocationEnvelopeV2"
+                }
+              }
+            },
+            "description": "Success"
+          },
+          "400": {
+            "$ref": "#/components/responses/400"
+          },
+          "401": {
+            "$ref": "#/components/responses/401"
+          },
+          "403": {
+            "$ref": "#/components/responses/403"
+          },
+          "404": {
+            "$ref": "#/components/responses/404"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
+          }
+        },
+        "summary": "Get accumulated cost allocation over a time window",
+        "tags": [
+          "Cost"
+        ]
+      }
+    },
+    "/api/cost/v2/allocation/summary": {
+      "get": {
+        "description": "Retrieve cost allocation summary. Faster than the full allocation, but may include less details.",
+        "operationId": "getAccumulatedCostAllocationSummaryV2",
+        "parameters": [
+          {
+            "description": "Duration of time over which to query. Accepts words like today, week, month, yesterday, lastweek, lastmonth; durations like 30m, 12h, 7d, or time like 2021-03-10T00:00:00Z,2021-03-11T00:00:00Z",
+            "in": "query",
+            "name": "window",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "description": "Aggregate the cost allocation. Accepts kubecost aggregates cluster, namespace, pod, deployment, service, daemonset, statefulset, job, cronjob, replicaset, node, container, pv, pvc, storageclass, cluster",
+            "in": "query",
+            "name": "aggregate",
+            "required": false,
+            "schema": {
+              "items": {
+                "type": "string"
+              },
+              "type": "array"
+            }
+          },
+          {
+            "description": "filter the result by the kubecost filter like cluster, namespace, pod, deployment, service, daemonset, statefulset, job, cronjob, replicaset, node, container, pv, pvc, storageclass, cluster.",
+            "in": "query",
+            "name": "filter",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "description": "if the idle cost will be shared",
+            "in": "query",
+            "name": "shareIdle",
+            "required": false,
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "description": "list of namespaces to share the costs",
+            "in": "query",
+            "name": "shareNamespaces",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "description": "determines how to split shared costs among non-idle, unshared allocations.",
+            "in": "query",
+            "name": "shareSplit",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "description": "the cost to share",
+            "in": "query",
+            "name": "shareCost",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "description": "the label to share the cost",
+            "in": "query",
+            "name": "shareLabels",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "description": "if the cost will be reconciled",
+            "in": "query",
+            "name": "reconcile",
+            "required": false,
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "description": "if the tenancy costs will be shared",
+            "in": "query",
+            "name": "shareTenancyCosts",
+            "required": false,
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "description": "if the idle cost will be calculated",
+            "in": "query",
+            "name": "idle",
+            "required": false,
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "description": "if the external cost will be calculated",
+            "in": "query",
+            "name": "external",
+            "required": false,
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "description": "Max number of rows to fetch. Defaults to 1000.",
+            "in": "query",
+            "name": "limit",
+            "required": false,
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "description": "How many rows from the start to skip. Defaults to 0.",
+            "in": "query",
+            "name": "offset",
+            "required": false,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CostAllocationSummaryEnvelopeV2"
+                }
+              }
+            },
+            "description": "Success"
+          },
+          "400": {
+            "$ref": "#/components/responses/400"
+          },
+          "401": {
+            "$ref": "#/components/responses/401"
+          },
+          "403": {
+            "$ref": "#/components/responses/403"
+          },
+          "404": {
+            "$ref": "#/components/responses/404"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
+          }
+        },
+        "summary": "Get the cost allocation summary over a time window",
+        "tags": [
+          "Cost"
+        ]
+      }
+    },
+    "/api/cost/v2/allocation/summary/accumulated": {
+      "get": {
+        "description": "Retrieve accumulated cost allocation summary. Faster than the full allocation, but may include less details.",
+        "operationId": "getCostAllocationSummaryV2",
+        "parameters": [
+          {
+            "description": "Duration of time over which to query. Accepts words like today, week, month, yesterday, lastweek, lastmonth; durations like 30m, 12h, 7d, or time like 2021-03-10T00:00:00Z,2021-03-11T00:00:00Z",
+            "in": "query",
+            "name": "window",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "description": "Aggregate the cost allocation. Accepts kubecost aggregates cluster, namespace, pod, deployment, service, daemonset, statefulset, job, cronjob, replicaset, node, container, pv, pvc, storageclass, cluster",
+            "in": "query",
+            "name": "aggregate",
+            "required": false,
+            "schema": {
+              "items": {
+                "type": "string"
+              },
+              "type": "array"
+            }
+          },
+          {
+            "description": "Interval to accumulate the costs. Accepts hour, day, week",
+            "in": "query",
+            "name": "interval",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "description": "filter the result by the kubecost filter like cluster, namespace, pod, deployment, service, daemonset, statefulset, job, cronjob, replicaset, node, container, pv, pvc, storageclass, cluster.",
+            "in": "query",
+            "name": "filter",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "description": "if the idle cost will be shared",
+            "in": "query",
+            "name": "shareIdle",
+            "required": false,
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "description": "list of namespaces to share the costs",
+            "in": "query",
+            "name": "shareNamespaces",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "description": "determines how to split shared costs among non-idle, unshared allocations.",
+            "in": "query",
+            "name": "shareSplit",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "description": "the cost to share",
+            "in": "query",
+            "name": "shareCost",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "description": "the label to share the cost",
+            "in": "query",
+            "name": "shareLabels",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "description": "if the cost will be reconciled",
+            "in": "query",
+            "name": "reconcile",
+            "required": false,
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "description": "if the tenancy costs will be shared",
+            "in": "query",
+            "name": "shareTenancyCosts",
+            "required": false,
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "description": "if the idle cost will be calculated",
+            "in": "query",
+            "name": "idle",
+            "required": false,
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "description": "if the external cost will be calculated",
+            "in": "query",
+            "name": "external",
+            "required": false,
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "description": "Max number of rows to fetch. Defaults to 1000.",
+            "in": "query",
+            "name": "limit",
+            "required": false,
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "description": "How many rows from the start to skip. Defaults to 0.",
+            "in": "query",
+            "name": "offset",
+            "required": false,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CostAllocationSummaryEnvelopeV2"
+                }
+              }
+            },
+            "description": "Success"
+          },
+          "400": {
+            "$ref": "#/components/responses/400"
+          },
+          "401": {
+            "$ref": "#/components/responses/401"
+          },
+          "403": {
+            "$ref": "#/components/responses/403"
+          },
+          "404": {
+            "$ref": "#/components/responses/404"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
+          }
+        },
+        "summary": "Get accumulated cost allocation summary over a time window",
+        "tags": [
+          "Cost"
+        ]
+      }
+    },
+    "/api/cost/v2/asset": {
+      "get": {
+        "description": "Retrieve asset cost v2",
+        "operationId": "getCostAssetsV2",
+        "parameters": [
+          {
+            "description": "Duration of time over which to query. Accepts words like today, week, month, yesterday, lastweek, lastmonth; durations like 30m, 12h, 7d, or time like 2021-03-10T00:00:00Z,2021-03-11T00:00:00Z",
+            "in": "query",
+            "name": "window",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "description": "Aggregate the cost allocation. Accepts kubecost aggregates cluster, namespace, pod, deployment, service, daemonset, statefulset, job, cronjob, replicaset, node, container, pv, pvc, storageclass, cluster",
+            "in": "query",
+            "name": "aggregate",
+            "required": false,
+            "schema": {
+              "items": {
+                "type": "string"
+              },
+              "type": "array"
+            }
+          },
+          {
+            "description": "filter the result by the kubecost filter like cluster, namespace, pod, deployment, service, daemonset, statefulset",
+            "in": "query",
+            "name": "filter",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "description": "Max number of rows to fetch. Defaults to 1000.",
+            "in": "query",
+            "name": "limit",
+            "required": false,
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "description": "How many rows from the start to skip. Defaults to 0.",
+            "in": "query",
+            "name": "offset",
+            "required": false,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CostAssetsEnvelopeV2"
+                }
+              }
+            },
+            "description": "Success"
+          },
+          "400": {
+            "$ref": "#/components/responses/400"
+          },
+          "401": {
+            "$ref": "#/components/responses/401"
+          },
+          "403": {
+            "$ref": "#/components/responses/403"
+          },
+          "404": {
+            "$ref": "#/components/responses/404"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
+          }
+        },
+        "summary": "Get the asset cost over a time window",
+        "tags": [
+          "Cost"
+        ]
+      }
+    },
+    "/api/cost/v2/asset/accumulated": {
+      "get": {
+        "description": "Retrieve accumulated asset cost v2",
+        "operationId": "getAccumulatedCostAssetsV2",
+        "parameters": [
+          {
+            "description": "Duration of time over which to query. Accepts words like today, week, month, yesterday, lastweek, lastmonth; durations like 30m, 12h, 7d, or time like 2021-03-10T00:00:00Z,2021-03-11T00:00:00Z",
+            "in": "query",
+            "name": "window",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "description": "Aggregate the cost allocation. Accepts kubecost aggregates cluster, namespace, pod, deployment, service, daemonset, statefulset, job, cronjob, replicaset, node, container, pv, pvc, storageclass, cluster",
+            "in": "query",
+            "name": "aggregate",
+            "required": false,
+            "schema": {
+              "items": {
+                "type": "string"
+              },
+              "type": "array"
+            }
+          },
+          {
+            "description": "Interval to accumulate the costs. Accepts hour, day, week",
+            "in": "query",
+            "name": "interval",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "description": "filter the result by the kubecost filter like cluster, namespace, pod, deployment, service, daemonset, statefulset",
+            "in": "query",
+            "name": "filter",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "description": "Max number of rows to fetch. Defaults to 1000.",
+            "in": "query",
+            "name": "limit",
+            "required": false,
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "description": "How many rows from the start to skip. Defaults to 0.",
+            "in": "query",
+            "name": "offset",
+            "required": false,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CostAssetsEnvelopeV2"
+                }
+              }
+            },
+            "description": "Success"
+          },
+          "400": {
+            "$ref": "#/components/responses/400"
+          },
+          "401": {
+            "$ref": "#/components/responses/401"
+          },
+          "403": {
+            "$ref": "#/components/responses/403"
+          },
+          "404": {
+            "$ref": "#/components/responses/404"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
+          }
+        },
+        "summary": "Get accumulated asset cost over a time window",
+        "tags": [
+          "Cost"
+        ]
+      }
+    },
+    "/api/cost/v2/cloudCost": {
+      "get": {
+        "description": "Retrieve cloud cost V2",
+        "operationId": "getCloudCostV2",
+        "parameters": [
+          {
+            "description": "Duration of time over which to query. Accepts words like today, week, month, yesterday, lastweek, lastmonth; durations like 30m, 12h, 7d, or time like 2021-03-10T00:00:00Z,2021-03-11T00:00:00Z",
+            "in": "query",
+            "name": "window",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "description": "Aggregate the cloud costs. Accepts kubecost aggregates like invoiceEntityID, accountID, provider, service, and label:<name>. Supports multi-aggregation.",
+            "in": "query",
+            "name": "aggregate",
+            "required": false,
+            "schema": {
+              "items": {
+                "type": "string"
+              },
+              "type": "array"
+            }
+          },
+          {
+            "description": "filter the result by any category which you can aggregate by.",
+            "in": "query",
+            "name": "filter",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "description": "Max number of rows to fetch. Defaults to 1000.",
+            "in": "query",
+            "name": "limit",
+            "required": false,
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "description": "How many rows from the start to skip. Defaults to 0.",
+            "in": "query",
+            "name": "offset",
+            "required": false,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CloudCostEnvelopeV2"
+                }
+              }
+            },
+            "description": "Success"
+          },
+          "400": {
+            "$ref": "#/components/responses/400"
+          },
+          "401": {
+            "$ref": "#/components/responses/401"
+          },
+          "403": {
+            "$ref": "#/components/responses/403"
+          },
+          "404": {
+            "$ref": "#/components/responses/404"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
+          }
+        },
+        "summary": "Get the cloud cost data",
+        "tags": [
+          "Cost"
+        ]
+      }
+    },
+    "/api/cost/v2/cloudCost/accumulated": {
+      "get": {
+        "description": "Retrieve accumulated cloud cost V2",
+        "operationId": "getAccumulatedCloudCostV2",
+        "parameters": [
+          {
+            "description": "Duration of time over which to query. Accepts words like today, week, month, yesterday, lastweek, lastmonth; durations like 30m, 12h, 7d, or time like 2021-03-10T00:00:00Z,2021-03-11T00:00:00Z",
+            "in": "query",
+            "name": "window",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "description": "Aggregate the cloud costs. Accepts kubecost aggregates like invoiceEntityID, accountID, provider, service, and label:<name>. Supports multi-aggregation.",
+            "in": "query",
+            "name": "aggregate",
+            "required": false,
+            "schema": {
+              "items": {
+                "type": "string"
+              },
+              "type": "array"
+            }
+          },
+          {
+            "description": "Interval to accumulate the costs. Accepts hour, day, week",
+            "in": "query",
+            "name": "interval",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "description": "filter the result by any category which you can aggregate by.",
+            "in": "query",
+            "name": "filter",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "description": "Max number of rows to fetch. Defaults to 1000.",
+            "in": "query",
+            "name": "limit",
+            "required": false,
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "description": "How many rows from the start to skip. Defaults to 0.",
+            "in": "query",
+            "name": "offset",
+            "required": false,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CloudCostEnvelopeV2"
+                }
+              }
+            },
+            "description": "Success"
+          },
+          "400": {
+            "$ref": "#/components/responses/400"
+          },
+          "401": {
+            "$ref": "#/components/responses/401"
+          },
+          "403": {
+            "$ref": "#/components/responses/403"
+          },
+          "404": {
+            "$ref": "#/components/responses/404"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
+          }
+        },
+        "summary": "Get the accumulated cloud cost data",
         "tags": [
           "Cost"
         ]
@@ -14399,6 +18606,201 @@
         ]
       }
     },
+    "/api/modelServing/v1/modelApis/{modelApiId}/versions/{modelApiVersionId}/buildLogs": {
+      "get": {
+        "description": "Retrieves the build logs for a Model API Version.",
+        "operationId": "getModelApiVersionBuildLogs",
+        "parameters": [
+          {
+            "description": "The id of the Model API to retrieve the build logs for.",
+            "in": "path",
+            "name": "modelApiId",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "description": "The id of the Model API Version to retrieve the build logs for.",
+            "in": "path",
+            "name": "modelApiVersionId",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "description": "build Id of the model API to return build logs for.",
+            "in": "query",
+            "name": "buildId",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "description": "The epoch time in nanoseconds to start fetching from, such as \"1543538813745986325\". \"0\" by default and will typically be used for a timestamp-based offset log fetching strategy.",
+            "in": "query",
+            "name": "sinceTimeNano",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ModelApiVersionBuildLogs"
+                }
+              }
+            },
+            "description": "The build logs for the given Model API Version."
+          }
+        },
+        "tags": [
+          "ModelAPIVersion"
+        ]
+      }
+    },
+    "/api/modelServing/v1/modelApis/{modelApiId}/versions/{modelApiVersionId}/exportLogs": {
+      "get": {
+        "description": "Retrieves the export logs for a Model API Version.",
+        "operationId": "getModelApiVersionExportLogs",
+        "parameters": [
+          {
+            "description": "The id of the Model API to retrieve the export logs for.",
+            "in": "path",
+            "name": "modelApiId",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "description": "The id of the Model API Version to retrieve the export logs for.",
+            "in": "path",
+            "name": "modelApiVersionId",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "description": "The epoch time in nanoseconds to start fetching from, such as \"1543538813745986325\". \"0\" by default and will typically be used for a timestamp-based offset log fetching strategy.",
+            "in": "query",
+            "name": "sinceTimeNano",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ModelApiVersionExportLogs"
+                }
+              }
+            },
+            "description": "The export logs for the given Model API Version."
+          }
+        },
+        "tags": [
+          "ModelAPIVersion"
+        ]
+      }
+    },
+    "/api/modelServing/v1/modelApis/{modelApiId}/versions/{modelApiVersionId}/instanceLogs": {
+      "get": {
+        "description": "Retrieves the instance logs for a Model API Version.",
+        "operationId": "getModelApiVersionInstanceLogs",
+        "parameters": [
+          {
+            "description": "The id of the Model API to retrieve the instance logs for.",
+            "in": "path",
+            "name": "modelApiId",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "description": "The id of the Model API Version to retrieve the instance logs for.",
+            "in": "path",
+            "name": "modelApiVersionId",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "description": "The pod name of the model API instance.",
+            "in": "query",
+            "name": "podName",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "description": "The container name of the model API instance.",
+            "in": "query",
+            "name": "containerName",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "description": "The epoch time in nanoseconds to start fetching from, such as \"1543538813745986325\". \"0\" by default and will typically be used for a timestamp-based offset log fetching strategy.",
+            "in": "query",
+            "name": "sinceTimeNano",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "description": "Whether to fetch from tail or not.",
+            "in": "query",
+            "name": "tail",
+            "required": false,
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "description": "The maximum number of logs to retrieve.",
+            "in": "query",
+            "name": "maxResults",
+            "required": false,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ModelApiVersionInstanceLogs"
+                }
+              }
+            },
+            "description": "The instance logs for the given Model API Version."
+          }
+        },
+        "tags": [
+          "ModelAPIVersion"
+        ]
+      }
+    },
     "/api/modelServing/v1/modelDeployments": {
       "get": {
         "description": "Retrieves all Model Deployments filtered by optional query arguments.",
@@ -17606,126 +22008,46 @@
         "operationId": "fetchAuditEvents",
         "parameters": [
           {
-            "description": "unix timestamp in milliseconds",
-            "in": "query",
-            "name": "startTimestamp",
-            "required": false,
-            "schema": {
-              "type": "integer"
-            }
+            "$ref": "#/components/parameters/startTimestamp"
           },
           {
-            "description": "unix timestamp in milliseconds",
-            "in": "query",
-            "name": "endTimestamp",
-            "required": false,
-            "schema": {
-              "type": "integer"
-            }
+            "$ref": "#/components/parameters/endTimestamp"
           },
           {
-            "in": "query",
-            "name": "actorId",
-            "required": false,
-            "schema": {
-              "type": "string"
-            }
+            "$ref": "#/components/parameters/actorId"
           },
           {
-            "in": "query",
-            "name": "actorName",
-            "required": false,
-            "schema": {
-              "type": "string"
-            }
+            "$ref": "#/components/parameters/actorName"
           },
           {
-            "in": "query",
-            "name": "event",
-            "required": false,
-            "schema": {
-              "type": "string"
-            }
+            "$ref": "#/components/parameters/event"
           },
           {
-            "description": "all events in which the target's type matches",
-            "example": "dataset",
-            "in": "query",
-            "name": "targetType",
-            "required": false,
-            "schema": {
-              "type": "string"
-            }
+            "$ref": "#/components/parameters/targetType"
           },
           {
-            "description": "all events in which the target's id matches",
-            "example": "dataset_id",
-            "in": "query",
-            "name": "targetId",
-            "required": false,
-            "schema": {
-              "type": "string"
-            }
+            "$ref": "#/components/parameters/targetId"
           },
           {
-            "description": "all events in which the target's name matches",
-            "example": "my_dataset_name",
-            "in": "query",
-            "name": "targetName",
-            "required": false,
-            "schema": {
-              "type": "string"
-            }
+            "$ref": "#/components/parameters/targetName"
           },
           {
-            "description": "events that occurred within the context of a project with this id",
-            "in": "query",
-            "name": "withinProjectId",
-            "required": false,
-            "schema": {
-              "type": "string"
-            }
+            "$ref": "#/components/parameters/withinProjectId"
           },
           {
-            "description": "events that occurred within the context of a project with this name",
-            "in": "query",
-            "name": "withinProjectName",
-            "required": false,
-            "schema": {
-              "type": "string"
-            }
+            "$ref": "#/components/parameters/withinProjectName"
           },
           {
-            "description": "a comma separated list of fields, each prefixed with either a + or - to indicates asc or desc (no prefix defaults to asc). The list of supported sort fields are timestamp, actorId, actorName, withinProjectId, withinProjectName, event, targetType, and targetName",
-            "example": "-timestamp,+actorId",
-            "in": "query",
-            "name": "sort",
-            "required": false,
-            "schema": {
-              "type": "string"
-            }
+            "$ref": "#/components/parameters/sort"
           },
           {
-            "description": "Maximum number of records to return.",
-            "in": "query",
-            "name": "limit",
-            "required": false,
-            "schema": {
-              "default": 50,
-              "format": "int32",
-              "type": "integer"
-            }
+            "$ref": "#/components/parameters/limit"
           },
           {
-            "description": "Zero-based; indicates how many events to skip over before",
-            "in": "query",
-            "name": "offset",
-            "required": false,
-            "schema": {
-              "default": 0,
-              "format": "int32",
-              "type": "integer"
-            }
+            "$ref": "#/components/parameters/offset"
+          },
+          {
+            "$ref": "#/components/parameters/columns"
           }
         ],
         "responses": {
@@ -17754,7 +22076,10 @@
             },
             "description": "Bad request"
           }
-        }
+        },
+        "tags": [
+          "AuditTrail"
+        ]
       }
     }
   },
@@ -17768,19 +22093,28 @@
   ],
   "tags": [
     {
-      "name": "Audit Trail"
+      "name": "Apps"
+    },
+    {
+      "name": "AppsVersions"
+    },
+    {
+      "name": "AppsInstances"
+    },
+    {
+      "name": "AuditTrail"
     },
     {
       "name": "CustomMetrics"
-    },
-    {
-      "name": "Deployment Targets"
     },
     {
       "name": "DatasetRw"
     },
     {
       "name": "DataSource"
+    },
+    {
+      "name": "DeploymentTargets"
     },
     {
       "name": "Cost"
@@ -17798,6 +22132,9 @@
       "name": "ModelAPI"
     },
     {
+      "name": "ModelAPIVersion"
+    },
+    {
       "name": "ModelDeployment"
     },
     {
@@ -17805,6 +22142,18 @@
     },
     {
       "name": "Projects"
+    },
+    {
+      "name": "ProjectsFiles"
+    },
+    {
+      "name": "ProjectSharedDatasets"
+    },
+    {
+      "name": "ProjectTemplates"
+    },
+    {
+      "name": "Workspaces"
     },
     {
       "name": "RegisteredModels"
