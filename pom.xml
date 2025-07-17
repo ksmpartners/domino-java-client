@@ -199,6 +199,36 @@
                             </configOptions>
                         </configuration>
                     </execution>
+                    <execution>
+                        <id>domino-governance-endpoints</id>
+                        <goals>
+                            <goal>generate</goal>
+                        </goals>
+                        <configuration>
+                            <inputSpec>${project.basedir}/src/conf/domino-governance-api.json</inputSpec>
+                            <skipValidateSpec>true</skipValidateSpec>
+                            <skipIfSpecIsUnchanged>true</skipIfSpecIsUnchanged>
+                            <generatorName>java</generatorName>
+                            <library>native</library>
+                            <apiPackage>com.dominodatalab.gov.rest</apiPackage>
+                            <modelPackage>com.dominodatalab.gov.model</modelPackage>
+                            <invokerPackage>com.dominodatalab.gov.invoker</invokerPackage>
+                            <generateSupportingFiles>true</generateSupportingFiles>
+                            <generateModelTests>false</generateModelTests>
+                            <generateApiTests>false</generateApiTests>
+                            <templateDirectory>${project.basedir}/src/conf/templates</templateDirectory>
+                            <typeMappings>
+                                <typeMapping>binary=java.io.InputStream</typeMapping>
+                                <typeMapping>file=java.io.InputStream</typeMapping>
+                            </typeMappings>
+                            <configOptions>
+                                <serializableModel>false</serializableModel>
+                                <dateLibrary>java8</dateLibrary>
+                                <openApiNullable>false</openApiNullable>
+                                <useEnumCaseInsensitive>true</useEnumCaseInsensitive>
+                            </configOptions>
+                        </configuration>
+                    </execution>
                 </executions>
             </plugin>
             <plugin>

@@ -1,0 +1,4102 @@
+{
+    "schemes": [],
+    "swagger": "2.0",
+    "info": {
+        "description": "Service responsible for managing Domino Governance feature",
+        "title": "Domino Governance API",
+        "contact": {
+            "name": "Domino Data Lab",
+            "url": "https://tickets.dominodatalab.com/hc/en-us",
+            "email": "support@dominodatalab.com"
+        },
+        "license": {
+            "name": "Apache 2.0",
+            "url": "http://www.apache.org/licenses/LICENSE-2.0.html"
+        },
+        "version": "1.0"
+    },
+    "host": "",
+    "basePath": "/api/governance/v1",
+    "paths": {
+        "/attachment-overviews": {
+            "get": {
+                "description": "Retrieve a list of attachment overviews with optional filters, search, and pagination",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "attachments"
+                ],
+                "summary": "List attachment overviews",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Pagination offset",
+                        "name": "offset",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "Pagination limit",
+                        "name": "limit",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Sorting order (e.g., 'created_at asc')",
+                        "name": "order_by",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Search term",
+                        "name": "search",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Filter by type of attachment (e.g., 'model_version')",
+                        "name": "type",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Filter by identifier filename",
+                        "name": "identifier.filename",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Filter by identifier datasetId",
+                        "name": "identifier.datasetId",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Filter by identifier snapshotId",
+                        "name": "identifier.snapshotId",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Filter by identifier commit",
+                        "name": "identifier.commit",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Filter by identifier branch",
+                        "name": "identifier.branch",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Filter by identifier source",
+                        "name": "identifier.source",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/server.PaginatedAttachmentOverviews"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/server.HTTPError"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/server.HTTPError"
+                        }
+                    }
+                }
+            }
+        },
+        "/bundles": {
+            "get": {
+                "description": "List bundles",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "bundles"
+                ],
+                "summary": "List bundles",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Limit",
+                        "name": "limit",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "Offset",
+                        "name": "offset",
+                        "in": "query"
+                    },
+                    {
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        },
+                        "collectionFormat": "multi",
+                        "description": "Project ID",
+                        "name": "project_id",
+                        "in": "query"
+                    },
+                    {
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        },
+                        "collectionFormat": "multi",
+                        "description": "State",
+                        "name": "state",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Order by",
+                        "name": "order_by",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Search",
+                        "name": "search",
+                        "in": "query"
+                    },
+                    {
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        },
+                        "collectionFormat": "multi",
+                        "description": "Policy ID",
+                        "name": "policy_id",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/server.PaginatedBundles"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/server.HTTPError"
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden",
+                        "schema": {
+                            "$ref": "#/definitions/server.HTTPError"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/server.HTTPError"
+                        }
+                    }
+                }
+            },
+            "post": {
+                "description": "Create new bundle",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "bundles"
+                ],
+                "summary": "Create new bundle",
+                "parameters": [
+                    {
+                        "description": "Bundle to create",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/server.CreateBundle"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/guardrails.Bundle"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/server.HTTPError"
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden",
+                        "schema": {
+                            "$ref": "#/definitions/server.HTTPError"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/server.HTTPError"
+                        }
+                    },
+                    "409": {
+                        "description": "Conflict",
+                        "schema": {
+                            "$ref": "#/definitions/server.HTTPError"
+                        }
+                    },
+                    "423": {
+                        "description": "Locked",
+                        "schema": {
+                            "$ref": "#/definitions/server.HTTPError"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/server.HTTPError"
+                        }
+                    }
+                }
+            }
+        },
+        "/bundles/{id}": {
+            "get": {
+                "description": "Get bundle by ID",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "bundles"
+                ],
+                "summary": "Get bundle by ID",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "ID of bundle to retrieve",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/guardrails.Bundle"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/server.HTTPError"
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden",
+                        "schema": {
+                            "$ref": "#/definitions/server.HTTPError"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/server.HTTPError"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/server.HTTPError"
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "description": "Delete bundle by ID",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "bundles"
+                ],
+                "summary": "Delete bundle by ID",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "ID of bundle to delete",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "No Content"
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/server.HTTPError"
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden",
+                        "schema": {
+                            "$ref": "#/definitions/server.HTTPError"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/server.HTTPError"
+                        }
+                    },
+                    "423": {
+                        "description": "Locked",
+                        "schema": {
+                            "$ref": "#/definitions/server.HTTPError"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/server.HTTPError"
+                        }
+                    }
+                }
+            },
+            "patch": {
+                "description": "Update bundle by ID",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "bundles"
+                ],
+                "summary": "Update bundle by ID",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "ID of bundle to update",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "Bundle to update",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/server.UpdateBundle"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/guardrails.Bundle"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/server.HTTPError"
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden",
+                        "schema": {
+                            "$ref": "#/definitions/server.HTTPError"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/server.HTTPError"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/server.HTTPError"
+                        }
+                    }
+                }
+            }
+        },
+        "/bundles/{id}/attachments": {
+            "post": {
+                "description": "Create new attachment",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "attachments"
+                ],
+                "summary": "Create new attachment",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "ID of the bundle to which the attachment belongs",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "Attachment to create",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/guardrails.CreateAttachment"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/guardrails.Attachment"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/server.HTTPError"
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden",
+                        "schema": {
+                            "$ref": "#/definitions/server.HTTPError"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/server.HTTPError"
+                        }
+                    },
+                    "409": {
+                        "description": "Conflict",
+                        "schema": {
+                            "$ref": "#/definitions/server.HTTPError"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/server.HTTPError"
+                        }
+                    }
+                }
+            }
+        },
+        "/bundles/{id}/attachments/{attachmentID}": {
+            "delete": {
+                "description": "Delete attachment",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "attachments"
+                ],
+                "summary": "Delete attachment",
+                "deprecated": true,
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "ID of the bundle to which the attachment belongs",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "ID of the attachment to delete",
+                        "name": "attachmentID",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "No Content"
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/server.HTTPError"
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden",
+                        "schema": {
+                            "$ref": "#/definitions/server.HTTPError"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/server.HTTPError"
+                        }
+                    },
+                    "409": {
+                        "description": "Conflict",
+                        "schema": {
+                            "$ref": "#/definitions/server.HTTPError"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/server.HTTPError"
+                        }
+                    }
+                }
+            }
+        },
+        "/bundles/{id}/findings": {
+            "get": {
+                "description": "List ListFindings",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "findings"
+                ],
+                "summary": "List ListFindings",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Limit",
+                        "name": "limit",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "Offset",
+                        "name": "offset",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "ID of bundle of the findings to retrieve",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Order by",
+                        "name": "order_by",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Search",
+                        "name": "search",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Status",
+                        "name": "status",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/server.PaginatedFindings"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/server.HTTPError"
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden",
+                        "schema": {
+                            "$ref": "#/definitions/server.HTTPError"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/server.HTTPError"
+                        }
+                    }
+                }
+            }
+        },
+        "/bundles/{id}/report": {
+            "get": {
+                "description": "Download a PDF report for a bundle. Includes all stages, evidence, and results",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/pdf"
+                ],
+                "tags": [
+                    "bundles"
+                ],
+                "summary": "Download a PDF report for a bundle",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "ID of bundle for which to create a report",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "file"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/server.HTTPError"
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden",
+                        "schema": {
+                            "$ref": "#/definitions/server.HTTPError"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/server.HTTPError"
+                        }
+                    },
+                    "423": {
+                        "description": "Locked",
+                        "schema": {
+                            "$ref": "#/definitions/server.HTTPError"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/server.HTTPError"
+                        }
+                    }
+                }
+            }
+        },
+        "/drafts": {
+            "put": {
+                "description": "Upsert drafts",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "drafts"
+                ],
+                "summary": "Upsert drafts",
+                "parameters": [
+                    {
+                        "description": "Drafts to upsert",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/server.UpsertDraftsRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/guardrails.ArtifactDraft"
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/server.HTTPError"
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden",
+                        "schema": {
+                            "$ref": "#/definitions/server.HTTPError"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/server.HTTPError"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/server.HTTPError"
+                        }
+                    }
+                }
+            }
+        },
+        "/drafts/latest": {
+            "get": {
+                "description": "Get latest draft for bundle ID",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "drafts"
+                ],
+                "summary": "Get latest draft for bundle ID",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Bundle ID",
+                        "name": "bundleId",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/guardrails.ArtifactDraft"
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/server.HTTPError"
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden",
+                        "schema": {
+                            "$ref": "#/definitions/server.HTTPError"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/server.HTTPError"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/server.HTTPError"
+                        }
+                    }
+                }
+            }
+        },
+        "/evidence-templates": {
+            "get": {
+                "description": "List evidence template paginated",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "evidence-templates"
+                ],
+                "summary": "List evidence template paginated",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Limit",
+                        "name": "limit",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "Offset",
+                        "name": "offset",
+                        "in": "query"
+                    },
+                    {
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        },
+                        "collectionFormat": "multi",
+                        "description": "Status",
+                        "name": "status",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Order by",
+                        "name": "order_by",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Search",
+                        "name": "search",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/server.PaginatedEvidenceTemplates"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/server.HTTPError"
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden",
+                        "schema": {
+                            "$ref": "#/definitions/server.HTTPError"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/server.HTTPError"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/server.HTTPError"
+                        }
+                    }
+                }
+            }
+        },
+        "/evidence-templates/{id}": {
+            "get": {
+                "description": "Get evidence template by ID",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "evidence-templates"
+                ],
+                "summary": "Get evidence template by ID",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "ID of evidence template to retrieve",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/guardrails.EvidenceTemplate"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/server.HTTPError"
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden",
+                        "schema": {
+                            "$ref": "#/definitions/server.HTTPError"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/server.HTTPError"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/server.HTTPError"
+                        }
+                    }
+                }
+            },
+            "put": {
+                "description": "Upsert evidence template",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "evidence-templates"
+                ],
+                "summary": "Upsert evidence template",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "ID of evidence template to upsert",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "Evidence template to upsert",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/server.UpsertEvidenceTemplate"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/guardrails.EvidenceTemplate"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/server.HTTPError"
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden",
+                        "schema": {
+                            "$ref": "#/definitions/server.HTTPError"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/server.HTTPError"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/server.HTTPError"
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "description": "Delete evidence template by ID",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "evidence-templates"
+                ],
+                "summary": "Delete evidence template by ID",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "ID of evidence template to delete",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "No Content"
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/server.HTTPError"
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden",
+                        "schema": {
+                            "$ref": "#/definitions/server.HTTPError"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/server.HTTPError"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/server.HTTPError"
+                        }
+                    }
+                }
+            }
+        },
+        "/evidence-templates/{id}/definition": {
+            "get": {
+                "description": "Get evidence template definition YAML by ID",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "evidence-templates"
+                ],
+                "summary": "Get evidence template definition YAML by ID",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "ID of evidence template definition YAML to retrieve",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "The evidence template definition",
+                        "schema": {
+                            "$ref": "#/definitions/server.EvidenceTemplateDefinition"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/server.HTTPError"
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden",
+                        "schema": {
+                            "$ref": "#/definitions/server.HTTPError"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/server.HTTPError"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/server.HTTPError"
+                        }
+                    }
+                }
+            },
+            "put": {
+                "description": "Update evidence template definition by ID",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "evidence-templates"
+                ],
+                "summary": "Update evidence template definition by ID",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "ID of evidence template definition YAML to update",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "Evidence template definition to update",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/server.EvidenceTemplateDefinition"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/guardrails.EvidenceTemplate"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/server.HTTPError"
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden",
+                        "schema": {
+                            "$ref": "#/definitions/server.HTTPError"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/server.HTTPError"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/server.HTTPError"
+                        }
+                    }
+                }
+            }
+        },
+        "/evidence-templates/{id}/status": {
+            "put": {
+                "description": "Update evidence template status by ID",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "evidence-templates"
+                ],
+                "summary": "Update evidence template status by ID",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "ID of evidence template status to update",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "Evidence template status to update",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/server.UpdateEvidenceTemplateStatus"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/guardrails.EvidenceTemplate"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/server.HTTPError"
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden",
+                        "schema": {
+                            "$ref": "#/definitions/server.HTTPError"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/server.HTTPError"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/server.HTTPError"
+                        }
+                    }
+                }
+            }
+        },
+        "/findings": {
+            "post": {
+                "description": "Create new finding",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "findings"
+                ],
+                "summary": "Create new finding",
+                "parameters": [
+                    {
+                        "description": "Finding to create",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/guardrails.CreateFindingRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/guardrails.Finding"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/server.HTTPError"
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden",
+                        "schema": {
+                            "$ref": "#/definitions/server.HTTPError"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/server.HTTPError"
+                        }
+                    },
+                    "409": {
+                        "description": "Conflict",
+                        "schema": {
+                            "$ref": "#/definitions/server.HTTPError"
+                        }
+                    },
+                    "423": {
+                        "description": "Locked",
+                        "schema": {
+                            "$ref": "#/definitions/server.HTTPError"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/server.HTTPError"
+                        }
+                    }
+                }
+            }
+        },
+        "/findings/{id}": {
+            "get": {
+                "description": "Get finding by ID",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "findings"
+                ],
+                "summary": "Get finding by ID",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "ID of finding to retrieve",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/guardrails.Finding"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/server.HTTPError"
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden",
+                        "schema": {
+                            "$ref": "#/definitions/server.HTTPError"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/server.HTTPError"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/server.HTTPError"
+                        }
+                    }
+                }
+            },
+            "put": {
+                "description": "Update the finding by ID",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "findings"
+                ],
+                "summary": "Update the finding by ID",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "ID of finding to update",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "Finding to update",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/guardrails.UpdateFindingRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/guardrails.Finding"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/server.HTTPError"
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden",
+                        "schema": {
+                            "$ref": "#/definitions/server.HTTPError"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/server.HTTPError"
+                        }
+                    },
+                    "409": {
+                        "description": "Conflict",
+                        "schema": {
+                            "$ref": "#/definitions/server.HTTPError"
+                        }
+                    },
+                    "423": {
+                        "description": "Locked",
+                        "schema": {
+                            "$ref": "#/definitions/server.HTTPError"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/server.HTTPError"
+                        }
+                    }
+                }
+            }
+        },
+        "/policies": {
+            "put": {
+                "description": "Create or update a policy",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "policies"
+                ],
+                "summary": "Create or update a policy",
+                "deprecated": true,
+                "parameters": [
+                    {
+                        "description": "Policy to create or update",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/server.UpsertPolicyRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/guardrails.Policy"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/server.HTTPError"
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden",
+                        "schema": {
+                            "$ref": "#/definitions/server.HTTPError"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/server.HTTPError"
+                        }
+                    },
+                    "423": {
+                        "description": "Locked",
+                        "schema": {
+                            "$ref": "#/definitions/server.HTTPError"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/server.HTTPError"
+                        }
+                    }
+                }
+            },
+            "post": {
+                "description": "Create a policy",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "policies"
+                ],
+                "summary": "Create a policy",
+                "parameters": [
+                    {
+                        "description": "Policy to create",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/server.CreatePolicyRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/guardrails.Policy"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/server.HTTPError"
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden",
+                        "schema": {
+                            "$ref": "#/definitions/server.HTTPError"
+                        }
+                    },
+                    "409": {
+                        "description": "Conflict",
+                        "schema": {
+                            "$ref": "#/definitions/server.HTTPError"
+                        }
+                    },
+                    "423": {
+                        "description": "Locked",
+                        "schema": {
+                            "$ref": "#/definitions/server.HTTPError"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/server.HTTPError"
+                        }
+                    }
+                }
+            }
+        },
+        "/policies/{id}": {
+            "get": {
+                "description": "Get policy by ID",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "policies"
+                ],
+                "summary": "Get policy by ID",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "ID of policy to retrieve",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/guardrails.Policy"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/server.HTTPError"
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden",
+                        "schema": {
+                            "$ref": "#/definitions/server.HTTPError"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/server.HTTPError"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/server.HTTPError"
+                        }
+                    }
+                }
+            },
+            "put": {
+                "description": "Update the policy meta by ID",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "policies"
+                ],
+                "summary": "Update the policy meta by ID",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "ID of policy to update",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "Policy to update",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/server.UpdatePolicyRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/guardrails.Policy"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/server.HTTPError"
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden",
+                        "schema": {
+                            "$ref": "#/definitions/server.HTTPError"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/server.HTTPError"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/server.HTTPError"
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "description": "Delete policy by ID",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "policies"
+                ],
+                "summary": "Delete policy by ID",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "ID of policy to delete",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "No Content",
+                        "schema": {
+                            "$ref": "#/definitions/server.HTTPError"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/server.HTTPError"
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden",
+                        "schema": {
+                            "$ref": "#/definitions/server.HTTPError"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/server.HTTPError"
+                        }
+                    },
+                    "423": {
+                        "description": "Locked",
+                        "schema": {
+                            "$ref": "#/definitions/server.HTTPError"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/server.HTTPError"
+                        }
+                    }
+                }
+            }
+        },
+        "/policies/{id}/definition": {
+            "get": {
+                "description": "Get the policy definition YAML by ID",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "policies"
+                ],
+                "summary": "Get the policy definition YAML by ID",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "ID of the definition of the policy to retrieve",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Definition of the policy",
+                        "schema": {
+                            "$ref": "#/definitions/server.PolicyDefinition"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/server.HTTPError"
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden",
+                        "schema": {
+                            "$ref": "#/definitions/server.HTTPError"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/server.HTTPError"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/server.HTTPError"
+                        }
+                    }
+                }
+            },
+            "put": {
+                "description": "Create or update a policy definition through yaml",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "policies"
+                ],
+                "summary": "Create or update a policy definition through yaml",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "ID of the definition of the policy to update",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "Policy definition to create or update",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/server.PolicyDefinition"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/guardrails.Policy"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/server.HTTPError"
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden",
+                        "schema": {
+                            "$ref": "#/definitions/server.HTTPError"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/server.HTTPError"
+                        }
+                    },
+                    "423": {
+                        "description": "Locked",
+                        "schema": {
+                            "$ref": "#/definitions/server.HTTPError"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/server.HTTPError"
+                        }
+                    }
+                }
+            }
+        },
+        "/policies/{id}/status": {
+            "put": {
+                "description": "Update the policy status by ID",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "policies"
+                ],
+                "summary": "Update the policy status by ID",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "ID of policy to update",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "Policy status to update",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/server.UpdatePolicy"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/guardrails.Policy"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/server.HTTPError"
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden",
+                        "schema": {
+                            "$ref": "#/definitions/server.HTTPError"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/server.HTTPError"
+                        }
+                    },
+                    "423": {
+                        "description": "Locked",
+                        "schema": {
+                            "$ref": "#/definitions/server.HTTPError"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/server.HTTPError"
+                        }
+                    }
+                }
+            }
+        },
+        "/policy-overviews": {
+            "get": {
+                "description": "List policy overviews",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "policies"
+                ],
+                "summary": "List policy overviews",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Limit",
+                        "name": "limit",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "Offset",
+                        "name": "offset",
+                        "in": "query"
+                    },
+                    {
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        },
+                        "collectionFormat": "multi",
+                        "description": "Status",
+                        "name": "status",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Order by",
+                        "name": "order_by",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Search",
+                        "name": "search",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/server.PaginatedPolicyOverviews"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/server.HTTPError"
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden",
+                        "schema": {
+                            "$ref": "#/definitions/server.HTTPError"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/server.HTTPError"
+                        }
+                    }
+                }
+            }
+        },
+        "/results": {
+            "post": {
+                "description": "Create new results. If the results have impact on classification, please use the api /rpc/submit-result-to-policy.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "results"
+                ],
+                "summary": "Create new results",
+                "parameters": [
+                    {
+                        "description": "Results to create",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/server.CreateResultsRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/guardrails.ArtifactResult"
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/server.HTTPError"
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden",
+                        "schema": {
+                            "$ref": "#/definitions/server.HTTPError"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/server.HTTPError"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/server.HTTPError"
+                        }
+                    }
+                }
+            }
+        },
+        "/results/latest": {
+            "get": {
+                "description": "Get latest results for bundle ID",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "results"
+                ],
+                "summary": "Get latest results for bundle ID",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Bundle ID",
+                        "name": "bundleID",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        },
+                        "collectionFormat": "multi",
+                        "description": "Artifact ID",
+                        "name": "artifactID",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/guardrails.ArtifactResult"
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/server.HTTPError"
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden",
+                        "schema": {
+                            "$ref": "#/definitions/server.HTTPError"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/server.HTTPError"
+                        }
+                    }
+                }
+            }
+        },
+        "/rpc/bulk-edit-findings": {
+            "put": {
+                "description": "Bulk update finding severity or due date given a list of finding IDs",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "findings"
+                ],
+                "summary": "Bulk update finding severity or due date",
+                "parameters": [
+                    {
+                        "description": "Findings to bulk update",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/guardrails.BulkUpdateFindingRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/guardrails.Finding"
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/server.HTTPError"
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden",
+                        "schema": {
+                            "$ref": "#/definitions/server.HTTPError"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/server.HTTPError"
+                        }
+                    },
+                    "423": {
+                        "description": "Locked",
+                        "schema": {
+                            "$ref": "#/definitions/server.HTTPError"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/server.HTTPError"
+                        }
+                    }
+                }
+            }
+        },
+        "/rpc/compute-policy": {
+            "post": {
+                "description": "compute a policy within the context of a bundle",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "rpc"
+                ],
+                "summary": "compute a policy within the context of a bundle",
+                "parameters": [
+                    {
+                        "description": "Bundle ID and Policy ID used to compute",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/server.ComputePolicy"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/guardrails.ComputedPolicy"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/server.HTTPError"
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden",
+                        "schema": {
+                            "$ref": "#/definitions/server.HTTPError"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/server.HTTPError"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/server.HTTPError"
+                        }
+                    }
+                }
+            }
+        },
+        "/rpc/copy-bundle": {
+            "post": {
+                "description": "Copy the transferable results from one bundle to another",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "rpc"
+                ],
+                "summary": "Copy the transferable results from one bundle to another",
+                "parameters": [
+                    {
+                        "description": "Request for copying a bundle",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/server.CopyBundleRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/guardrails.Bundle"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/server.HTTPError"
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden",
+                        "schema": {
+                            "$ref": "#/definitions/server.HTTPError"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/server.HTTPError"
+                        }
+                    },
+                    "423": {
+                        "description": "Locked",
+                        "schema": {
+                            "$ref": "#/definitions/server.HTTPError"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/server.HTTPError"
+                        }
+                    }
+                }
+            }
+        },
+        "/rpc/delete-attachment-and-results": {
+            "post": {
+                "description": "Delete attachment and results",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "attachments"
+                ],
+                "summary": "Delete attachment and results",
+                "parameters": [
+                    {
+                        "description": "Request for deleting attachment and results",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/server.DeleteAttachmentRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "No Content"
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/server.HTTPError"
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden",
+                        "schema": {
+                            "$ref": "#/definitions/server.HTTPError"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/server.HTTPError"
+                        }
+                    },
+                    "409": {
+                        "description": "Conflict",
+                        "schema": {
+                            "$ref": "#/definitions/server.HTTPError"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/server.HTTPError"
+                        }
+                    }
+                }
+            }
+        },
+        "/rpc/publish-approval-event": {
+            "post": {
+                "description": "Publish an approval event and get the computed approval",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "rpc"
+                ],
+                "summary": "Publish an approval event and get the computed approval",
+                "parameters": [
+                    {
+                        "description": "Request for publishing an approval event",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/guardrails.ApprovalEventRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/guardrails.Approval"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/server.HTTPError"
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden",
+                        "schema": {
+                            "$ref": "#/definitions/server.HTTPError"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/server.HTTPError"
+                        }
+                    },
+                    "423": {
+                        "description": "Locked",
+                        "schema": {
+                            "$ref": "#/definitions/server.HTTPError"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/server.HTTPError"
+                        }
+                    }
+                }
+            }
+        },
+        "/rpc/submit-result-to-policy": {
+            "post": {
+                "description": "Submit a result and get computed policy",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "rpc"
+                ],
+                "summary": "Submit a result and get computed policy",
+                "parameters": [
+                    {
+                        "description": "Request for submitting result and computing policy",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/server.SubmitResultToPolicy"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/guardrails.ComputedPolicy"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/server.HTTPError"
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden",
+                        "schema": {
+                            "$ref": "#/definitions/server.HTTPError"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/server.HTTPError"
+                        }
+                    },
+                    "423": {
+                        "description": "Locked",
+                        "schema": {
+                            "$ref": "#/definitions/server.HTTPError"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/server.HTTPError"
+                        }
+                    }
+                }
+            }
+        },
+        "/rpc/update-approval": {
+            "post": {
+                "description": "Update approval by ID",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "approvals"
+                ],
+                "summary": "Update approval by ID",
+                "parameters": [
+                    {
+                        "description": "The update approval request",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/server.UpdateApprovalReq"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/guardrails.Approval"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/server.HTTPError"
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden",
+                        "schema": {
+                            "$ref": "#/definitions/server.HTTPError"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/server.HTTPError"
+                        }
+                    },
+                    "409": {
+                        "description": "Conflict",
+                        "schema": {
+                            "$ref": "#/definitions/server.HTTPError"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/server.HTTPError"
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "definitions": {
+        "guardrails.Approval": {
+            "type": "object",
+            "properties": {
+                "approvers": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/guardrails.Approver"
+                    }
+                },
+                "bundleId": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "stageApprovalId": {
+                    "type": "string"
+                },
+                "status": {
+                    "$ref": "#/definitions/guardrails.ApprovalStatus"
+                },
+                "taskId": {
+                    "type": "string"
+                },
+                "updatedAt": {
+                    "type": "string"
+                },
+                "updatedBy": {
+                    "type": "object"
+                }
+            }
+        },
+        "guardrails.ApprovalEventRequest": {
+            "type": "object",
+            "required": [
+                "bundleId",
+                "eventType",
+                "policyId",
+                "projectId"
+            ],
+            "properties": {
+                "approvalId": {
+                    "type": "string"
+                },
+                "bundleId": {
+                    "type": "string"
+                },
+                "eventType": {
+                    "$ref": "#/definitions/guardrails.ApprovalEventType"
+                },
+                "meta": {
+                    "type": "object"
+                },
+                "policyId": {
+                    "type": "string"
+                },
+                "projectId": {
+                    "type": "string"
+                },
+                "stageApprovalId": {
+                    "type": "string"
+                }
+            }
+        },
+        "guardrails.ApprovalEventType": {
+            "type": "string",
+            "enum": [
+                "RequestSubmitted",
+                "RequestCancelled",
+                "RequestApproved",
+                "RequestConditionalApproved",
+                "RequestRejected",
+                "FindingsApproved"
+            ],
+            "x-enum-varnames": [
+                "RequestSubmitted",
+                "RequestCancelled",
+                "RequestApproved",
+                "RequestConditionalApproved",
+                "RequestRejected",
+                "FindingsApproved"
+            ]
+        },
+        "guardrails.ApprovalStatus": {
+            "type": "string",
+            "enum": [
+                "PendingSubmission",
+                "PendingReview",
+                "Approved",
+                "ConditionallyApproved"
+            ],
+            "x-enum-varnames": [
+                "PendingSubmission",
+                "PendingReview",
+                "Approved",
+                "ConditionallyApproved"
+            ]
+        },
+        "guardrails.ApprovalTimelineInfo": {
+            "type": "object",
+            "properties": {
+                "approvalStatus": {
+                    "$ref": "#/definitions/guardrails.ApprovalStatus"
+                },
+                "timelineStatus": {
+                    "$ref": "#/definitions/guardrails.ApprovalTimelineStatus"
+                },
+                "updatedAt": {
+                    "type": "string"
+                }
+            }
+        },
+        "guardrails.ApprovalTimelineStatus": {
+            "type": "string",
+            "enum": [
+                "Valid",
+                "Invalid"
+            ],
+            "x-enum-varnames": [
+                "Valid",
+                "Invalid"
+            ]
+        },
+        "guardrails.Approver": {
+            "type": "object",
+            "required": [
+                "editable",
+                "id",
+                "name",
+                "showByDefault"
+            ],
+            "properties": {
+                "editable": {
+                    "type": "boolean"
+                },
+                "fromOrganizationUserId": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "isOrganizationUser": {
+                    "type": "boolean"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "showByDefault": {
+                    "type": "boolean"
+                }
+            }
+        },
+        "guardrails.ArtifactDraft": {
+            "type": "object",
+            "properties": {
+                "artifactContent": {},
+                "artifactId": {
+                    "type": "string"
+                },
+                "bundleId": {
+                    "type": "string"
+                },
+                "evidenceId": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "updatedAt": {
+                    "type": "string"
+                },
+                "userId": {
+                    "type": "string"
+                }
+            }
+        },
+        "guardrails.ArtifactResult": {
+            "type": "object",
+            "properties": {
+                "artifactContent": {},
+                "artifactId": {
+                    "type": "string"
+                },
+                "bundleId": {
+                    "type": "string"
+                },
+                "createdAt": {
+                    "type": "string"
+                },
+                "createdBy": {
+                    "type": "object"
+                },
+                "evidenceId": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "isLatest": {
+                    "type": "boolean"
+                }
+            }
+        },
+        "guardrails.ArtifactType": {
+            "type": "string",
+            "enum": [
+                "input",
+                "guidance",
+                "policyScriptedCheck",
+                "metadata"
+            ],
+            "x-enum-varnames": [
+                "Input",
+                "Guidance",
+                "AutomatedJob",
+                "Metadata"
+            ]
+        },
+        "guardrails.Attachment": {
+            "type": "object",
+            "properties": {
+                "approvalTimelineMap": {
+                    "type": "object",
+                    "additionalProperties": {
+                        "$ref": "#/definitions/guardrails.ApprovalTimelineInfo"
+                    }
+                },
+                "createdAt": {
+                    "type": "string"
+                },
+                "createdBy": {
+                    "type": "object"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "identifier": {
+                    "type": "object"
+                },
+                "type": {
+                    "$ref": "#/definitions/guardrails.AttachmentType"
+                }
+            }
+        },
+        "guardrails.AttachmentOverview": {
+            "type": "object",
+            "properties": {
+                "approvalTimelineMap": {
+                    "type": "object",
+                    "additionalProperties": {
+                        "$ref": "#/definitions/guardrails.ApprovalTimelineInfo"
+                    }
+                },
+                "bundle": {
+                    "$ref": "#/definitions/guardrails.Bundle"
+                },
+                "createdAt": {
+                    "type": "string"
+                },
+                "createdBy": {
+                    "type": "object"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "identifier": {
+                    "type": "object"
+                },
+                "type": {
+                    "$ref": "#/definitions/guardrails.AttachmentType"
+                }
+            }
+        },
+        "guardrails.AttachmentType": {
+            "type": "string",
+            "enum": [
+                "ModelVersion",
+                "Report",
+                "DatasetSnapshotFile"
+            ],
+            "x-enum-varnames": [
+                "ModelVersion",
+                "Report",
+                "DatasetSnapshotFile"
+            ]
+        },
+        "guardrails.BulkUpdateFindingRequest": {
+            "type": "object",
+            "required": [
+                "findings"
+            ],
+            "properties": {
+                "findings": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/guardrails.BulkUpdateSingleFindingRequest"
+                    }
+                }
+            }
+        },
+        "guardrails.BulkUpdateSingleFindingRequest": {
+            "type": "object",
+            "required": [
+                "id"
+            ],
+            "properties": {
+                "dueDate": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "severity": {
+                    "$ref": "#/definitions/guardrails.FindingSeverity"
+                }
+            }
+        },
+        "guardrails.Bundle": {
+            "type": "object",
+            "required": [
+                "id",
+                "state"
+            ],
+            "properties": {
+                "additionalPolicyIds": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "attachments": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/guardrails.Attachment"
+                    }
+                },
+                "classificationValue": {
+                    "type": "string"
+                },
+                "commentsCount": {
+                    "type": "integer"
+                },
+                "createdAt": {
+                    "type": "string"
+                },
+                "createdBy": {
+                    "type": "object"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "policyId": {
+                    "type": "string"
+                },
+                "policyName": {
+                    "type": "string"
+                },
+                "projectId": {
+                    "type": "string"
+                },
+                "projectName": {
+                    "type": "string"
+                },
+                "projectOwner": {
+                    "type": "string"
+                },
+                "stage": {
+                    "type": "string"
+                },
+                "stageApprovals": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/guardrails.StageApproval"
+                    }
+                },
+                "state": {
+                    "$ref": "#/definitions/guardrails.BundleState"
+                }
+            }
+        },
+        "guardrails.BundleState": {
+            "type": "string",
+            "enum": [
+                "Active",
+                "Archived",
+                "Complete"
+            ],
+            "x-enum-varnames": [
+                "ActiveState",
+                "ArchivedState",
+                "CompleteState"
+            ]
+        },
+        "guardrails.CommentsInfo": {
+            "type": "object",
+            "properties": {
+                "approvalCommentsCountMap": {
+                    "type": "object",
+                    "additionalProperties": {
+                        "type": "integer"
+                    }
+                },
+                "artifactCommentsCountMap": {
+                    "type": "object",
+                    "additionalProperties": {
+                        "type": "integer"
+                    }
+                },
+                "bundleCommentsCount": {
+                    "type": "integer"
+                }
+            }
+        },
+        "guardrails.ComputedApproval": {
+            "type": "object",
+            "properties": {
+                "approvers": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/guardrails.Approver"
+                    }
+                },
+                "bundleId": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "isUserApprover": {
+                    "type": "boolean"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "stageApprovalId": {
+                    "type": "string"
+                },
+                "status": {
+                    "$ref": "#/definitions/guardrails.ApprovalStatus"
+                },
+                "taskId": {
+                    "type": "string"
+                },
+                "updatedAt": {
+                    "type": "string"
+                },
+                "updatedBy": {
+                    "type": "object"
+                }
+            }
+        },
+        "guardrails.ComputedPolicy": {
+            "type": "object",
+            "properties": {
+                "approvals": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/guardrails.ComputedApproval"
+                    }
+                },
+                "bundle": {
+                    "$ref": "#/definitions/guardrails.Bundle"
+                },
+                "commentsInfo": {
+                    "$ref": "#/definitions/guardrails.CommentsInfo"
+                },
+                "drafts": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/guardrails.ArtifactDraft"
+                    }
+                },
+                "findingsInfo": {
+                    "$ref": "#/definitions/guardrails.FindingsInfo"
+                },
+                "isUserApprover": {
+                    "type": "boolean"
+                },
+                "policy": {
+                    "$ref": "#/definitions/guardrails.Policy"
+                },
+                "results": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/guardrails.ArtifactResult"
+                    }
+                }
+            }
+        },
+        "guardrails.Content": {
+            "type": "object",
+            "additionalProperties": {}
+        },
+        "guardrails.CreateAttachment": {
+            "type": "object",
+            "required": [
+                "identifier",
+                "type"
+            ],
+            "properties": {
+                "identifier": {
+                    "type": "object"
+                },
+                "type": {
+                    "$ref": "#/definitions/guardrails.AttachmentType"
+                }
+            }
+        },
+        "guardrails.CreateFindingRequest": {
+            "type": "object",
+            "required": [
+                "approvalId",
+                "approver",
+                "assignee",
+                "bundleId",
+                "name",
+                "severity"
+            ],
+            "properties": {
+                "approvalId": {
+                    "type": "string"
+                },
+                "approver": {
+                    "$ref": "#/definitions/guardrails.FindingUser"
+                },
+                "artifactId": {
+                    "type": "string"
+                },
+                "assignee": {
+                    "$ref": "#/definitions/guardrails.FindingUser"
+                },
+                "bundleId": {
+                    "type": "string"
+                },
+                "description": {
+                    "type": "string"
+                },
+                "dueDate": {
+                    "type": "string"
+                },
+                "evidenceId": {
+                    "type": "string"
+                },
+                "meta": {
+                    "$ref": "#/definitions/guardrails.FindingMeta"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "severity": {
+                    "$ref": "#/definitions/guardrails.FindingSeverity"
+                }
+            }
+        },
+        "guardrails.Evidence": {
+            "type": "object",
+            "properties": {
+                "artifacts": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/guardrails.EvidenceArtifact"
+                    }
+                },
+                "createdAt": {
+                    "type": "string"
+                },
+                "description": {
+                    "type": "string"
+                },
+                "externalId": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "policyId": {
+                    "type": "string"
+                },
+                "scope": {
+                    "$ref": "#/definitions/guardrails.EvidenceScope"
+                },
+                "visible": {
+                    "description": "allows true, false or nil values (if nil, FE can decide to show everything)",
+                    "type": "boolean"
+                }
+            }
+        },
+        "guardrails.EvidenceArtifact": {
+            "type": "object",
+            "properties": {
+                "artifactType": {
+                    "$ref": "#/definitions/guardrails.ArtifactType"
+                },
+                "details": {
+                    "type": "object"
+                },
+                "id": {
+                    "type": "string"
+                }
+            }
+        },
+        "guardrails.EvidenceScope": {
+            "type": "string",
+            "enum": [
+                "Global",
+                "Local"
+            ],
+            "x-enum-varnames": [
+                "Global",
+                "Local"
+            ]
+        },
+        "guardrails.EvidenceStatus": {
+            "type": "string",
+            "enum": [
+                "Draft",
+                "Published"
+            ],
+            "x-enum-varnames": [
+                "Draft",
+                "Published"
+            ]
+        },
+        "guardrails.EvidenceTemplate": {
+            "type": "object",
+            "properties": {
+                "artifacts": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/guardrails.EvidenceArtifact"
+                    }
+                },
+                "createdAt": {
+                    "type": "string"
+                },
+                "description": {
+                    "type": "string"
+                },
+                "externalId": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "scope": {
+                    "$ref": "#/definitions/guardrails.EvidenceScope"
+                },
+                "status": {
+                    "$ref": "#/definitions/guardrails.EvidenceStatus"
+                }
+            }
+        },
+        "guardrails.Filter": {
+            "type": "object",
+            "properties": {
+                "key": {
+                    "type": "string"
+                },
+                "values": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                }
+            }
+        },
+        "guardrails.Finding": {
+            "type": "object",
+            "properties": {
+                "approvalId": {
+                    "type": "string"
+                },
+                "approvalName": {
+                    "type": "string"
+                },
+                "approver": {
+                    "$ref": "#/definitions/guardrails.FindingUser"
+                },
+                "artifactId": {
+                    "type": "string"
+                },
+                "assignee": {
+                    "$ref": "#/definitions/guardrails.FindingUser"
+                },
+                "bundleId": {
+                    "type": "string"
+                },
+                "createdAt": {
+                    "type": "string"
+                },
+                "createdBy": {
+                    "type": "object"
+                },
+                "description": {
+                    "type": "string"
+                },
+                "dueDate": {
+                    "type": "string"
+                },
+                "evidenceId": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "required": {
+                    "type": "boolean"
+                },
+                "severity": {
+                    "$ref": "#/definitions/guardrails.FindingSeverity"
+                },
+                "status": {
+                    "$ref": "#/definitions/guardrails.FindingStatus"
+                },
+                "taskId": {
+                    "type": "string"
+                },
+                "updatedAt": {
+                    "type": "string"
+                },
+                "updatedBy": {
+                    "type": "object"
+                }
+            }
+        },
+        "guardrails.FindingInfo": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "string"
+                },
+                "status": {
+                    "$ref": "#/definitions/guardrails.FindingStatus"
+                }
+            }
+        },
+        "guardrails.FindingMeta": {
+            "type": "object",
+            "properties": {
+                "artifactContent": {
+                    "type": "string"
+                }
+            }
+        },
+        "guardrails.FindingSeverity": {
+            "type": "string",
+            "enum": [
+                "S0",
+                "S1",
+                "S2",
+                "S3"
+            ],
+            "x-enum-varnames": [
+                "S0",
+                "S1",
+                "S2",
+                "S3"
+            ]
+        },
+        "guardrails.FindingStatus": {
+            "type": "string",
+            "enum": [
+                "ToDo",
+                "InProgress",
+                "InReview",
+                "Done",
+                "WontDo"
+            ],
+            "x-enum-varnames": [
+                "ToDo",
+                "InProgress",
+                "InReview",
+                "Done",
+                "WontDo"
+            ]
+        },
+        "guardrails.FindingUser": {
+            "type": "object",
+            "required": [
+                "id",
+                "name"
+            ],
+            "properties": {
+                "id": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                }
+            }
+        },
+        "guardrails.FindingsInfo": {
+            "type": "object",
+            "properties": {
+                "approvalFindingsCountMap": {
+                    "type": "object",
+                    "additionalProperties": {
+                        "type": "integer"
+                    }
+                },
+                "approvalFindingsMap": {
+                    "type": "object",
+                    "additionalProperties": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/definitions/guardrails.FindingInfo"
+                        }
+                    }
+                },
+                "artifactFindingsCountMap": {
+                    "type": "object",
+                    "additionalProperties": {
+                        "type": "integer"
+                    }
+                },
+                "bundleFindingsCount": {
+                    "type": "integer"
+                }
+            }
+        },
+        "guardrails.Meta": {
+            "type": "object",
+            "properties": {
+                "filters": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/guardrails.Filter"
+                    }
+                },
+                "pagination": {
+                    "$ref": "#/definitions/guardrails.Pagination"
+                },
+                "search": {
+                    "type": "string"
+                },
+                "sort": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/guardrails.Sorter"
+                    }
+                }
+            }
+        },
+        "guardrails.Pagination": {
+            "type": "object",
+            "properties": {
+                "limit": {
+                    "type": "integer"
+                },
+                "offset": {
+                    "type": "integer"
+                },
+                "totalCount": {
+                    "type": "integer"
+                }
+            }
+        },
+        "guardrails.Policy": {
+            "type": "object",
+            "properties": {
+                "approvers": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/guardrails.Approver"
+                    }
+                },
+                "classificationArtifactMap": {
+                    "type": "object",
+                    "additionalProperties": {
+                        "type": "string"
+                    }
+                },
+                "classificationRule": {
+                    "type": "string"
+                },
+                "createdAt": {
+                    "type": "string"
+                },
+                "createdBy": {
+                    "type": "object"
+                },
+                "description": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "labels": {
+                    "type": "object"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "parentId": {
+                    "type": "string"
+                },
+                "stages": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/guardrails.Stage"
+                    }
+                },
+                "status": {
+                    "$ref": "#/definitions/guardrails.PolicyStatus"
+                },
+                "updatedAt": {
+                    "type": "string"
+                },
+                "updatedBy": {
+                    "type": "object"
+                }
+            }
+        },
+        "guardrails.PolicyOverview": {
+            "type": "object",
+            "properties": {
+                "createdBy": {
+                    "type": "object"
+                },
+                "description": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "labels": {
+                    "type": "object"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "status": {
+                    "$ref": "#/definitions/guardrails.PolicyStatus"
+                },
+                "updatedAt": {
+                    "type": "string"
+                },
+                "usage": {
+                    "type": "object",
+                    "additionalProperties": {
+                        "type": "integer"
+                    }
+                }
+            }
+        },
+        "guardrails.PolicyStatus": {
+            "type": "string",
+            "enum": [
+                "Draft",
+                "Published",
+                "Archived"
+            ],
+            "x-enum-varnames": [
+                "PolicyDraft",
+                "PolicyPublished",
+                "PolicyArchived"
+            ]
+        },
+        "guardrails.SelectedApprover": {
+            "type": "object",
+            "required": [
+                "id",
+                "name"
+            ],
+            "properties": {
+                "fromOrganizationUserId": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                }
+            }
+        },
+        "guardrails.Sorter": {
+            "type": "object",
+            "properties": {
+                "key": {
+                    "type": "string"
+                },
+                "order": {
+                    "type": "string"
+                }
+            }
+        },
+        "guardrails.Stage": {
+            "type": "object",
+            "properties": {
+                "approvals": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/guardrails.StageApproval"
+                    }
+                },
+                "evidenceSet": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/guardrails.Evidence"
+                    }
+                },
+                "id": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                }
+            }
+        },
+        "guardrails.StageApproval": {
+            "type": "object",
+            "properties": {
+                "allowAdditionalApprovers": {
+                    "type": "boolean"
+                },
+                "approvers": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/guardrails.Approver"
+                    }
+                },
+                "evidence": {
+                    "$ref": "#/definitions/guardrails.Evidence"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                }
+            }
+        },
+        "guardrails.UpdateFindingRequest": {
+            "type": "object",
+            "properties": {
+                "approver": {
+                    "$ref": "#/definitions/guardrails.FindingUser"
+                },
+                "artifactId": {
+                    "type": "string"
+                },
+                "assignee": {
+                    "$ref": "#/definitions/guardrails.FindingUser"
+                },
+                "description": {
+                    "type": "string"
+                },
+                "dueDate": {
+                    "type": "string"
+                },
+                "evidenceId": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "required": {
+                    "type": "boolean"
+                },
+                "severity": {
+                    "$ref": "#/definitions/guardrails.FindingSeverity"
+                },
+                "status": {
+                    "$ref": "#/definitions/guardrails.FindingStatus"
+                }
+            }
+        },
+        "server.ComputePolicy": {
+            "type": "object",
+            "required": [
+                "bundleId",
+                "policyId"
+            ],
+            "properties": {
+                "bundleId": {
+                    "type": "string"
+                },
+                "policyId": {
+                    "type": "string"
+                }
+            }
+        },
+        "server.CopyBundleRequest": {
+            "type": "object",
+            "required": [
+                "bundleId",
+                "fromBundleId"
+            ],
+            "properties": {
+                "bundleId": {
+                    "type": "string"
+                },
+                "fromBundleId": {
+                    "type": "string"
+                }
+            }
+        },
+        "server.CreateBundle": {
+            "type": "object",
+            "required": [
+                "name",
+                "policyId",
+                "projectId"
+            ],
+            "properties": {
+                "attachments": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/guardrails.CreateAttachment"
+                    }
+                },
+                "name": {
+                    "type": "string"
+                },
+                "policyId": {
+                    "type": "string"
+                },
+                "projectId": {
+                    "type": "string"
+                }
+            }
+        },
+        "server.CreatePolicyRequest": {
+            "type": "object",
+            "required": [
+                "labels",
+                "name"
+            ],
+            "properties": {
+                "description": {
+                    "type": "string"
+                },
+                "labels": {
+                    "type": "object"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "parentID": {
+                    "type": "string"
+                }
+            }
+        },
+        "server.CreateResultsRequest": {
+            "type": "object",
+            "required": [
+                "bundleId",
+                "content",
+                "evidenceId"
+            ],
+            "properties": {
+                "bundleId": {
+                    "type": "string"
+                },
+                "content": {
+                    "$ref": "#/definitions/guardrails.Content"
+                },
+                "evidenceId": {
+                    "type": "string"
+                }
+            }
+        },
+        "server.DeleteAttachmentRequest": {
+            "type": "object",
+            "required": [
+                "attachmentId",
+                "bundleId"
+            ],
+            "properties": {
+                "attachmentId": {
+                    "type": "string"
+                },
+                "bundleId": {
+                    "type": "string"
+                }
+            }
+        },
+        "server.EvidenceTemplateDefinition": {
+            "type": "object",
+            "required": [
+                "definition"
+            ],
+            "properties": {
+                "definition": {
+                    "type": "string"
+                }
+            }
+        },
+        "server.HTTPError": {
+            "type": "object",
+            "properties": {
+                "message": {
+                    "type": "string"
+                }
+            }
+        },
+        "server.PaginatedAttachmentOverviews": {
+            "type": "object",
+            "properties": {
+                "data": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/guardrails.AttachmentOverview"
+                    }
+                },
+                "meta": {
+                    "$ref": "#/definitions/guardrails.Meta"
+                }
+            }
+        },
+        "server.PaginatedBundles": {
+            "type": "object",
+            "properties": {
+                "data": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/guardrails.Bundle"
+                    }
+                },
+                "meta": {
+                    "$ref": "#/definitions/guardrails.Meta"
+                }
+            }
+        },
+        "server.PaginatedEvidenceTemplates": {
+            "type": "object",
+            "properties": {
+                "data": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/guardrails.EvidenceTemplate"
+                    }
+                },
+                "meta": {
+                    "$ref": "#/definitions/guardrails.Meta"
+                }
+            }
+        },
+        "server.PaginatedFindings": {
+            "type": "object",
+            "properties": {
+                "data": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/guardrails.Finding"
+                    }
+                },
+                "meta": {
+                    "$ref": "#/definitions/guardrails.Meta"
+                }
+            }
+        },
+        "server.PaginatedPolicyOverviews": {
+            "type": "object",
+            "properties": {
+                "data": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/guardrails.PolicyOverview"
+                    }
+                },
+                "meta": {
+                    "$ref": "#/definitions/guardrails.Meta"
+                }
+            }
+        },
+        "server.PolicyDefinition": {
+            "type": "object",
+            "required": [
+                "definition"
+            ],
+            "properties": {
+                "definition": {
+                    "type": "string"
+                }
+            }
+        },
+        "server.SubmitResultToPolicy": {
+            "type": "object",
+            "required": [
+                "bundleId",
+                "content",
+                "evidenceId",
+                "policyId"
+            ],
+            "properties": {
+                "bundleId": {
+                    "type": "string"
+                },
+                "content": {
+                    "type": "object"
+                },
+                "evidenceId": {
+                    "type": "string"
+                },
+                "policyId": {
+                    "type": "string"
+                }
+            }
+        },
+        "server.UpdateApprovalReq": {
+            "type": "object",
+            "required": [
+                "approvalId",
+                "approvers",
+                "policyId"
+            ],
+            "properties": {
+                "approvalId": {
+                    "type": "string"
+                },
+                "approvers": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/guardrails.SelectedApprover"
+                    }
+                },
+                "policyId": {
+                    "type": "string"
+                }
+            }
+        },
+        "server.UpdateBundle": {
+            "type": "object",
+            "properties": {
+                "stage": {
+                    "type": "string"
+                },
+                "state": {
+                    "$ref": "#/definitions/guardrails.BundleState"
+                }
+            }
+        },
+        "server.UpdateEvidenceTemplateStatus": {
+            "type": "object",
+            "required": [
+                "status"
+            ],
+            "properties": {
+                "status": {
+                    "$ref": "#/definitions/guardrails.EvidenceStatus"
+                }
+            }
+        },
+        "server.UpdatePolicy": {
+            "type": "object",
+            "required": [
+                "status"
+            ],
+            "properties": {
+                "status": {
+                    "$ref": "#/definitions/guardrails.PolicyStatus"
+                }
+            }
+        },
+        "server.UpdatePolicyRequest": {
+            "type": "object",
+            "properties": {
+                "description": {
+                    "type": "string"
+                },
+                "labels": {
+                    "type": "object"
+                },
+                "name": {
+                    "type": "string"
+                }
+            }
+        },
+        "server.UpsertDraftsRequest": {
+            "type": "object",
+            "required": [
+                "bundleId",
+                "content",
+                "evidenceId"
+            ],
+            "properties": {
+                "bundleId": {
+                    "type": "string"
+                },
+                "content": {
+                    "type": "object"
+                },
+                "evidenceId": {
+                    "type": "string"
+                }
+            }
+        },
+        "server.UpsertEvidenceTemplate": {
+            "type": "object",
+            "required": [
+                "name"
+            ],
+            "properties": {
+                "description": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                }
+            }
+        },
+        "server.UpsertPolicyRequest": {
+            "type": "object",
+            "required": [
+                "labels",
+                "name"
+            ],
+            "properties": {
+                "description": {
+                    "type": "string"
+                },
+                "labels": {
+                    "type": "object"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "parentID": {
+                    "type": "string"
+                }
+            }
+        }
+    },
+    "securityDefinitions": {
+        "ApiKeyAuth": {
+            "type": "apiKey",
+            "name": "X-Domino-Api-Key",
+            "in": "header"
+        },
+        "BearerAuthentication": {
+            "type": "apiKey",
+            "name": "Authorization",
+            "in": "header"
+        }
+    }
+}
