@@ -130,12 +130,7 @@ $ mvn -Dtests="any()" -DexcludeTests="" test
 
 # Release
 
-- Run `mvn versions:set -DgenerateBackupPoms=false -DnewVersion=5.5.1` to update all modules versions
-- Commit and push the changes to GitHub
-- In GitHub create a new release titled `5.5.1` to tag this release
-- Run `mvn clean deploy -Prelease` to push to Maven Central
-
-(Replace `5.5.1` in the steps above with the actual SEMVER release number.)
+Run in `GitHub Actions` the `Release` workflow and enter version number and next SNAPSHOT number.
 
 # "Slim" Domino API
 This is a subset of the v4 API currently used by KSM. The endpoints used are listed in `src/conf/domino-internal-api-usage.csv`. The `src/conf/slim-api.json` file is created from copying from the `src/conf/domino-openapi.json` file and filtering for the endpoints listed in the CSV. This can be regenerated and compiled using the following commands:
