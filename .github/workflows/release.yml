@@ -70,7 +70,7 @@ jobs:
           elif [ "$CURRENT_VERSION" != "${{ github.event.inputs.version }}" ]; then
             echo "Setting version to ${{ github.event.inputs.version }}"
             mvn versions:set -DgenerateBackupPoms=false -DnewVersion=${{ github.event.inputs.version }}
-            git add pom.xml "**/pom.xml"
+            git add pom.xml
             git commit -m "Release version ${{ github.event.inputs.version }}"
             git push origin "${{ github.ref_name }}"
           else
@@ -120,7 +120,7 @@ jobs:
           elif [ "$CURRENT_VERSION" != "${{ github.event.inputs.next_version }}" ]; then
             echo "Setting next version to ${{ github.event.inputs.next_version }}"
             mvn versions:set -DgenerateBackupPoms=false -DnewVersion=${{ github.event.inputs.next_version }}
-            git add pom.xml "**/pom.xml"
+            git add pom.xml
             git commit -m "Prepare for next development version"
             git push origin "${{ github.ref_name }}"
           else
