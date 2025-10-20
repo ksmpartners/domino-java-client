@@ -39,6 +39,8 @@ post,/v4,/jobs/restart
 post,/v4,/jobs/start
 post,/v4,/jobs/stop
 get,/v4,/modelManager/{modelVersionId}/logs
+post,/v4,/modelProducts/{modelProductId}/start
+post,/v4,/modelProducts/{modelProductId}/stop
 post,/v4,/projectManagement/{jobId}/linkJobToGoal
 post,/v4,/projectManagement/{jobId}/unlinkJobFromGoal
 get,/v4,/projectManagement/{projectId}/goals
