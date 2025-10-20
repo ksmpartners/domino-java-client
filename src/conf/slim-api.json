@@ -88,6 +88,10 @@
         ],
         "type": "string"
       },
+      "DominoId": {
+        "pattern": "^[0-9a-f]{24}$",
+        "type": "string"
+      },
       "Information": {
         "properties": {
           "unit": {
@@ -3239,6 +3243,46 @@
         "required": [
           "name"
         ]
+      },
+      "domino.nucleus.modelproduct.models.StartParams": {
+        "properties": {
+          "commitId": {
+            "nullable": true,
+            "type": "string"
+          },
+          "datasetConfigName": {
+            "nullable": true,
+            "type": "string"
+          },
+          "environmentId": {
+            "nullable": true,
+            "pattern": "^[0-9a-f]{24}$",
+            "type": "string"
+          },
+          "externalVolumeMountIds": {
+            "items": {
+              "pattern": "^[0-9a-f]{24}$",
+              "type": "string"
+            },
+            "nullable": true,
+            "type": "array"
+          },
+          "hardwareTierId": {
+            "nullable": true,
+            "type": "string"
+          },
+          "mainRepoGitRef": {
+            "$ref": "#/components/schemas/domino.projects.api.repositories.ReferenceDTO",
+            "nullable": true
+          },
+          "netAppVolumeIds": {
+            "items": {
+              "type": "string"
+            },
+            "nullable": true,
+            "type": "array"
+          }
+        }
       },
       "domino.nucleus.project.models.Collaborator": {
         "properties": {
@@ -7119,6 +7163,115 @@
         "summary": "download logs for a model for a given time range",
         "tags": [
           "ModelManager"
+        ]
+      }
+    },
+    "/modelProducts/{modelProductId}/start": {
+      "post": {
+        "operationId": "startModelProduct",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "modelProductId",
+            "required": true,
+            "schema": {
+              "pattern": "^[0-9a-f]{24}$",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/domino.nucleus.modelproduct.models.StartParams"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DominoId"
+                }
+              }
+            },
+            "description": "success"
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalError"
+          }
+        },
+        "summary": "starts a runnable ModelProduct",
+        "tags": [
+          "Model Products"
+        ]
+      }
+    },
+    "/modelProducts/{modelProductId}/stop": {
+      "post": {
+        "operationId": "stopModelProduct",
+        "parameters": [
+          {
+            "description": "Domino id of the model product (app)",
+            "in": "path",
+            "name": "modelProductId",
+            "required": true,
+            "schema": {
+              "pattern": "^[0-9a-f]{24}$",
+              "type": "string"
+            }
+          },
+          {
+            "description": "Stop an app regardless of its status",
+            "in": "query",
+            "name": "force",
+            "required": false,
+            "schema": {
+              "nullable": true,
+              "type": "boolean"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DominoId"
+                }
+              }
+            },
+            "description": "success"
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalError"
+          }
+        },
+        "summary": "stops a runnable ModelProduct",
+        "tags": [
+          "Model Products"
         ]
       }
     },
