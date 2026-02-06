@@ -6635,7 +6635,7 @@
     },
     "/gateway/projects": {
       "get": {
-        "operationId": "list",
+        "operationId": "listProjects",
         "parameters": [
           {
             "description": "The relationship between the current user and the projects to be returned",
