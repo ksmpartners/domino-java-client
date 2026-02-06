@@ -437,6 +437,7 @@
               "Stopped",
               "Scheduled",
               "Pulling",
+              "Faulty",
               "Succeeded",
               "StopAndDiscardRequested",
               "Building",
@@ -486,6 +487,24 @@
           "email",
           "roles"
         ]
+      },
+      "domino.common.user.OrganizationMembership": {
+        "properties": {
+          "id": {
+            "description": "Organization id",
+            "pattern": "^[0-9a-f]{24}$",
+            "type": "string"
+          },
+          "name": {
+            "description": "Organization name",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "name"
+        ],
+        "type": "object"
       },
       "domino.common.user.Person": {
         "properties": {
@@ -544,7 +563,7 @@
         ],
         "type": "object"
       },
-      "domino.common.user.PersonWithRoles": {
+      "domino.common.user.PersonWithAnnotations": {
         "properties": {
           "avatarUrl": {
             "description": "Url of the person's avatar",
@@ -581,6 +600,12 @@
             "description": "Person last name",
             "type": "string"
           },
+          "organizations": {
+            "items": {
+              "$ref": "#/components/schemas/domino.common.user.OrganizationMembership"
+            },
+            "type": "array"
+          },
           "phoneNumber": {
             "description": "Person phone number",
             "nullable": true,
@@ -604,7 +629,8 @@
           "userName",
           "avatarUrl",
           "id",
-          "roles"
+          "roles",
+          "organizations"
         ],
         "type": "object"
       },
@@ -788,6 +814,9 @@
           "isLocal": {
             "type": "boolean"
           },
+          "isLocked": {
+            "type": "boolean"
+          },
           "name": {
             "type": "string"
           },
@@ -795,7 +824,7 @@
             "type": "string"
           },
           "status": {
-            "$ref": "#/components/schemas/domino.dataplane.DataPlaneStatus"
+            "$ref": "#/components/schemas/domino.dataplane.DataPlaneStatusDto"
           }
         },
         "required": [
@@ -807,15 +836,20 @@
           "status",
           "isHealthy",
           "isArchived",
-          "isFileSyncDisabled"
+          "isFileSyncDisabled",
+          "isLocked"
         ]
       },
-      "domino.dataplane.DataPlaneStatus": {
+      "domino.dataplane.DataPlaneStatusDto": {
         "properties": {
           "agentVersion": {
             "type": "string"
           },
           "catalogVersion": {
+            "type": "string"
+          },
+          "kubernetesVersion": {
+            "nullable": true,
             "type": "string"
           },
           "lastHeartbeatTimestamp": {
@@ -1338,6 +1372,7 @@
           "Active",
           "Pending"
         ],
+        "properties": {},
         "type": "string"
       },
       "domino.datasetrw.api.DatasetRwSnapshotDto": {
@@ -1725,7 +1760,10 @@
               "NoAuth",
               "ClientIdSecret",
               "OAuthToken",
-              "APIKey"
+              "APIKey",
+              "CertAuth",
+              "KeyPair",
+              "CustomDSN"
             ],
             "type": "string"
           },
@@ -1753,6 +1791,7 @@
               "DatabricksConfig",
               "DatasetConfig",
               "DB2Config",
+              "DB2NativeConfig",
               "DruidConfig",
               "GCSConfig",
               "GenericJDBCConfig",
@@ -1778,7 +1817,8 @@
               "TabularS3GlueConfig",
               "TeradataConfig",
               "TrinoConfig",
-              "VerticaConfig"
+              "VerticaConfig",
+              "NetAppVolumeConfig"
             ],
             "type": "string"
           },
@@ -1972,6 +2012,16 @@
           "capacityLevel"
         ]
       },
+      "domino.hardwaretier.api.HardwareTierCapacityTypeRestrictionsDto": {
+        "properties": {
+          "enableSpotInstances": {
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "enableSpotInstances"
+        ]
+      },
       "domino.hardwaretier.api.HardwareTierComputeClusterRestrictionsDto": {
         "properties": {
           "restrictToDask": {
@@ -2005,6 +2055,10 @@
           },
           "capacity": {
             "$ref": "#/components/schemas/domino.hardwaretier.api.HardwareTierCapacity",
+            "nullable": true
+          },
+          "capacityTypeRestrictions": {
+            "$ref": "#/components/schemas/domino.hardwaretier.api.HardwareTierCapacityTypeRestrictionsDto",
             "nullable": true
           },
           "centsPerMinute": {
@@ -2456,17 +2510,26 @@
       },
       "domino.jobs.interface.DependentNetAppVolumeMount": {
         "properties": {
+          "otherMounts": {
+            "items": {
+              "$ref": "#/components/schemas/domino.jobs.interface.VolumeMount"
+            },
+            "nullable": true,
+            "type": "array"
+          },
           "pvcName": {
             "type": "string"
           },
           "snapshotMount": {
-            "$ref": "#/components/schemas/domino.jobs.interface.VolumeMount"
+            "$ref": "#/components/schemas/domino.jobs.interface.VolumeMount",
+            "nullable": true
           },
           "volumeId": {
             "type": "string"
           },
           "volumeMount": {
-            "$ref": "#/components/schemas/domino.jobs.interface.VolumeMount"
+            "$ref": "#/components/schemas/domino.jobs.interface.VolumeMount",
+            "nullable": true
           },
           "volumeName": {
             "type": "string"
@@ -2475,9 +2538,7 @@
         "required": [
           "pvcName",
           "volumeId",
-          "volumeName",
-          "volumeMount",
-          "snapshotMount"
+          "volumeName"
         ]
       },
       "domino.jobs.interface.DependentProject": {
@@ -2748,6 +2809,9 @@
           "snapshotDatasetsOnCompletion": {
             "type": "boolean"
           },
+          "snapshotNetAppVolumesOnCompletion": {
+            "type": "boolean"
+          },
           "stageTime": {
             "$ref": "#/components/schemas/domino.jobs.interface.StageTime"
           },
@@ -2798,7 +2862,8 @@
           "goalIds",
           "dependentExternalVolumeMounts",
           "dependentNetAppVolumeMounts",
-          "snapshotDatasetsOnCompletion"
+          "snapshotDatasetsOnCompletion",
+          "snapshotNetAppVolumesOnCompletion"
         ]
       },
       "domino.jobs.interface.JobProblemSuggestion": {
@@ -3144,6 +3209,14 @@
       },
       "domino.jobs.web.StartJobRequest": {
         "properties": {
+          "capacityType": {
+            "enum": [
+              "on-demand",
+              "spot"
+            ],
+            "nullable": true,
+            "type": "string"
+          },
           "commandToRun": {
             "type": "string"
           },
@@ -3224,6 +3297,10 @@
             "nullable": true,
             "type": "boolean"
           },
+          "snapshotNetAppVolumesOnCompletion": {
+            "nullable": true,
+            "type": "boolean"
+          },
           "title": {
             "nullable": true,
             "type": "string"
@@ -3246,6 +3323,10 @@
       },
       "domino.nucleus.modelproduct.models.StartParams": {
         "properties": {
+          "bundleId": {
+            "nullable": true,
+            "type": "string"
+          },
           "commitId": {
             "nullable": true,
             "type": "string"
@@ -4497,7 +4578,6 @@
                 "ProjectSearchPreview",
                 "BrowseReadFiles",
                 "EditTags",
-                "RunLauncher",
                 "RunLaunchers",
                 "ViewRuns"
               ],
@@ -4509,7 +4589,11 @@
             "type": "string"
           },
           "details": {
-            "$ref": "#/components/schemas/domino.server.projects.api.ProjectGatewayOverviewDetails"
+            "$ref": "#/components/schemas/domino.server.projects.api.ProjectGatewayOverviewDetails",
+            "updatedAt": {
+              "format": "date-time",
+              "type": "string"
+            }
           },
           "enabledGitRepositories": {
             "items": {
@@ -5130,7 +5214,7 @@
             "$ref": "#/components/responses/InternalError"
           }
         },
-        "summary": "Gets a zipfile containing useful information about an executionId",
+        "summary": "Gets a zipfile containing useful information about an executionId, FIXME should this path be /executions/executionId/supportbundle",
         "tags": [
           "Admin"
         ]
@@ -5758,9 +5842,9 @@
             "required": false,
             "schema": {
               "items": {
-                "pattern": "^[0-9a-f]{24}$",
                 "type": "string"
               },
+              "pattern": "^[0-9a-f]{24}$",
               "type": "array"
             }
           }
@@ -5800,7 +5884,7 @@
     },
     "/datasetrw/snapshot/{snapshotId}": {
       "delete": {
-        "operationId": "deleteDatasetSnapshot",
+        "operationId": "deleteSnapshot",
         "parameters": [
           {
             "description": "Snapshot ID",
@@ -5896,7 +5980,7 @@
         ]
       },
       "put": {
-        "operationId": "updateDatasetSnapshotStatus",
+        "operationId": "updateSnapshotStatus",
         "parameters": [
           {
             "description": "Id of the dataset snapshot to be updated",
@@ -6443,7 +6527,7 @@
     },
     "/datasource/{dataSourceId}/projects/{projectId}": {
       "delete": {
-        "operationId": "removeProjectFromDataSource",
+        "operationId": "removeProject",
         "parameters": [
           {
             "description": "Data source Id",
@@ -6496,7 +6580,7 @@
         ]
       },
       "post": {
-        "operationId": "addProjectToDataSource",
+        "operationId": "addProject",
         "parameters": [
           {
             "description": "Data source Id",
@@ -6588,6 +6672,16 @@
               "format": "int32",
               "nullable": true,
               "type": "integer"
+            }
+          },
+          {
+            "description": "include the public and searchable projects in response. Only supported when filtering by relationship OwnedAndCollaborating.",
+            "in": "query",
+            "name": "includeSearchableAndPublic",
+            "required": false,
+            "schema": {
+              "default": false,
+              "type": "boolean"
             }
           }
         ],
@@ -6696,7 +6790,7 @@
             "schema": {
               "format": "int32",
               "nullable": true,
-              "type": "integer"
+              "type": "number"
             }
           }
         ],
@@ -7168,7 +7262,7 @@
     },
     "/modelProducts/{modelProductId}/start": {
       "post": {
-        "operationId": "startModelProduct",
+        "operationId": "start",
         "parameters": [
           {
             "in": "path",
@@ -7222,7 +7316,7 @@
     },
     "/modelProducts/{modelProductId}/stop": {
       "post": {
-        "operationId": "stopModelProduct",
+        "operationId": "stop",
         "parameters": [
           {
             "description": "Domino id of the model product (app)",
@@ -7335,7 +7429,7 @@
     },
     "/projectManagement/{jobId}/unlinkJobFromGoal": {
       "post": {
-        "operationId": "unlinkManageJobFromGoal",
+        "operationId": "unlinkJobFromGoal",
         "parameters": [
           {
             "in": "path",
@@ -8664,7 +8758,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/domino.common.user.PersonWithRoles"
+                  "$ref": "#/components/schemas/domino.common.user.PersonWithAnnotations"
                 }
               }
             },
