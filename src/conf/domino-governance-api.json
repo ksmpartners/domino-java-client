@@ -97,6 +97,48 @@
                         "description": "Filter by identifier source",
                         "name": "identifier.source",
                         "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Filter by identifier name",
+                        "name": "identifier.name",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Filter by identifier version",
+                        "name": "identifier.version",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Filter by identifier volumeId",
+                        "name": "identifier.volumeId",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Filter by identifier artifactId",
+                        "name": "identifier.artifactId",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Filter by identifier executionName",
+                        "name": "identifier.executionName",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Filter by identifier executionWorkflowName",
+                        "name": "identifier.executionWorkflowName",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Filter by identifier executionWorkflowVersion",
+                        "name": "identifier.executionWorkflowVersion",
+                        "in": "query"
                     }
                 ],
                 "responses": {
@@ -187,6 +229,16 @@
                         "collectionFormat": "multi",
                         "description": "Policy ID",
                         "name": "policy_id",
+                        "in": "query"
+                    },
+                    {
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        },
+                        "collectionFormat": "multi",
+                        "description": "ID",
+                        "name": "id",
                         "in": "query"
                     }
                 ],
@@ -281,6 +333,49 @@
                         "description": "Internal Server Error",
                         "schema": {
                             "$ref": "#/definitions/server.HTTPError"
+                        }
+                    }
+                }
+            }
+        },
+        "/bundles/bulk-update": {
+            "post": {
+                "description": "Bulk update bundles",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "bundles"
+                ],
+                "summary": "Bulk update bundles",
+                "parameters": [
+                    {
+                        "description": "Bulk update requests for bundles",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/server.BulkUpdateRequest"
+                            }
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/server.BulkUpdateResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/server.BulkUpdateResponse"
                         }
                     }
                 }
@@ -462,6 +557,109 @@
                 }
             }
         },
+        "/bundles/{id}/approvals": {
+            "get": {
+                "description": "Get bundle approvals",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "bundles"
+                ],
+                "summary": "Get bundle approvals",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Bundle ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/guardrails.Approval"
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/server.HTTPError"
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden",
+                        "schema": {
+                            "$ref": "#/definitions/server.HTTPError"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/server.HTTPError"
+                        }
+                    }
+                }
+            }
+        },
+        "/bundles/{id}/archive-endpoints": {
+            "post": {
+                "description": "Archive all monitored models for a bundle. This is typically done when a bundle is archived.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "bundles"
+                ],
+                "summary": "Archive all monitored models for a bundle",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "ID of the bundle whose monitored models are to be archived",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/server.HTTPError"
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden",
+                        "schema": {
+                            "$ref": "#/definitions/server.HTTPError"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/server.HTTPError"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/server.HTTPError"
+                        }
+                    }
+                }
+            }
+        },
         "/bundles/{id}/attachments": {
             "post": {
                 "description": "Create new attachment",
@@ -602,7 +800,7 @@
         },
         "/bundles/{id}/findings": {
             "get": {
-                "description": "List ListFindings",
+                "description": "List Findings",
                 "consumes": [
                     "application/json"
                 ],
@@ -612,7 +810,7 @@
                 "tags": [
                     "findings"
                 ],
-                "summary": "List ListFindings",
+                "summary": "List Findings",
                 "parameters": [
                     {
                         "type": "integer",
@@ -650,6 +848,12 @@
                         "description": "Status",
                         "name": "status",
                         "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Policy ID",
+                        "name": "policy_id",
+                        "in": "query"
                     }
                 ],
                 "responses": {
@@ -667,6 +871,139 @@
                     },
                     "403": {
                         "description": "Forbidden",
+                        "schema": {
+                            "$ref": "#/definitions/server.HTTPError"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/server.HTTPError"
+                        }
+                    }
+                }
+            }
+        },
+        "/bundles/{id}/gates": {
+            "get": {
+                "description": "Get bundle gates",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "bundles"
+                ],
+                "summary": "Get bundle gates",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Bundle ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/guardrails.Gate"
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/server.HTTPError"
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden",
+                        "schema": {
+                            "$ref": "#/definitions/server.HTTPError"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/server.HTTPError"
+                        }
+                    },
+                    "409": {
+                        "description": "Conflict",
+                        "schema": {
+                            "$ref": "#/definitions/server.HTTPError"
+                        }
+                    },
+                    "423": {
+                        "description": "Locked",
+                        "schema": {
+                            "$ref": "#/definitions/server.HTTPError"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/server.HTTPError"
+                        }
+                    }
+                }
+            }
+        },
+        "/bundles/{id}/register-endpoint": {
+            "post": {
+                "description": "Add monitor model entry and set it as governed",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "bundles"
+                ],
+                "summary": "Set monitored model as governed",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "ID of the bundle to which the monitored endpoint belongs",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "Endpoint to govern",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/guardrails.RegisterMonitorModelRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/guardrails.MonitorModel"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/server.HTTPError"
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden",
+                        "schema": {
+                            "$ref": "#/definitions/server.HTTPError"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
                         "schema": {
                             "$ref": "#/definitions/server.HTTPError"
                         }
@@ -729,6 +1066,147 @@
                     },
                     "423": {
                         "description": "Locked",
+                        "schema": {
+                            "$ref": "#/definitions/server.HTTPError"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/server.HTTPError"
+                        }
+                    }
+                }
+            }
+        },
+        "/bundles/{id}/stages/{stageID}": {
+            "patch": {
+                "description": "Update bundle stage by ID",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "bundles"
+                ],
+                "summary": "Update bundle stage by ID",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "ID of bundle to update",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "ID of stage to update",
+                        "name": "stageID",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "Bundle stage to update",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/server.UpdateBundleStage"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/guardrails.BundleStage"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/server.HTTPError"
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden",
+                        "schema": {
+                            "$ref": "#/definitions/server.HTTPError"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/server.HTTPError"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/server.HTTPError"
+                        }
+                    }
+                }
+            }
+        },
+        "/bundles/{id}/update-endpoint/{endpointID}": {
+            "put": {
+                "description": "Update monitored model entry",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "bundles"
+                ],
+                "summary": "Update monitored model entry",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "ID of the bundle to which the monitored endpoint belongs",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "ID of the monitored endpoint",
+                        "name": "endpointID",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "Changes to the monitored model",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/guardrails.UpdateMonitorModelRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/server.HTTPError"
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden",
+                        "schema": {
+                            "$ref": "#/definitions/server.HTTPError"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
                         "schema": {
                             "$ref": "#/definitions/server.HTTPError"
                         }
@@ -823,6 +1301,18 @@
                         "name": "bundleId",
                         "in": "query",
                         "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Policy ID",
+                        "name": "policyId",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Policy Version ID",
+                        "name": "policyVersionId",
+                        "in": "query"
                     }
                 ],
                 "responses": {
@@ -2080,6 +2570,86 @@
             }
         },
         "/results": {
+            "get": {
+                "description": "List results",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "results"
+                ],
+                "summary": "List results",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Bundle ID",
+                        "name": "bundleID",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Policy ID",
+                        "name": "policyID",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Policy Version ID",
+                        "name": "policyVersionID",
+                        "in": "query"
+                    },
+                    {
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        },
+                        "collectionFormat": "multi",
+                        "description": "Artifact IDs",
+                        "name": "artifactID",
+                        "in": "query"
+                    },
+                    {
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        },
+                        "collectionFormat": "multi",
+                        "description": "Created By IDs",
+                        "name": "createdBy.id",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/server.ListResults"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/server.HTTPError"
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden",
+                        "schema": {
+                            "$ref": "#/definitions/server.HTTPError"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/server.HTTPError"
+                        }
+                    }
+                }
+            },
             "post": {
                 "description": "Create new results. If the results have impact on classification, please use the api /rpc/submit-result-to-policy.",
                 "consumes": [
@@ -2170,6 +2740,18 @@
                         "description": "Artifact ID",
                         "name": "artifactID",
                         "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Policy ID",
+                        "name": "policyID",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Policy Version ID",
+                        "name": "policyVersionID",
+                        "in": "query"
                     }
                 ],
                 "responses": {
@@ -2196,6 +2778,125 @@
                     },
                     "404": {
                         "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/server.HTTPError"
+                        }
+                    }
+                }
+            }
+        },
+        "/rpc/add-policies-to-bundle": {
+            "post": {
+                "description": "Add a policy to govern a bundle",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "bundles"
+                ],
+                "summary": "Add a policy to govern a bundle",
+                "parameters": [
+                    {
+                        "description": "Request to add policies to a bundle",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/server.AddPoliciesToBundle"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/guardrails.Bundle"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/server.HTTPError"
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden",
+                        "schema": {
+                            "$ref": "#/definitions/server.HTTPError"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/server.HTTPError"
+                        }
+                    }
+                }
+            }
+        },
+        "/rpc/analyze-monitor-model": {
+            "post": {
+                "description": "[BETA] Analyze model monitor metrics. Endpoint is subject to change, should only be used internally.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "rpc"
+                ],
+                "summary": "[BETA] Analyze model monitor metrics",
+                "parameters": [
+                    {
+                        "description": "The monitor model request for monitor metric field",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/server.AnalyzeModelRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/guardrails.MonitorChecksType"
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/server.HTTPError"
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden",
+                        "schema": {
+                            "$ref": "#/definitions/server.HTTPError"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/server.HTTPError"
+                        }
+                    },
+                    "409": {
+                        "description": "Conflict",
+                        "schema": {
+                            "$ref": "#/definitions/server.HTTPError"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
                         "schema": {
                             "$ref": "#/definitions/server.HTTPError"
                         }
@@ -2644,9 +3345,114 @@
                     }
                 }
             }
+        },
+        "/rpc/update-bundle-policy": {
+            "patch": {
+                "description": "Update the policy of a bundle",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "bundles"
+                ],
+                "summary": "Update the policy of a bundle",
+                "parameters": [
+                    {
+                        "description": "request to update a bundle policy",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/guardrails.UpdateBundlePolicyRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/guardrails.Bundle"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/server.HTTPError"
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden",
+                        "schema": {
+                            "$ref": "#/definitions/server.HTTPError"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/server.HTTPError"
+                        }
+                    },
+                    "409": {
+                        "description": "Conflict",
+                        "schema": {
+                            "$ref": "#/definitions/server.HTTPError"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/server.HTTPError"
+                        }
+                    }
+                }
+            }
         }
     },
     "definitions": {
+        "guardrails.Action": {
+            "type": "string",
+            "enum": [
+                "update",
+                "deactivate"
+            ],
+            "x-enum-varnames": [
+                "UpdateAction",
+                "DeactivateAction"
+            ]
+        },
+        "guardrails.AlertTracking": {
+            "type": "object",
+            "required": [
+                "approvalId",
+                "approver",
+                "artifactId",
+                "assignee",
+                "evidenceId"
+            ],
+            "properties": {
+                "approvalId": {
+                    "type": "string"
+                },
+                "approver": {
+                    "$ref": "#/definitions/guardrails.FindingUser"
+                },
+                "artifactId": {
+                    "type": "string"
+                },
+                "assignee": {
+                    "$ref": "#/definitions/guardrails.FindingUser"
+                },
+                "evidenceId": {
+                    "type": "string"
+                },
+                "meta": {
+                    "$ref": "#/definitions/guardrails.FindingMeta"
+                }
+            }
+        },
         "guardrails.Approval": {
             "type": "object",
             "properties": {
@@ -2663,6 +3469,12 @@
                     "type": "string"
                 },
                 "name": {
+                    "type": "string"
+                },
+                "policyId": {
+                    "type": "string"
+                },
+                "policyVersionId": {
                     "type": "string"
                 },
                 "stageApprovalId": {
@@ -2722,7 +3534,8 @@
                 "RequestApproved",
                 "RequestConditionalApproved",
                 "RequestRejected",
-                "FindingsApproved"
+                "FindingsApproved",
+                "PolicyReactivated"
             ],
             "x-enum-varnames": [
                 "RequestSubmitted",
@@ -2730,7 +3543,8 @@
                 "RequestApproved",
                 "RequestConditionalApproved",
                 "RequestRejected",
-                "FindingsApproved"
+                "FindingsApproved",
+                "PolicyReactivated"
             ]
         },
         "guardrails.ApprovalStatus": {
@@ -2928,12 +3742,18 @@
             "enum": [
                 "ModelVersion",
                 "Report",
-                "DatasetSnapshotFile"
+                "DatasetSnapshotFile",
+                "Endpoint",
+                "NetAppVolumeSnapshotFile",
+                "FlowArtifact"
             ],
             "x-enum-varnames": [
                 "ModelVersion",
                 "Report",
-                "DatasetSnapshotFile"
+                "DatasetSnapshotFile",
+                "Endpoint",
+                "NetAppVolumeSnapshotFile",
+                "FlowArtifact"
             ]
         },
         "guardrails.BulkUpdateFindingRequest": {
@@ -2974,12 +3794,6 @@
                 "state"
             ],
             "properties": {
-                "additionalPolicyIds": {
-                    "type": "array",
-                    "items": {
-                        "type": "string"
-                    }
-                },
                 "attachments": {
                     "type": "array",
                     "items": {
@@ -2987,6 +3801,7 @@
                     }
                 },
                 "classificationValue": {
+                    "description": "The classification value of the primary policy",
                     "type": "string"
                 },
                 "commentsCount": {
@@ -2998,16 +3813,33 @@
                 "createdBy": {
                     "type": "object"
                 },
+                "gates": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/guardrails.Gate"
+                    }
+                },
                 "id": {
                     "type": "string"
                 },
                 "name": {
                     "type": "string"
                 },
+                "policies": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/guardrails.BundlePolicy"
+                    }
+                },
                 "policyId": {
+                    "description": "The ID of the primary policy",
                     "type": "string"
                 },
                 "policyName": {
+                    "type": "string"
+                },
+                "policyVersionId": {
+                    "description": "The version of the primary policy",
                     "type": "string"
                 },
                 "projectId": {
@@ -3020,6 +3852,7 @@
                     "type": "string"
                 },
                 "stage": {
+                    "description": "The stage of the primary policy",
                     "type": "string"
                 },
                 "stageApprovals": {
@@ -3028,8 +3861,92 @@
                         "$ref": "#/definitions/guardrails.StageApproval"
                     }
                 },
+                "stageAssignee": {
+                    "description": "The assignee to the stage of the primary policy",
+                    "allOf": [
+                        {
+                            "$ref": "#/definitions/guardrails.BundleStageAssignee"
+                        }
+                    ]
+                },
+                "stages": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/guardrails.BundleStage"
+                    }
+                },
                 "state": {
                     "$ref": "#/definitions/guardrails.BundleState"
+                }
+            }
+        },
+        "guardrails.BundlePolicy": {
+            "type": "object",
+            "properties": {
+                "bundleId": {
+                    "type": "string"
+                },
+                "classificationValue": {
+                    "type": "string"
+                },
+                "createdAt": {
+                    "type": "string"
+                },
+                "deactivatedAt": {
+                    "type": "string"
+                },
+                "enforceSequentialOrder": {
+                    "type": "boolean"
+                },
+                "isPolicyArchived": {
+                    "type": "boolean"
+                },
+                "policyId": {
+                    "type": "string"
+                },
+                "policyName": {
+                    "type": "string"
+                },
+                "policyVersionId": {
+                    "type": "string"
+                },
+                "stage": {
+                    "type": "string"
+                }
+            }
+        },
+        "guardrails.BundleStage": {
+            "type": "object",
+            "properties": {
+                "assignedAt": {
+                    "type": "string"
+                },
+                "assignee": {
+                    "$ref": "#/definitions/guardrails.BundleStageAssignee"
+                },
+                "bundleId": {
+                    "type": "string"
+                },
+                "stage": {
+                    "$ref": "#/definitions/guardrails.Stage"
+                },
+                "stageId": {
+                    "type": "string"
+                }
+            }
+        },
+        "guardrails.BundleStageAssignee": {
+            "type": "object",
+            "required": [
+                "id",
+                "name"
+            ],
+            "properties": {
+                "id": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
                 }
             }
         },
@@ -3087,6 +4004,12 @@
                 "name": {
                     "type": "string"
                 },
+                "policyId": {
+                    "type": "string"
+                },
+                "policyVersionId": {
+                    "type": "string"
+                },
                 "stageApprovalId": {
                     "type": "string"
                 },
@@ -3116,6 +4039,12 @@
                 "bundle": {
                     "$ref": "#/definitions/guardrails.Bundle"
                 },
+                "bundleStages": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/guardrails.BundleStage"
+                    }
+                },
                 "commentsInfo": {
                     "$ref": "#/definitions/guardrails.CommentsInfo"
                 },
@@ -3129,6 +4058,7 @@
                     "$ref": "#/definitions/guardrails.FindingsInfo"
                 },
                 "isUserApprover": {
+                    "description": "Indicates if the current user is an approver for any of the approvals in this bundle policy",
                     "type": "boolean"
                 },
                 "policy": {
@@ -3234,6 +4164,9 @@
                 "policyId": {
                     "type": "string"
                 },
+                "policyVersionId": {
+                    "type": "string"
+                },
                 "scope": {
                     "$ref": "#/definitions/guardrails.EvidenceScope"
                 },
@@ -3254,6 +4187,16 @@
                 },
                 "id": {
                     "type": "string"
+                },
+                "required": {
+                    "type": "boolean"
+                },
+                "visibilityRule": {
+                    "type": "string"
+                },
+                "visible": {
+                    "description": "allows true, false or nil values (if nil, FE can decide to show everything)",
+                    "type": "boolean"
                 }
             }
         },
@@ -3365,6 +4308,9 @@
                     "type": "string"
                 },
                 "name": {
+                    "type": "string"
+                },
+                "policyId": {
                     "type": "string"
                 },
                 "required": {
@@ -3482,6 +4428,35 @@
                 }
             }
         },
+        "guardrails.Gate": {
+            "type": "object",
+            "properties": {
+                "bundleId": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "isOpen": {
+                    "type": "boolean"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "policyGateId": {
+                    "type": "string"
+                },
+                "reason": {
+                    "type": "string"
+                },
+                "resources": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/guardrails.RuleDefinition"
+                    }
+                }
+            }
+        },
         "guardrails.Meta": {
             "type": "object",
             "properties": {
@@ -3502,6 +4477,84 @@
                     "items": {
                         "$ref": "#/definitions/guardrails.Sorter"
                     }
+                }
+            }
+        },
+        "guardrails.ModelMonitorTimeline": {
+            "type": "object",
+            "properties": {
+                "date": {
+                    "type": "string"
+                },
+                "failCount": {
+                    "type": "integer"
+                },
+                "total": {
+                    "type": "integer"
+                }
+            }
+        },
+        "guardrails.MonitorChecksType": {
+            "type": "object",
+            "properties": {
+                "artifactId": {
+                    "type": "string"
+                },
+                "endTime": {
+                    "type": "string"
+                },
+                "endpointVersionId": {
+                    "type": "string"
+                },
+                "evidenceId": {
+                    "type": "string"
+                },
+                "metricTimeline": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/guardrails.ModelMonitorTimeline"
+                    }
+                },
+                "name": {
+                    "type": "string"
+                },
+                "startTime": {
+                    "type": "string"
+                }
+            }
+        },
+        "guardrails.MonitorModel": {
+            "type": "object",
+            "properties": {
+                "bundleId": {
+                    "type": "string"
+                },
+                "createdAt": {
+                    "type": "string"
+                },
+                "endpointVersionId": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "isGoverned": {
+                    "type": "boolean"
+                },
+                "lastFailedAt": {
+                    "type": "string"
+                },
+                "modelId": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "tracking": {
+                    "$ref": "#/definitions/guardrails.AlertTracking"
+                },
+                "updatedAt": {
+                    "type": "string"
                 }
             }
         },
@@ -3528,6 +4581,9 @@
                         "$ref": "#/definitions/guardrails.Approver"
                     }
                 },
+                "archived": {
+                    "type": "boolean"
+                },
                 "classificationArtifactMap": {
                     "type": "object",
                     "additionalProperties": {
@@ -3546,6 +4602,15 @@
                 "description": {
                     "type": "string"
                 },
+                "enforceSequentialOrder": {
+                    "type": "boolean"
+                },
+                "gates": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/guardrails.PolicyGate"
+                    }
+                },
                 "id": {
                     "type": "string"
                 },
@@ -3556,6 +4621,9 @@
                     "type": "string"
                 },
                 "parentId": {
+                    "type": "string"
+                },
+                "simpleClassificationQuestionId": {
                     "type": "string"
                 },
                 "stages": {
@@ -3575,9 +4643,35 @@
                 }
             }
         },
+        "guardrails.PolicyGate": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "policyId": {
+                    "type": "string"
+                },
+                "policyVersionId": {
+                    "type": "string"
+                },
+                "resources": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/guardrails.RuleDefinition"
+                    }
+                }
+            }
+        },
         "guardrails.PolicyOverview": {
             "type": "object",
             "properties": {
+                "archived": {
+                    "type": "boolean"
+                },
                 "createdBy": {
                     "type": "object"
                 },
@@ -3619,6 +4713,85 @@
                 "PolicyPublished",
                 "PolicyArchived"
             ]
+        },
+        "guardrails.RegisterMonitorModelRequest": {
+            "type": "object",
+            "required": [
+                "approvalID",
+                "approver",
+                "artifactID",
+                "assignee",
+                "endpointVersionID",
+                "evidenceID",
+                "isGoverned"
+            ],
+            "properties": {
+                "approvalID": {
+                    "type": "string"
+                },
+                "approver": {
+                    "$ref": "#/definitions/guardrails.FindingUser"
+                },
+                "artifactID": {
+                    "type": "string"
+                },
+                "assignee": {
+                    "$ref": "#/definitions/guardrails.FindingUser"
+                },
+                "endpointVersionID": {
+                    "type": "string"
+                },
+                "evidenceID": {
+                    "type": "string"
+                },
+                "isGoverned": {
+                    "type": "boolean"
+                },
+                "meta": {
+                    "$ref": "#/definitions/guardrails.FindingMeta"
+                }
+            }
+        },
+        "guardrails.ResourceType": {
+            "type": "string",
+            "enum": [
+                "Bundle",
+                "BundlePolicy",
+                "BundleStage"
+            ],
+            "x-enum-varnames": [
+                "BundleType",
+                "BundlePolicyType",
+                "BundleStageType"
+            ]
+        },
+        "guardrails.RuleAction": {
+            "type": "string",
+            "enum": [
+                "CreateApp",
+                "CreateEndpoint"
+            ],
+            "x-enum-varnames": [
+                "CreateApp",
+                "CreateEndpoint"
+            ]
+        },
+        "guardrails.RuleDefinition": {
+            "type": "object",
+            "required": [
+                "action"
+            ],
+            "properties": {
+                "action": {
+                    "$ref": "#/definitions/guardrails.RuleAction"
+                },
+                "failOpen": {
+                    "type": "boolean"
+                },
+                "parameters": {
+                    "type": "object"
+                }
+            }
         },
         "guardrails.SelectedApprover": {
             "type": "object",
@@ -3669,15 +4842,15 @@
                 },
                 "name": {
                     "type": "string"
+                },
+                "policyVersionId": {
+                    "type": "string"
                 }
             }
         },
         "guardrails.StageApproval": {
             "type": "object",
             "properties": {
-                "allowAdditionalApprovers": {
-                    "type": "boolean"
-                },
                 "approvers": {
                     "type": "array",
                     "items": {
@@ -3691,6 +4864,32 @@
                     "type": "string"
                 },
                 "name": {
+                    "type": "string"
+                }
+            }
+        },
+        "guardrails.UpdateBundlePolicyRequest": {
+            "type": "object",
+            "required": [
+                "bundleId",
+                "policyId"
+            ],
+            "properties": {
+                "bundleId": {
+                    "type": "string"
+                },
+                "isDeactivated": {
+                    "description": "if present, true to deactivate the bundle policy, false to activate the inactive bundle policy",
+                    "type": "boolean"
+                },
+                "policyId": {
+                    "type": "string"
+                },
+                "policyVersionId": {
+                    "type": "string"
+                },
+                "stage": {
+                    "description": "if present, update the stage for the bundle policy",
                     "type": "string"
                 }
             }
@@ -3730,6 +4929,144 @@
                 }
             }
         },
+        "guardrails.UpdateMonitorModelRequest": {
+            "type": "object",
+            "required": [
+                "isGoverned"
+            ],
+            "properties": {
+                "isGoverned": {
+                    "type": "boolean"
+                }
+            }
+        },
+        "server.APIError": {
+            "type": "object",
+            "properties": {
+                "action": {
+                    "$ref": "#/definitions/guardrails.Action"
+                },
+                "code": {
+                    "type": "string"
+                },
+                "details": {
+                    "$ref": "#/definitions/server.ErrorDetail"
+                },
+                "message": {
+                    "type": "string"
+                },
+                "resource": {
+                    "$ref": "#/definitions/server.ResourceRequest"
+                },
+                "status": {
+                    "type": "integer"
+                }
+            }
+        },
+        "server.AddPoliciesToBundle": {
+            "type": "object",
+            "required": [
+                "bundleId",
+                "policyIds"
+            ],
+            "properties": {
+                "bundleId": {
+                    "type": "string"
+                },
+                "policyIds": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                }
+            }
+        },
+        "server.AnalyzeModelRequest": {
+            "type": "object",
+            "required": [
+                "endpointVersionId",
+                "policyId"
+            ],
+            "properties": {
+                "artifactId": {
+                    "type": "string"
+                },
+                "endpointVersionId": {
+                    "type": "string"
+                },
+                "evidenceId": {
+                    "type": "string"
+                },
+                "lookbackDays": {
+                    "type": "integer"
+                },
+                "policyId": {
+                    "type": "string"
+                }
+            }
+        },
+        "server.AssigneeRequest": {
+            "type": "object",
+            "required": [
+                "id",
+                "name"
+            ],
+            "properties": {
+                "id": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                }
+            }
+        },
+        "server.BulkUpdateRequest": {
+            "type": "object",
+            "required": [
+                "action",
+                "resource",
+                "value"
+            ],
+            "properties": {
+                "action": {
+                    "$ref": "#/definitions/guardrails.Action"
+                },
+                "resource": {
+                    "$ref": "#/definitions/server.ResourceRequest"
+                },
+                "value": {
+                    "$ref": "#/definitions/server.BulkUpdateValueRequest"
+                }
+            }
+        },
+        "server.BulkUpdateResponse": {
+            "type": "object",
+            "properties": {
+                "error": {
+                    "$ref": "#/definitions/server.APIError"
+                },
+                "results": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/server.OperationResult"
+                    }
+                }
+            }
+        },
+        "server.BulkUpdateValueRequest": {
+            "type": "object",
+            "properties": {
+                "assignee": {
+                    "$ref": "#/definitions/server.AssigneeRequest"
+                },
+                "stage": {
+                    "$ref": "#/definitions/server.StageRequest"
+                },
+                "state": {
+                    "$ref": "#/definitions/server.StateRequest"
+                }
+            }
+        },
         "server.ComputePolicy": {
             "type": "object",
             "required": [
@@ -3742,6 +5079,77 @@
                 },
                 "policyId": {
                     "type": "string"
+                },
+                "policyVersionId": {
+                    "type": "string"
+                }
+            }
+        },
+        "server.ComputedFinding": {
+            "type": "object",
+            "properties": {
+                "approvalId": {
+                    "type": "string"
+                },
+                "approvalName": {
+                    "type": "string"
+                },
+                "approver": {
+                    "$ref": "#/definitions/guardrails.FindingUser"
+                },
+                "artifactId": {
+                    "type": "string"
+                },
+                "assignee": {
+                    "$ref": "#/definitions/guardrails.FindingUser"
+                },
+                "bundleId": {
+                    "type": "string"
+                },
+                "createdAt": {
+                    "type": "string"
+                },
+                "createdBy": {
+                    "type": "object"
+                },
+                "description": {
+                    "type": "string"
+                },
+                "dueDate": {
+                    "type": "string"
+                },
+                "evidenceId": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "policyId": {
+                    "type": "string"
+                },
+                "policyName": {
+                    "type": "string"
+                },
+                "required": {
+                    "type": "boolean"
+                },
+                "severity": {
+                    "$ref": "#/definitions/guardrails.FindingSeverity"
+                },
+                "status": {
+                    "$ref": "#/definitions/guardrails.FindingStatus"
+                },
+                "taskId": {
+                    "type": "string"
+                },
+                "updatedAt": {
+                    "type": "string"
+                },
+                "updatedBy": {
+                    "type": "object"
                 }
             }
         },
@@ -3768,6 +5176,13 @@
                 "projectId"
             ],
             "properties": {
+                "additionalPolicyIds": {
+                    "description": "Optional, for additional policies to be included in the bundle",
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
                 "attachments": {
                     "type": "array",
                     "items": {
@@ -3778,6 +5193,7 @@
                     "type": "string"
                 },
                 "policyId": {
+                    "description": "Primary policy ID for the bundle",
                     "type": "string"
                 },
                 "projectId": {
@@ -3822,6 +5238,9 @@
                 },
                 "evidenceId": {
                     "type": "string"
+                },
+                "policyId": {
+                    "type": "string"
                 }
             }
         },
@@ -3836,6 +5255,17 @@
                     "type": "string"
                 },
                 "bundleId": {
+                    "type": "string"
+                }
+            }
+        },
+        "server.ErrorDetail": {
+            "type": "object",
+            "properties": {
+                "field": {
+                    "type": "string"
+                },
+                "value": {
                     "type": "string"
                 }
             }
@@ -3856,6 +5286,38 @@
             "properties": {
                 "message": {
                     "type": "string"
+                }
+            }
+        },
+        "server.ListResults": {
+            "type": "object",
+            "properties": {
+                "data": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/guardrails.ArtifactResult"
+                    }
+                },
+                "meta": {
+                    "$ref": "#/definitions/guardrails.Meta"
+                }
+            }
+        },
+        "server.OperationResult": {
+            "type": "object",
+            "properties": {
+                "action": {
+                    "$ref": "#/definitions/guardrails.Action"
+                },
+                "data": {},
+                "error": {
+                    "$ref": "#/definitions/server.APIError"
+                },
+                "resource": {
+                    "$ref": "#/definitions/server.ResourceRequest"
+                },
+                "status": {
+                    "type": "integer"
                 }
             }
         },
@@ -3907,7 +5369,7 @@
                 "data": {
                     "type": "array",
                     "items": {
-                        "$ref": "#/definitions/guardrails.Finding"
+                        "$ref": "#/definitions/server.ComputedFinding"
                     }
                 },
                 "meta": {
@@ -3937,6 +5399,57 @@
             "properties": {
                 "definition": {
                     "type": "string"
+                }
+            }
+        },
+        "server.ResourceIDsRequest": {
+            "type": "object",
+            "properties": {
+                "bundleID": {
+                    "type": "string"
+                },
+                "policyID": {
+                    "type": "string"
+                },
+                "stageID": {
+                    "type": "string"
+                }
+            }
+        },
+        "server.ResourceRequest": {
+            "type": "object",
+            "required": [
+                "ids",
+                "type"
+            ],
+            "properties": {
+                "ids": {
+                    "$ref": "#/definitions/server.ResourceIDsRequest"
+                },
+                "type": {
+                    "$ref": "#/definitions/guardrails.ResourceType"
+                }
+            }
+        },
+        "server.StageRequest": {
+            "type": "object",
+            "required": [
+                "name"
+            ],
+            "properties": {
+                "name": {
+                    "type": "string"
+                }
+            }
+        },
+        "server.StateRequest": {
+            "type": "object",
+            "required": [
+                "name"
+            ],
+            "properties": {
+                "name": {
+                    "$ref": "#/definitions/guardrails.BundleState"
                 }
             }
         },
@@ -3988,11 +5501,29 @@
         "server.UpdateBundle": {
             "type": "object",
             "properties": {
+                "policyId": {
+                    "description": "if present, update the primary policy of the bundle",
+                    "type": "string"
+                },
                 "stage": {
+                    "description": "if present, update the stage of the bundle's primary policy",
                     "type": "string"
                 },
                 "state": {
-                    "$ref": "#/definitions/guardrails.BundleState"
+                    "description": "if present, update the state of the bundle",
+                    "allOf": [
+                        {
+                            "$ref": "#/definitions/guardrails.BundleState"
+                        }
+                    ]
+                }
+            }
+        },
+        "server.UpdateBundleStage": {
+            "type": "object",
+            "properties": {
+                "assignee": {
+                    "$ref": "#/definitions/guardrails.BundleStageAssignee"
                 }
             }
         },
@@ -4047,6 +5578,9 @@
                     "type": "object"
                 },
                 "evidenceId": {
+                    "type": "string"
+                },
+                "policyId": {
                     "type": "string"
                 }
             }
