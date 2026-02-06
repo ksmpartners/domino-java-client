@@ -13653,7 +13653,7 @@
                   "type" : "number"
                 },
                 "timestamp" : {
-                  "format" : "epoch",
+                  "format" : "int64",
                   "type" : "number"
                 }
               },
@@ -13690,7 +13690,7 @@
             "type" : "string"
           },
           "timestamp" : {
-            "format" : "epoch",
+            "format" : "int64",
             "type" : "number"
           }
         },
@@ -13709,7 +13709,7 @@
             "$ref" : "#/components/schemas/AppInstanceAutoscalingInfo"
           },
           "createdAt" : {
-            "format" : "epoch",
+            "format" : "int64",
             "type" : "number"
           },
           "id" : {
@@ -13728,7 +13728,7 @@
       "AppInstanceSummaryResponse" : {
         "properties" : {
           "createdAt" : {
-            "format" : "epoch",
+            "format" : "int64",
             "type" : "number"
           },
           "describeUrl" : {
@@ -13814,7 +13814,7 @@
             "type" : "string"
           },
           "updatedAt" : {
-            "format" : "epoch",
+            "format" : "int64",
             "type" : "number"
           },
           "url" : {
@@ -13886,7 +13886,7 @@
             "type" : "string"
           },
           "updatedAt" : {
-            "format" : "epoch",
+            "format" : "int64",
             "type" : "number"
           },
           "url" : {
@@ -13921,7 +13921,7 @@
             "type" : "number"
           },
           "updatedAt" : {
-            "format" : "epoch",
+            "format" : "int64",
             "type" : "number"
           }
         },
@@ -14046,7 +14046,7 @@
             "type" : "string"
           },
           "createdAt" : {
-            "format" : "epoch",
+            "format" : "int64",
             "type" : "number"
           },
           "currentInstance" : {
@@ -14099,7 +14099,7 @@
             "type" : "array"
           },
           "updatedAt" : {
-            "format" : "epoch",
+            "format" : "int64",
             "type" : "number"
           },
           "vanityUrl" : {
@@ -14186,7 +14186,7 @@
             "type" : "integer"
           },
           "timestamp" : {
-            "format" : "epoch",
+            "format" : "int64",
             "type" : "number"
           },
           "users" : {
@@ -19577,7 +19577,7 @@
                   "type" : "number"
                 },
                 "timestamp" : {
-                  "format" : "epoch",
+                  "format" : "int64",
                   "type" : "number"
                 }
               },

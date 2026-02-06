@@ -40983,7 +40983,7 @@
           },
           "timestamp" : {
             "type" : "integer",
-            "format" : "epoch"
+            "format" : "int64"
           },
           "startedBy" : {
             "nullable" : true,
@@ -41088,7 +41088,7 @@
           },
           "createdAt" : {
             "type" : "integer",
-            "format" : "epoch"
+            "format" : "int64"
           },
           "createdBy" : {
             "nullable" : true,
@@ -42185,7 +42185,7 @@
           },
           "timestamp" : {
             "type" : "integer",
-            "format" : "epoch"
+            "format" : "int64"
           },
           "invocationCount" : {
             "type" : "integer",
@@ -42291,7 +42291,7 @@
         "properties" : {
           "timestamp" : {
             "type" : "integer",
-            "format" : "epoch"
+            "format" : "int64"
           },
           "logType" : {
             "type" : "string",
@@ -42446,7 +42446,7 @@
           },
           "timestamp" : {
             "type" : "integer",
-            "format" : "epoch"
+            "format" : "int64"
           },
           "createdBy" : {
             "type" : "string",
@@ -42784,7 +42784,7 @@
           },
           "created" : {
             "type" : "integer",
-            "format" : "epoch"
+            "format" : "int64"
           },
           "active" : {
             "type" : "boolean",
@@ -43105,7 +43105,7 @@
           },
           "lastModified" : {
             "type" : "integer",
-            "format" : "epoch"
+            "format" : "int64"
           },
           "projectId" : {
             "nullable" : true,
@@ -43194,7 +43194,7 @@
         "properties" : {
           "timestamp" : {
             "type" : "integer",
-            "format" : "epoch"
+            "format" : "int64"
           },
           "gpu" : {
             "type" : "number",
@@ -43631,7 +43631,7 @@
         "properties" : {
           "timestamp" : {
             "type" : "integer",
-            "format" : "epoch"
+            "format" : "int64"
           },
           "statusCode" : {
             "type" : "integer",
@@ -44370,16 +44370,16 @@
         "properties" : {
           "submissionTime" : {
             "type" : "integer",
-            "format" : "epoch"
+            "format" : "int64"
           },
           "startTime" : {
             "type" : "integer",
-            "format" : "epoch",
+            "format" : "int64",
             "nullable" : true
           },
           "completedTime" : {
             "type" : "integer",
-            "format" : "epoch",
+            "format" : "int64",
             "nullable" : true
           }
         },
@@ -45826,7 +45826,7 @@
           },
           "createdAt" : {
             "type" : "integer",
-            "format" : "epoch"
+            "format" : "int64"
           },
           "createdBy" : {
             "type" : "string",
@@ -45834,17 +45834,17 @@
           },
           "lastTitleUpdatedAt" : {
             "type" : "integer",
-            "format" : "epoch",
+            "format" : "int64",
             "nullable" : true
           },
           "lastDescriptionUpdatedAt" : {
             "type" : "integer",
-            "format" : "epoch",
+            "format" : "int64",
             "nullable" : true
           },
           "lastUpdatedAt" : {
             "type" : "integer",
-            "format" : "epoch",
+            "format" : "int64",
             "nullable" : true
           },
           "project" : {
@@ -46538,7 +46538,7 @@
         "properties" : {
           "timestamp" : {
             "type" : "integer",
-            "format" : "epoch"
+            "format" : "int64"
           },
           "gpu" : {
             "type" : "number",
@@ -46722,7 +46722,7 @@
           },
           "started" : {
             "type" : "integer",
-            "format" : "epoch"
+            "format" : "int64"
           },
           "duration" : {
             "type" : "integer",
@@ -47271,7 +47271,7 @@
         "properties" : {
           "timestamp" : {
             "type" : "integer",
-            "format" : "epoch"
+            "format" : "int64"
           },
           "logType" : {
             "type" : "string",
@@ -47333,7 +47333,7 @@
           },
           "started" : {
             "type" : "integer",
-            "format" : "epoch"
+            "format" : "int64"
           },
           "inputCommitId" : {
             "type" : "string"
@@ -48627,7 +48627,7 @@
           },
           "created" : {
             "type" : "integer",
-            "format" : "epoch"
+            "format" : "int64"
           }
         },
         "required" : [ "id", "exportId", "modelVersion", "exportTargetDetails", "status", "created" ]
@@ -49069,11 +49069,11 @@
           },
           "createdOn" : {
             "type" : "integer",
-            "format" : "epoch"
+            "format" : "int64"
           },
           "lastActivity" : {
             "type" : "integer",
-            "format" : "epoch",
+            "format" : "int64",
             "nullable" : true
           },
           "collaborators" : {
@@ -49182,7 +49182,7 @@
           },
           "timestamp" : {
             "type" : "integer",
-            "format" : "epoch"
+            "format" : "int64"
           }
         },
         "required" : [ "correlationId", "projectId", "workspaceId", "room", "cpu", "mem", "timestamp" ]
@@ -49297,7 +49297,7 @@
           },
           "lastModified" : {
             "type" : "integer",
-            "format" : "epoch"
+            "format" : "int64"
           },
           "author" : {
             "type" : "string"
@@ -49761,7 +49761,7 @@
           },
           "timestamp" : {
             "type" : "integer",
-            "format" : "epoch"
+            "format" : "int64"
           }
         },
         "required" : [ "cpu", "memory", "timestamp" ]
@@ -49934,7 +49934,7 @@
         "properties" : {
           "timestamp" : {
             "type" : "integer",
-            "format" : "epoch"
+            "format" : "int64"
           },
           "cpu" : {
             "type" : "number",
@@ -50286,7 +50286,7 @@
           },
           "lastModified" : {
             "type" : "integer",
-            "format" : "epoch"
+            "format" : "int64"
           },
           "author" : {
             "type" : "string"
@@ -50664,7 +50664,7 @@
           },
           "createdAt" : {
             "type" : "integer",
-            "format" : "epoch"
+            "format" : "int64"
           },
           "createdBy" : {
             "type" : "string"
@@ -51006,7 +51006,7 @@
         "properties" : {
           "timestamp" : {
             "type" : "integer",
-            "format" : "epoch"
+            "format" : "int64"
           },
           "duration" : {
             "type" : "integer",
@@ -51666,7 +51666,7 @@
           },
           "blockedAt" : {
             "type" : "integer",
-            "format" : "epoch"
+            "format" : "int64"
           }
         },
         "required" : [ "comment", "blockedAt" ]
@@ -51953,7 +51953,7 @@
           },
           "lastUpdatedAt" : {
             "type" : "integer",
-            "format" : "epoch",
+            "format" : "int64",
             "nullable" : true
           },
           "owner" : {
@@ -53463,7 +53463,7 @@
           },
           "timestamp" : {
             "type" : "integer",
-            "format" : "epoch"
+            "format" : "int64"
           }
         },
         "required" : [ "correlationId", "jobId", "room", "cpu", "mem", "timestamp" ]
@@ -54231,7 +54231,7 @@
           },
           "createdAt" : {
             "type" : "integer",
-            "format" : "epoch"
+            "format" : "int64"
           },
           "projectId" : {
             "type" : "string",
@@ -54646,7 +54646,7 @@
         "properties" : {
           "timestamp" : {
             "type" : "integer",
-            "format" : "epoch"
+            "format" : "int64"
           },
           "logType" : {
             "type" : "string",
@@ -56185,7 +56185,7 @@
           },
           "created" : {
             "type" : "integer",
-            "format" : "epoch"
+            "format" : "int64"
           }
         },
         "required" : [ "commentId", "commenter", "commentBody", "created" ]
@@ -57226,7 +57226,7 @@
           },
           "lastStageUpdatedAt" : {
             "type" : "integer",
-            "format" : "epoch"
+            "format" : "int64"
           }
         },
         "required" : [ "goalId", "isCompleted", "stage", "lastStageUpdatedAt" ]
@@ -57351,11 +57351,11 @@
           },
           "created" : {
             "type" : "integer",
-            "format" : "epoch"
+            "format" : "int64"
           },
           "updatedAt" : {
             "type" : "integer",
-            "format" : "epoch"
+            "format" : "int64"
           }
         },
         "required" : [ "commentId", "commenter", "commentBody", "created", "updatedAt" ]
@@ -57648,7 +57648,7 @@
           },
           "created" : {
             "type" : "integer",
-            "format" : "epoch"
+            "format" : "int64"
           },
           "commenter" : {
             "nullable" : true,
@@ -57656,7 +57656,7 @@
           },
           "updatedAt" : {
             "type" : "integer",
-            "format" : "epoch"
+            "format" : "int64"
           },
           "dominoEntity" : {
             "nullable" : true,
@@ -58086,7 +58086,7 @@
           },
           "lastTouched" : {
             "type" : "integer",
-            "format" : "epoch"
+            "format" : "int64"
           },
           "datasetId" : {
             "type" : "string",
@@ -58236,7 +58236,7 @@
           },
           "updatedAt" : {
             "type" : "integer",
-            "format" : "epoch"
+            "format" : "int64"
           },
           "subTickets" : {
             "type" : "array",
@@ -58376,7 +58376,7 @@
           },
           "created" : {
             "type" : "integer",
-            "format" : "epoch"
+            "format" : "int64"
           }
         },
         "required" : [ "id", "modelId", "registryUrlHostName", "target", "projectId", "modelName", "modelDescription", "isArchived", "created" ]
@@ -58590,7 +58590,7 @@
           },
           "createdAt" : {
             "type" : "integer",
-            "format" : "epoch"
+            "format" : "int64"
           }
         },
         "required" : [ "commentId", "commentedBy", "commentBody", "createdAt" ]
@@ -58829,7 +58829,7 @@
           },
           "lastSyncInitiatedAt" : {
             "type" : "integer",
-            "format" : "epoch"
+            "format" : "int64"
           }
         },
         "required" : [ "syncStatus", "lastSyncInitiatedAt" ]
@@ -59053,7 +59053,7 @@
           },
           "timestamp" : {
             "type" : "integer",
-            "format" : "epoch"
+            "format" : "int64"
           },
           "startedBy" : {
             "nullable" : true,
@@ -59140,7 +59140,7 @@
           },
           "jobStartTime" : {
             "type" : "integer",
-            "format" : "epoch"
+            "format" : "int64"
           },
           "jobTitle" : {
             "type" : "string"
@@ -59507,7 +59507,7 @@
           },
           "updatedAt" : {
             "type" : "integer",
-            "format" : "epoch"
+            "format" : "int64"
           },
           "ticketTypes" : {
             "type" : "array",
@@ -59786,7 +59786,7 @@
         "properties" : {
           "timestamp" : {
             "type" : "integer",
-            "format" : "epoch"
+            "format" : "int64"
           },
           "cpu" : {
             "type" : "number",
@@ -59876,7 +59876,7 @@
           },
           "updatedAt" : {
             "type" : "integer",
-            "format" : "epoch"
+            "format" : "int64"
           },
           "ticketMetadata" : {
             "$ref" : "#/components/schemas/domino.projectManagement.api.PmTicketMetadata"
@@ -61334,7 +61334,7 @@
           },
           "timestamp" : {
             "type" : "integer",
-            "format" : "epoch"
+            "format" : "int64"
           },
           "activityBy" : {
             "nullable" : true,
@@ -61425,7 +61425,7 @@
           },
           "created" : {
             "type" : "integer",
-            "format" : "epoch"
+            "format" : "int64"
           }
         },
         "required" : [ "commentId", "commenter", "commentBody", "created" ]
@@ -61434,7 +61434,7 @@
         "properties" : {
           "timestamp" : {
             "type" : "integer",
-            "format" : "epoch"
+            "format" : "int64"
           },
           "logType" : {
             "type" : "string",
@@ -61853,7 +61853,7 @@
           },
           "createdAt" : {
             "type" : "integer",
-            "format" : "epoch"
+            "format" : "int64"
           },
           "projectId" : {
             "type" : "string",
@@ -61953,7 +61953,7 @@
           },
           "latestTimeStamp" : {
             "type" : "integer",
-            "format" : "epoch"
+            "format" : "int64"
           }
         },
         "required" : [ "pageSize", "latestTimeStamp" ]
@@ -62308,7 +62308,7 @@
           },
           "created" : {
             "type" : "integer",
-            "format" : "epoch"
+            "format" : "int64"
           }
         },
         "required" : [ "modelVersionId", "modelId", "projectId", "commitId", "excludeFiles", "environmentId", "environmentRevisionId", "dataPlaneId", "createdBy", "created" ]
@@ -62516,7 +62516,7 @@
           },
           "timestamp" : {
             "type" : "integer",
-            "format" : "epoch"
+            "format" : "int64"
           }
         },
         "required" : [ "cpu", "memory", "timestamp" ]
@@ -62965,16 +62965,16 @@
         "properties" : {
           "submissionTime" : {
             "type" : "integer",
-            "format" : "epoch"
+            "format" : "int64"
           },
           "runStartTime" : {
             "type" : "integer",
-            "format" : "epoch",
+            "format" : "int64",
             "nullable" : true
           },
           "completedTime" : {
             "type" : "integer",
-            "format" : "epoch",
+            "format" : "int64",
             "nullable" : true
           }
         },
@@ -64064,7 +64064,7 @@
           },
           "timestamp" : {
             "type" : "integer",
-            "format" : "epoch"
+            "format" : "int64"
           }
         },
         "required" : [ "consumerType", "consumerId", "datasetId", "datasetName", "snapshotId", "snapshotVersion", "timestamp" ]
@@ -64253,7 +64253,7 @@
         "properties" : {
           "timestamp" : {
             "type" : "integer",
-            "format" : "epoch"
+            "format" : "int64"
           },
           "timeNano" : {
             "type" : "integer",

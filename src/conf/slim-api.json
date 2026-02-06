@@ -2970,7 +2970,7 @@
             "type": "integer"
           },
           "timestamp": {
-            "format": "epoch",
+            "format": "int64",
             "type": "integer"
           }
         },
@@ -3093,17 +3093,17 @@
       "domino.jobs.interface.StageTime": {
         "properties": {
           "completedTime": {
-            "format": "epoch",
+            "format": "int64",
             "nullable": true,
             "type": "integer"
           },
           "runStartTime": {
-            "format": "epoch",
+            "format": "int64",
             "nullable": true,
             "type": "integer"
           },
           "submissionTime": {
-            "format": "epoch",
+            "format": "int64",
             "type": "integer"
           }
         },
@@ -3114,7 +3114,7 @@
       "domino.jobs.interface.TagApplication": {
         "properties": {
           "createdAt": {
-            "format": "epoch",
+            "format": "int64",
             "type": "integer"
           },
           "createdBy": {
@@ -3648,7 +3648,7 @@
             "$ref": "#/components/schemas/domino.projects.api.EntityLinkMetadata"
           },
           "timestamp": {
-            "format": "epoch",
+            "format": "int64",
             "type": "integer"
           }
         },
@@ -3860,7 +3860,7 @@
             "type": "integer"
           },
           "createdAt": {
-            "format": "epoch",
+            "format": "int64",
             "type": "integer"
           },
           "createdBy": {
@@ -3885,17 +3885,17 @@
             "type": "boolean"
           },
           "lastDescriptionUpdatedAt": {
-            "format": "epoch",
+            "format": "int64",
             "nullable": true,
             "type": "integer"
           },
           "lastTitleUpdatedAt": {
-            "format": "epoch",
+            "format": "int64",
             "nullable": true,
             "type": "integer"
           },
           "lastUpdatedAt": {
-            "format": "epoch",
+            "format": "int64",
             "nullable": true,
             "type": "integer"
           },
@@ -3932,7 +3932,7 @@
       "domino.projects.api.ProjectStage": {
         "properties": {
           "createdAt": {
-            "format": "epoch",
+            "format": "int64",
             "type": "integer"
           },
           "createdBy": {
