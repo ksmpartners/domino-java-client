@@ -139,7 +139,7 @@ class ProjectManagementApiTest extends TestClientConfigurer {
         DominoProjectManagementWebUnlinkJobFromGoalRequest unlinkRequest = new DominoProjectManagementWebUnlinkJobFromGoalRequest();
         unlinkRequest.setGoalId(goalId);
 
-        projectManagementApi.unlinkManageJobFromGoal(jobId, unlinkRequest);
+        projectManagementApi.unlinkJobFromGoal(jobId, unlinkRequest);
 
         List<DominoProjectsApiProjectGoal> goals2 = projectManagementApi.getProjectGoals(projectId);
 

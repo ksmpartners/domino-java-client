@@ -56,7 +56,7 @@ public class {{classname}} {
   protected final Consumer<HttpRequest.Builder> memberVarInterceptor;
   protected final Duration memberVarReadTimeout;
   protected final Consumer<HttpResponse<InputStream>> memberVarResponseInterceptor;
-  protected final Consumer<HttpResponse<String>> memberVarAsyncResponseInterceptor;
+  protected final Consumer<HttpResponse<InputStream>> memberVarAsyncResponseInterceptor;
 
   public {{classname}}() {
     this(new ApiClient());

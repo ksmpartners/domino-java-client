@@ -108,6 +108,33 @@ Install it to your local Maven repository with:
 $ mvn install
 ```
 
+## OpenAPI URLs:
+- Public API:
+  - Swagger: `<instance>/assets/lib/swagger-ui/index.html?url=<instance>/assets/public-api.json`
+  - OpenAPI Spec: `<instance>/assets/public-api.json`
+- Internal API:
+  - Swagger: `<instance>/assets/lib/swagger-ui/index.html?url=<instance>/assets/swagger.json`
+  - OpenAPI Spec: `<instance>/assets/swagger.json`
+- Governance API:
+  - Swagger: `<instance>/api/governance/swagger/index.html`
+  - OpenAPI Spec: `<instance>/api/governance/swagger/doc.json`
+- NetApp Volumes API:
+  - Swagger: `<instance>/domino-netapp-volumes/swagger/index.html`
+  - OpenAPI Spec: `<instance>/domino-netapp-volumes/swagger/doc.json`
+- Flows API:
+  - Swagger (Flows Artifacts): `<instance>/flows/api/artifacts/v1/docs` (Requires navigating to the Flyte console first (**NOT** the Flows UI tab) to obtain a cookie otherwise you'll get an authorization error). Can also download OpenAPI YAML from page.
+  - OpenAPI Spec: `<instance>/flows/api/v1/openapi` - for all other non-artifacts related APIs
+
+## Tweaks when updating
+
+- Rename the following operationIDs:
+  - `/activity/metadata`: `notFound` -> `getActivityMetadata`
+  - `/tags`: `list` -> `listProjects`
+- Rename the following tags:
+  - `getKubeCostLiveness`:
+    - `controlcenter` -> `Control Center`
+- Run `fix.sh`
+
 ## Running Integration Tests
 
 There are multiple test suites defined under this project. The default tests that run when running `mvn test` are the tests tagged "Unit". 

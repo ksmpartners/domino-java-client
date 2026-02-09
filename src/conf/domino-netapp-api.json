@@ -1,0 +1,3887 @@
+{
+  "basePath": "/remotefs/v1",
+  "definitions": {
+    "remotefs.Action": {
+      "enum": [
+        "copy"
+      ],
+      "type": "string",
+      "x-enum-varnames": [
+        "ActionCopy"
+      ]
+    },
+    "remotefs.ConnectionSnippet": {
+      "properties": {
+        "language": {
+          "$ref": "#/definitions/remotefs.SnippetLanguage"
+        },
+        "snippet": {
+          "type": "string"
+        }
+      },
+      "type": "object"
+    },
+    "remotefs.DataTransfer": {
+      "properties": {
+        "createdAt": {
+          "type": "string"
+        },
+        "createdBy": {
+          "$ref": "#/definitions/remotefs.UserSummary"
+        },
+        "destinationVolumeId": {
+          "type": "string"
+        },
+        "filetaskKey": {
+          "type": "string"
+        },
+        "id": {
+          "type": "string"
+        },
+        "labels": {
+          "additionalProperties": {
+            "type": "string"
+          },
+          "type": "object"
+        },
+        "status": {
+          "$ref": "#/definitions/remotefs.DataTransferStatus"
+        },
+        "taskUpdate": {
+          "$ref": "#/definitions/remotefs.TaskUpdate"
+        },
+        "type": {
+          "$ref": "#/definitions/remotefs.DataTransferType"
+        },
+        "updatedAt": {
+          "type": "string"
+        },
+        "updatedBy": {
+          "$ref": "#/definitions/remotefs.UserSummary"
+        }
+      },
+      "required": [
+        "createdAt",
+        "createdBy",
+        "destinationVolumeId",
+        "id",
+        "status",
+        "type",
+        "updatedAt",
+        "updatedBy"
+      ],
+      "type": "object"
+    },
+    "remotefs.DataTransferStatus": {
+      "enum": [
+        "Failed",
+        "Started",
+        "Succeeded"
+      ],
+      "type": "string",
+      "x-enum-varnames": [
+        "TransferStatusFailed",
+        "TransferStatusStarted",
+        "TransferStatusSucceeded"
+      ]
+    },
+    "remotefs.DataTransferType": {
+      "enum": [
+        "flows-artifact-export"
+      ],
+      "type": "string",
+      "x-enum-varnames": [
+        "DataTransferTypeFlowsArtifactExport"
+      ]
+    },
+    "remotefs.FileCollisionSetting": {
+      "enum": [
+        "Rename",
+        "Overwrite",
+        "Ignore"
+      ],
+      "type": "string",
+      "x-enum-varnames": [
+        "FileCollisionSettingRename",
+        "FileCollisionSettingOverwrite",
+        "FileCollisionSettingIgnore"
+      ]
+    },
+    "remotefs.Filesystem": {
+      "properties": {
+        "createdAt": {
+          "type": "string"
+        },
+        "createdBy": {
+          "$ref": "#/definitions/remotefs.UserSummary"
+        },
+        "dataPlaneId": {
+          "type": "string"
+        },
+        "dataPlaneName": {
+          "type": "string"
+        },
+        "hostname": {
+          "description": "Data plane prefix (e.g. mydp1029), \"\" for local data plane",
+          "type": "string"
+        },
+        "id": {
+          "type": "string"
+        },
+        "isDataPlaneDefault": {
+          "type": "boolean"
+        },
+        "maxSnapshotsPerVolume": {
+          "type": "integer"
+        },
+        "name": {
+          "type": "string"
+        },
+        "numVolumes": {
+          "type": "integer"
+        },
+        "rootPvc": {
+          "type": "string"
+        },
+        "storageClass": {
+          "type": "string"
+        },
+        "updatedAt": {
+          "type": "string"
+        },
+        "updatedBy": {
+          "$ref": "#/definitions/remotefs.UserSummary"
+        }
+      },
+      "required": [
+        "createdAt",
+        "createdBy",
+        "dataPlaneId",
+        "dataPlaneName",
+        "id",
+        "isDataPlaneDefault",
+        "maxSnapshotsPerVolume",
+        "name",
+        "rootPvc",
+        "storageClass",
+        "updatedAt",
+        "updatedBy"
+      ],
+      "type": "object"
+    },
+    "remotefs.FiletaskTask": {
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "key": {
+          "type": "string"
+        },
+        "status": {
+          "type": "string"
+        },
+        "update": {
+          "$ref": "#/definitions/remotefs.TaskUpdate"
+        }
+      },
+      "type": "object"
+    },
+    "remotefs.Filter": {
+      "properties": {
+        "key": {
+          "type": "string"
+        },
+        "values": {
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
+        }
+      },
+      "type": "object"
+    },
+    "remotefs.FlowsArtifactDetails": {
+      "properties": {
+        "artifact_name": {
+          "type": "string"
+        },
+        "workflow_name": {
+          "type": "string"
+        },
+        "workflow_version": {
+          "type": "string"
+        }
+      },
+      "type": "object"
+    },
+    "remotefs.FlowsArtifactVersionKey": {
+      "properties": {
+        "artifactId": {
+          "type": "string"
+        },
+        "execution": {
+          "$ref": "#/definitions/remotefs.FlowsExecutionIdentifier"
+        }
+      },
+      "type": "object"
+    },
+    "remotefs.FlowsExecutionIdentifier": {
+      "properties": {
+        "domain": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "project": {
+          "type": "string"
+        }
+      },
+      "type": "object"
+    },
+    "remotefs.Meta": {
+      "properties": {
+        "filters": {
+          "items": {
+            "$ref": "#/definitions/remotefs.Filter"
+          },
+          "type": "array"
+        },
+        "order": {
+          "type": "string"
+        },
+        "pagination": {
+          "$ref": "#/definitions/remotefs.Pagination"
+        },
+        "search": {
+          "type": "string"
+        },
+        "sortBy": {
+          "type": "string"
+        }
+      },
+      "type": "object"
+    },
+    "remotefs.Pagination": {
+      "properties": {
+        "limit": {
+          "type": "integer"
+        },
+        "offset": {
+          "type": "integer"
+        },
+        "totalCount": {
+          "type": "integer"
+        }
+      },
+      "type": "object"
+    },
+    "remotefs.Permission": {
+      "enum": [
+        "ManageFilesystems",
+        "ViewFilesystems",
+        "CreateVolumes",
+        "ManageVolumesForExecution",
+        "ManageVolumes",
+        "ReadVolumes",
+        "ViewVolumes",
+        "MarkVolumesForDeletion",
+        "DeleteVolumes",
+        "EditSecurityVolumes",
+        "WorkbenchPermission.PerformNetAppActionsInProject",
+        "ReadUserPermissions",
+        "ImpersonateUser"
+      ],
+      "type": "string",
+      "x-enum-varnames": [
+        "ManageFilesystems",
+        "ViewFilesystems",
+        "CreateVolumes",
+        "ManageVolumesForExecution",
+        "ManageVolumes",
+        "ReadVolumes",
+        "ViewVolumes",
+        "MarkVolumesForDeletion",
+        "DeleteVolumes",
+        "EditSecurityVolumes",
+        "PerformNetAppActionsInProject",
+        "ReadUserPermissions",
+        "ImpersonateUser"
+      ]
+    },
+    "remotefs.PermissionCode": {
+      "enum": [
+        "data.manage_filesystems",
+        "data.view_filesystems",
+        "data.create_volumes",
+        "data.manage_volumes",
+        "data.manage_volumes_for_execution",
+        "data.read_volumes",
+        "data.view_volumes",
+        "data.mark_volumes_for_deletion",
+        "data.delete_volumes",
+        "data.edit_security_volumes",
+        "data.project.perform_net_app_actions_in_project"
+      ],
+      "type": "string",
+      "x-enum-varnames": [
+        "ManageFilesystemsCode",
+        "ViewFilesystemsCode",
+        "CreateVolumesCode",
+        "ManageVolumesCode",
+        "ManageVolumesForExecutionCode",
+        "ReadVolumesCode",
+        "ViewVolumesCode",
+        "MarkVolumesForDeletionCode",
+        "DeleteVolumesCode",
+        "EditSecurityVolumesCode",
+        "PerformNetAppActionsInProjectCode"
+      ]
+    },
+    "remotefs.Project": {
+      "properties": {
+        "addedAt": {
+          "type": "string"
+        },
+        "addedBy": {
+          "$ref": "#/definitions/remotefs.UserSummary"
+        },
+        "name": {
+          "type": "string"
+        },
+        "projectId": {
+          "description": "References Mongo project ID",
+          "type": "string"
+        },
+        "volumeId": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "addedAt",
+        "addedBy",
+        "name",
+        "projectId",
+        "volumeId"
+      ],
+      "type": "object"
+    },
+    "remotefs.ResourceStatus": {
+      "enum": [
+        "Active",
+        "MarkedForDeletion",
+        "Deleted"
+      ],
+      "type": "string",
+      "x-enum-varnames": [
+        "Active",
+        "MarkedForDeletion",
+        "Deleted"
+      ]
+    },
+    "remotefs.Snapshot": {
+      "properties": {
+        "createdAt": {
+          "type": "string"
+        },
+        "createdBy": {
+          "$ref": "#/definitions/remotefs.UserSummary"
+        },
+        "description": {
+          "type": "string"
+        },
+        "id": {
+          "type": "string"
+        },
+        "labels": {
+          "additionalProperties": {
+            "type": "string"
+          },
+          "description": "System-specified, e.g. for Flows artifacts",
+          "type": "object"
+        },
+        "lastMountedTime": {
+          "type": "string"
+        },
+        "runId": {
+          "description": "Optional field denoting resource associated with a run",
+          "type": "string"
+        },
+        "status": {
+          "$ref": "#/definitions/remotefs.ResourceStatus"
+        },
+        "tags": {
+          "description": "User-specified, used for mount path resolution and is derived from SnapshotTags",
+          "items": {
+            "$ref": "#/definitions/remotefs.SnapshotTag"
+          },
+          "type": "array"
+        },
+        "updatedAt": {
+          "type": "string"
+        },
+        "updatedBy": {
+          "$ref": "#/definitions/remotefs.UserSummary"
+        },
+        "version": {
+          "description": "Links to ONTAP snapshot name",
+          "type": "integer"
+        },
+        "volumeId": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "createdAt",
+        "createdBy",
+        "id",
+        "status",
+        "updatedAt",
+        "updatedBy",
+        "version",
+        "volumeId"
+      ],
+      "type": "object"
+    },
+    "remotefs.SnapshotTag": {
+      "properties": {
+        "addedAt": {
+          "type": "string"
+        },
+        "addedBy": {
+          "$ref": "#/definitions/remotefs.UserSummary"
+        },
+        "name": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "addedAt",
+        "addedBy",
+        "name"
+      ],
+      "type": "object"
+    },
+    "remotefs.SnapshotTagSubPath": {
+      "properties": {
+        "subPath": {
+          "type": "string"
+        },
+        "tagName": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "subPath",
+        "tagName"
+      ],
+      "type": "object"
+    },
+    "remotefs.SnippetLanguage": {
+      "enum": [
+        "R",
+        "Python"
+      ],
+      "type": "string",
+      "x-enum-varnames": [
+        "R",
+        "Python"
+      ]
+    },
+    "remotefs.TaskUpdate": {
+      "properties": {
+        "artifactDetails": {
+          "$ref": "#/definitions/remotefs.FlowsArtifactDetails"
+        },
+        "exportTargetId": {
+          "type": "string"
+        },
+        "key": {
+          "$ref": "#/definitions/remotefs.FlowsArtifactVersionKey"
+        },
+        "progress": {
+          "type": "integer"
+        },
+        "tags": {
+          "additionalProperties": {
+            "type": "string"
+          },
+          "type": "object"
+        },
+        "type": {
+          "type": "string"
+        },
+        "uri": {
+          "type": "string"
+        }
+      },
+      "type": "object"
+    },
+    "remotefs.UserSummary": {
+      "properties": {
+        "firstName": {
+          "type": "string"
+        },
+        "id": {
+          "type": "string"
+        },
+        "lastName": {
+          "type": "string"
+        },
+        "userName": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "firstName",
+        "id",
+        "lastName",
+        "userName"
+      ],
+      "type": "object"
+    },
+    "remotefs.Volume": {
+      "properties": {
+        "capacity": {
+          "description": "Maximum size in bytes",
+          "type": "integer"
+        },
+        "createdAt": {
+          "type": "string"
+        },
+        "createdBy": {
+          "$ref": "#/definitions/remotefs.UserSummary"
+        },
+        "dataPlaneId": {
+          "type": "string"
+        },
+        "description": {
+          "type": "string"
+        },
+        "filesystemId": {
+          "type": "string"
+        },
+        "filesystemName": {
+          "type": "string"
+        },
+        "grants": {
+          "items": {
+            "$ref": "#/definitions/remotefs.VolumeGrant"
+          },
+          "type": "array"
+        },
+        "id": {
+          "description": "Links to ONTAP volume name",
+          "type": "string"
+        },
+        "lastMountedTime": {
+          "type": "string"
+        },
+        "maxSnapshots": {
+          "type": "integer"
+        },
+        "name": {
+          "type": "string"
+        },
+        "numSnapshots": {
+          "type": "integer"
+        },
+        "path": {
+          "type": "string"
+        },
+        "projects": {
+          "items": {
+            "$ref": "#/definitions/remotefs.Project"
+          },
+          "type": "array"
+        },
+        "status": {
+          "$ref": "#/definitions/remotefs.ResourceStatus"
+        },
+        "storageSize": {
+          "description": "Used size in bytes",
+          "type": "integer"
+        },
+        "uniqueName": {
+          "type": "string"
+        },
+        "updatedAt": {
+          "type": "string"
+        },
+        "updatedBy": {
+          "$ref": "#/definitions/remotefs.UserSummary"
+        }
+      },
+      "required": [
+        "capacity",
+        "createdAt",
+        "createdBy",
+        "dataPlaneId",
+        "filesystemId",
+        "id",
+        "maxSnapshots",
+        "name",
+        "numSnapshots",
+        "path",
+        "status",
+        "uniqueName",
+        "updatedAt",
+        "updatedBy"
+      ],
+      "type": "object"
+    },
+    "remotefs.VolumeCopyDTO": {
+      "properties": {
+        "grants": {
+          "items": {
+            "$ref": "#/definitions/remotefs.VolumeGrantDTO"
+          },
+          "type": "array"
+        },
+        "sourceVolumeId": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "grants",
+        "sourceVolumeId"
+      ],
+      "type": "object"
+    },
+    "remotefs.VolumeGrant": {
+      "properties": {
+        "isOrganization": {
+          "type": "boolean"
+        },
+        "targetId": {
+          "description": "References Mongo user ID (including organizations)",
+          "type": "string"
+        },
+        "targetName": {
+          "type": "string"
+        },
+        "targetRole": {
+          "$ref": "#/definitions/remotefs.VolumeRole"
+        }
+      },
+      "required": [
+        "isOrganization",
+        "targetId",
+        "targetName",
+        "targetRole"
+      ],
+      "type": "object"
+    },
+    "remotefs.VolumeGrantDTO": {
+      "properties": {
+        "targetId": {
+          "type": "string"
+        },
+        "targetRole": {
+          "$ref": "#/definitions/remotefs.VolumeRole"
+        }
+      },
+      "required": [
+        "targetId",
+        "targetRole"
+      ],
+      "type": "object"
+    },
+    "remotefs.VolumeMount": {
+      "properties": {
+        "canUserWrite": {
+          "type": "boolean"
+        },
+        "latestSnapshotTagSubPaths": {
+          "items": {
+            "$ref": "#/definitions/remotefs.SnapshotTagSubPath"
+          },
+          "type": "array"
+        },
+        "name": {
+          "type": "string"
+        },
+        "persistentVolumeClaimName": {
+          "type": "string"
+        },
+        "snapshotSubPath": {
+          "type": "string"
+        },
+        "subPath": {
+          "type": "string"
+        },
+        "volumeId": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "canUserWrite",
+        "latestSnapshotTagSubPaths",
+        "name",
+        "persistentVolumeClaimName",
+        "snapshotSubPath",
+        "subPath",
+        "volumeId"
+      ],
+      "type": "object"
+    },
+    "remotefs.VolumeRole": {
+      "enum": [
+        "VolumeOwner",
+        "VolumeEditor",
+        "VolumeReader",
+        "Service"
+      ],
+      "type": "string",
+      "x-enum-varnames": [
+        "VolumeOwner",
+        "VolumeEditor",
+        "VolumeReader",
+        "Service"
+      ]
+    },
+    "server.BulkCopyVolumesRequest": {
+      "properties": {
+        "projectId": {
+          "type": "string"
+        },
+        "volumes": {
+          "items": {
+            "$ref": "#/definitions/remotefs.VolumeCopyDTO"
+          },
+          "type": "array"
+        }
+      },
+      "required": [
+        "projectId",
+        "volumes"
+      ],
+      "type": "object"
+    },
+    "server.CopyVolumeOperationResult": {
+      "properties": {
+        "action": {
+          "$ref": "#/definitions/remotefs.Action"
+        },
+        "data": {
+          "$ref": "#/definitions/remotefs.Volume"
+        },
+        "error": {
+          "type": "string"
+        },
+        "sourceVolumeId": {
+          "type": "string"
+        },
+        "status": {
+          "type": "integer"
+        }
+      },
+      "required": [
+        "action",
+        "sourceVolumeId",
+        "status"
+      ],
+      "type": "object"
+    },
+    "server.CopyVolumeOperationResults": {
+      "properties": {
+        "results": {
+          "items": {
+            "$ref": "#/definitions/server.CopyVolumeOperationResult"
+          },
+          "type": "array"
+        }
+      },
+      "required": [
+        "results"
+      ],
+      "type": "object"
+    },
+    "server.CreateDataTransfer": {
+      "properties": {
+        "destinationVolumeId": {
+          "type": "string"
+        },
+        "fileCollisionSetting": {
+          "$ref": "#/definitions/remotefs.FileCollisionSetting"
+        },
+        "payload": {
+          "type": "string"
+        },
+        "targetRelativePath": {
+          "type": "string"
+        },
+        "type": {
+          "$ref": "#/definitions/remotefs.DataTransferType"
+        }
+      },
+      "required": [
+        "destinationVolumeId",
+        "type"
+      ],
+      "type": "object"
+    },
+    "server.CreateDownloadArchiveRequest": {
+      "properties": {
+        "relativePaths": {
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
+        },
+        "snapshotId": {
+          "type": "string"
+        },
+        "volumeId": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "relativePaths",
+        "volumeId"
+      ],
+      "type": "object"
+    },
+    "server.CreateSnapshot": {
+      "properties": {
+        "description": {
+          "type": "string"
+        },
+        "tagNames": {
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
+        },
+        "volumeId": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "volumeId"
+      ],
+      "type": "object"
+    },
+    "server.CreateSnapshotFromRun": {
+      "properties": {
+        "description": {
+          "type": "string"
+        },
+        "runId": {
+          "description": "Run ID associated with the snapshot",
+          "type": "string"
+        },
+        "userId": {
+          "description": "User that initiated the run, set as snapshot creator",
+          "type": "string"
+        },
+        "volumeId": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "runId",
+        "userId",
+        "volumeId"
+      ],
+      "type": "object"
+    },
+    "server.CreateSnapshotTagRequest": {
+      "properties": {
+        "name": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "name"
+      ],
+      "type": "object"
+    },
+    "server.CreateVolumeRequest": {
+      "properties": {
+        "capacity": {
+          "type": "integer"
+        },
+        "description": {
+          "type": "string"
+        },
+        "filesystemId": {
+          "type": "string"
+        },
+        "grants": {
+          "items": {
+            "$ref": "#/definitions/remotefs.VolumeGrantDTO"
+          },
+          "type": "array"
+        },
+        "name": {
+          "type": "string"
+        },
+        "projectId": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "capacity",
+        "filesystemId",
+        "grants",
+        "name"
+      ],
+      "type": "object"
+    },
+    "server.Filesystem": {
+      "properties": {
+        "dataPlaneId": {
+          "type": "string"
+        },
+        "isDataPlaneDefault": {
+          "type": "boolean"
+        },
+        "maxSnapshotsPerVolume": {
+          "type": "integer"
+        },
+        "name": {
+          "type": "string"
+        },
+        "rootPvc": {
+          "type": "string"
+        },
+        "storageClass": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "dataPlaneId",
+        "isDataPlaneDefault",
+        "name",
+        "rootPvc",
+        "storageClass"
+      ],
+      "type": "object"
+    },
+    "server.HTTPError": {
+      "properties": {
+        "message": {
+          "type": "string"
+        }
+      },
+      "type": "object"
+    },
+    "server.ListVolumeMountsRequest": {
+      "properties": {
+        "dataPlaneIds": {
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
+        },
+        "projectIds": {
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
+        },
+        "volumeIds": {
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
+        }
+      },
+      "required": [
+        "projectIds"
+      ],
+      "type": "object"
+    },
+    "server.PaginatedDataTransfers": {
+      "properties": {
+        "data": {
+          "items": {
+            "$ref": "#/definitions/remotefs.DataTransfer"
+          },
+          "type": "array"
+        },
+        "meta": {
+          "$ref": "#/definitions/remotefs.Meta"
+        }
+      },
+      "type": "object"
+    },
+    "server.PaginatedFilesystems": {
+      "properties": {
+        "data": {
+          "items": {
+            "$ref": "#/definitions/remotefs.Filesystem"
+          },
+          "type": "array"
+        },
+        "meta": {
+          "$ref": "#/definitions/remotefs.Meta"
+        }
+      },
+      "type": "object"
+    },
+    "server.PaginatedSnapshots": {
+      "properties": {
+        "data": {
+          "items": {
+            "$ref": "#/definitions/remotefs.Snapshot"
+          },
+          "type": "array"
+        },
+        "meta": {
+          "$ref": "#/definitions/remotefs.Meta"
+        }
+      },
+      "type": "object"
+    },
+    "server.PaginatedVolumes": {
+      "properties": {
+        "data": {
+          "items": {
+            "$ref": "#/definitions/remotefs.Volume"
+          },
+          "type": "array"
+        },
+        "meta": {
+          "$ref": "#/definitions/remotefs.Meta"
+        }
+      },
+      "type": "object"
+    },
+    "server.PermissionInfo": {
+      "properties": {
+        "code": {
+          "$ref": "#/definitions/remotefs.PermissionCode"
+        },
+        "context": {
+          "$ref": "#/definitions/server.PermissionInfoContext"
+        },
+        "id": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "code",
+        "context",
+        "id"
+      ],
+      "type": "object"
+    },
+    "server.PermissionInfoContext": {
+      "properties": {
+        "projectId": {
+          "type": "string"
+        },
+        "volumeId": {
+          "type": "string"
+        }
+      },
+      "type": "object"
+    },
+    "server.PermissionRequest": {
+      "properties": {
+        "actions": {
+          "description": "Effectively checking permissions, but using \"actions\" to be consistent with the rest of the API",
+          "items": {
+            "$ref": "#/definitions/server.PermissionInfo"
+          },
+          "type": "array"
+        }
+      },
+      "required": [
+        "actions"
+      ],
+      "type": "object"
+    },
+    "server.PermissionResponse": {
+      "properties": {
+        "actions": {
+          "description": "Effectively are permissions, using \"actions\" for consistency",
+          "items": {
+            "$ref": "#/definitions/server.PermissionResponseInfo"
+          },
+          "type": "array"
+        }
+      },
+      "type": "object"
+    },
+    "server.PermissionResponseInfo": {
+      "properties": {
+        "code": {
+          "$ref": "#/definitions/remotefs.PermissionCode"
+        },
+        "id": {
+          "type": "string"
+        },
+        "result": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "code",
+        "id",
+        "result"
+      ],
+      "type": "object"
+    },
+    "server.Principal": {
+      "properties": {
+        "token": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "token"
+      ],
+      "type": "object"
+    },
+    "server.SnapshotIDRequest": {
+      "properties": {
+        "snapshotId": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "snapshotId"
+      ],
+      "type": "object"
+    },
+    "server.UpdateSnapshot": {
+      "properties": {
+        "description": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "description"
+      ],
+      "type": "object"
+    },
+    "server.UpdateVolumeProject": {
+      "properties": {
+        "projectId": {
+          "type": "string"
+        },
+        "volumeId": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "projectId",
+        "volumeId"
+      ],
+      "type": "object"
+    },
+    "server.UpdateVolumeRequest": {
+      "properties": {
+        "description": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        }
+      },
+      "type": "object"
+    },
+    "server.VolumeIDRequest": {
+      "properties": {
+        "volumeId": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "volumeId"
+      ],
+      "type": "object"
+    },
+    "server.VolumePermissionsRequest": {
+      "properties": {
+        "mustHave": {
+          "items": {
+            "$ref": "#/definitions/remotefs.Permission"
+          },
+          "type": "array"
+        },
+        "principal": {
+          "$ref": "#/definitions/server.Principal"
+        }
+      },
+      "required": [
+        "mustHave",
+        "principal"
+      ],
+      "type": "object"
+    }
+  },
+  "externalDocs": {
+    "description": "OpenAPI",
+    "url": "https://swagger.io/resources/open-api/"
+  },
+  "host": "",
+  "info": {
+    "contact": {
+      "email": "support@dominodatalab.com",
+      "name": "Domino Data Lab",
+      "url": "https://tickets.dominodatalab.com/hc/en-us"
+    },
+    "description": "Microservice responsible for managing Domino Volumes for NetApp ONTAP feature",
+    "license": {
+      "name": "Apache 2.0",
+      "url": "http://www.apache.org/licenses/LICENSE-2.0.html"
+    },
+    "termsOfService": "http://swagger.io/terms/",
+    "title": "Domino Volumes for NetApp ONTAP Microservice API",
+    "version": "1.0"
+  },
+  "paths": {
+    "/account/authz/permissions/authorizedactions": {
+      "post": {
+        "consumes": [
+          "application/json"
+        ],
+        "description": "Gets all permissions for requesting user with optional volume ID or project ID in context field",
+        "parameters": [
+          {
+            "description": "Permissions to check user against",
+            "in": "body",
+            "name": "request",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/server.PermissionRequest"
+            }
+          }
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/definitions/server.PermissionResponse"
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "schema": {
+              "$ref": "#/definitions/server.HTTPError"
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "schema": {
+              "$ref": "#/definitions/server.HTTPError"
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "schema": {
+              "$ref": "#/definitions/server.HTTPError"
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "schema": {
+              "$ref": "#/definitions/server.HTTPError"
+            }
+          }
+        },
+        "summary": "Gets all permissions for requesting user",
+        "tags": [
+          "authz"
+        ]
+      }
+    },
+    "/account/authz/permissions/volume/:id": {
+      "post": {
+        "consumes": [
+          "application/json"
+        ],
+        "description": "Get if user has all provided volume permissions",
+        "parameters": [
+          {
+            "description": "ID of Volume to check permissions against",
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "description": "Volume permissions and user to check against",
+            "in": "body",
+            "name": "request",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/server.VolumePermissionsRequest"
+            }
+          }
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "schema": {
+              "$ref": "#/definitions/server.HTTPError"
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "schema": {
+              "$ref": "#/definitions/server.HTTPError"
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "schema": {
+              "$ref": "#/definitions/server.HTTPError"
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "schema": {
+              "$ref": "#/definitions/server.HTTPError"
+            }
+          }
+        },
+        "summary": "Get if user has all provided volume permissions",
+        "tags": [
+          "volumes"
+        ]
+      }
+    },
+    "/data-transfers": {
+      "get": {
+        "consumes": [
+          "application/json"
+        ],
+        "description": "List data transfers",
+        "parameters": [
+          {
+            "description": "Limit",
+            "in": "query",
+            "name": "limit",
+            "type": "integer"
+          },
+          {
+            "description": "Offset",
+            "in": "query",
+            "name": "offset",
+            "type": "integer"
+          },
+          {
+            "description": "Order",
+            "in": "query",
+            "name": "order",
+            "type": "string"
+          },
+          {
+            "description": "Search",
+            "in": "query",
+            "name": "search",
+            "type": "string"
+          },
+          {
+            "description": "Sort by",
+            "in": "query",
+            "name": "sort_by",
+            "type": "string"
+          },
+          {
+            "collectionFormat": "multi",
+            "description": "Destination volume ID",
+            "in": "query",
+            "items": {
+              "type": "string"
+            },
+            "name": "destination_volume_id",
+            "type": "array"
+          },
+          {
+            "collectionFormat": "multi",
+            "description": "Status",
+            "in": "query",
+            "items": {
+              "type": "string"
+            },
+            "name": "status",
+            "type": "array"
+          }
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/definitions/server.PaginatedDataTransfers"
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "schema": {
+              "$ref": "#/definitions/server.HTTPError"
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "schema": {
+              "$ref": "#/definitions/server.HTTPError"
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "schema": {
+              "$ref": "#/definitions/server.HTTPError"
+            }
+          }
+        },
+        "summary": "List data transfers",
+        "tags": [
+          "data transfers"
+        ]
+      },
+      "post": {
+        "consumes": [
+          "application/json"
+        ],
+        "description": "Create new data transfer",
+        "parameters": [
+          {
+            "description": "Data transfer to create",
+            "in": "body",
+            "name": "request",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/server.CreateDataTransfer"
+            }
+          }
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/definitions/remotefs.DataTransfer"
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "schema": {
+              "$ref": "#/definitions/server.HTTPError"
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "schema": {
+              "$ref": "#/definitions/server.HTTPError"
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "schema": {
+              "$ref": "#/definitions/server.HTTPError"
+            }
+          },
+          "409": {
+            "description": "Conflict",
+            "schema": {
+              "$ref": "#/definitions/server.HTTPError"
+            }
+          },
+          "423": {
+            "description": "Locked",
+            "schema": {
+              "$ref": "#/definitions/server.HTTPError"
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "schema": {
+              "$ref": "#/definitions/server.HTTPError"
+            }
+          }
+        },
+        "summary": "Create new data transfer",
+        "tags": [
+          "data transfers"
+        ]
+      }
+    },
+    "/data-transfers/{id}": {
+      "get": {
+        "consumes": [
+          "application/json"
+        ],
+        "description": "Get data transfer by ID",
+        "parameters": [
+          {
+            "description": "ID of data transfer to retrieve",
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/definitions/remotefs.DataTransfer"
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "schema": {
+              "$ref": "#/definitions/server.HTTPError"
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "schema": {
+              "$ref": "#/definitions/server.HTTPError"
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "schema": {
+              "$ref": "#/definitions/server.HTTPError"
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "schema": {
+              "$ref": "#/definitions/server.HTTPError"
+            }
+          }
+        },
+        "summary": "Get data transfer by ID",
+        "tags": [
+          "data transfers"
+        ]
+      }
+    },
+    "/data-transfers/{id}/callback": {
+      "post": {
+        "consumes": [
+          "application/json"
+        ],
+        "description": "Callback for data transfer from filetask",
+        "parameters": [
+          {
+            "description": "ID of data transfer targetted for callback from filetask",
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/definitions/remotefs.DataTransfer"
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "schema": {
+              "$ref": "#/definitions/server.HTTPError"
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "schema": {
+              "$ref": "#/definitions/server.HTTPError"
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "schema": {
+              "$ref": "#/definitions/server.HTTPError"
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "schema": {
+              "$ref": "#/definitions/server.HTTPError"
+            }
+          }
+        },
+        "summary": "Callback for data transfer from filetask",
+        "tags": [
+          "data transfers"
+        ]
+      }
+    },
+    "/downloads": {
+      "post": {
+        "consumes": [
+          "application/json"
+        ],
+        "description": "Create download archive",
+        "parameters": [
+          {
+            "description": "Create download request",
+            "in": "body",
+            "name": "request",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/server.CreateDownloadArchiveRequest"
+            }
+          }
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/definitions/remotefs.FiletaskTask"
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "schema": {
+              "$ref": "#/definitions/server.HTTPError"
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "schema": {
+              "$ref": "#/definitions/server.HTTPError"
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "schema": {
+              "$ref": "#/definitions/server.HTTPError"
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "schema": {
+              "$ref": "#/definitions/server.HTTPError"
+            }
+          }
+        },
+        "summary": "Create download archive",
+        "tags": [
+          "downloads"
+        ]
+      }
+    },
+    "/downloads/{id}": {
+      "get": {
+        "consumes": [
+          "application/json"
+        ],
+        "description": "Get download task status",
+        "parameters": [
+          {
+            "description": "ID of downloads task",
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "description": "ID of volume download task originates from",
+            "in": "query",
+            "name": "volume_id",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/definitions/remotefs.FiletaskTask"
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "schema": {
+              "$ref": "#/definitions/server.HTTPError"
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "schema": {
+              "$ref": "#/definitions/server.HTTPError"
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "schema": {
+              "$ref": "#/definitions/server.HTTPError"
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "schema": {
+              "$ref": "#/definitions/server.HTTPError"
+            }
+          }
+        },
+        "summary": "Get download task status",
+        "tags": [
+          "downloads"
+        ]
+      }
+    },
+    "/filesystems": {
+      "get": {
+        "consumes": [
+          "application/json"
+        ],
+        "description": "List filesystem",
+        "parameters": [
+          {
+            "description": "Limit",
+            "in": "query",
+            "name": "limit",
+            "type": "integer"
+          },
+          {
+            "description": "Offset",
+            "in": "query",
+            "name": "offset",
+            "type": "integer"
+          },
+          {
+            "description": "Order",
+            "in": "query",
+            "name": "order",
+            "type": "string"
+          },
+          {
+            "description": "Search",
+            "in": "query",
+            "name": "search",
+            "type": "string"
+          },
+          {
+            "description": "Sort by",
+            "in": "query",
+            "name": "sort_by",
+            "type": "string"
+          },
+          {
+            "collectionFormat": "multi",
+            "description": "Data Plane ID",
+            "in": "query",
+            "items": {
+              "type": "string"
+            },
+            "name": "data_plane_id",
+            "type": "array"
+          }
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/definitions/server.PaginatedFilesystems"
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "schema": {
+              "$ref": "#/definitions/server.HTTPError"
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "schema": {
+              "$ref": "#/definitions/server.HTTPError"
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "schema": {
+              "$ref": "#/definitions/server.HTTPError"
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "schema": {
+              "$ref": "#/definitions/server.HTTPError"
+            }
+          }
+        },
+        "summary": "List filesystem",
+        "tags": [
+          "filesystems"
+        ]
+      },
+      "post": {
+        "consumes": [
+          "application/json"
+        ],
+        "description": "Create new filesystem",
+        "parameters": [
+          {
+            "description": "Filesystem to create",
+            "in": "body",
+            "name": "request",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/server.Filesystem"
+            }
+          }
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/definitions/remotefs.Filesystem"
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "schema": {
+              "$ref": "#/definitions/server.HTTPError"
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "schema": {
+              "$ref": "#/definitions/server.HTTPError"
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "schema": {
+              "$ref": "#/definitions/server.HTTPError"
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "schema": {
+              "$ref": "#/definitions/server.HTTPError"
+            }
+          }
+        },
+        "summary": "Create new filesystem",
+        "tags": [
+          "filesystems"
+        ]
+      }
+    },
+    "/filesystems/{id}": {
+      "delete": {
+        "consumes": [
+          "application/json"
+        ],
+        "description": "Delete a filesystem by ID",
+        "parameters": [
+          {
+            "description": "ID of filesystem to delete",
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "responses": {
+          "204": {
+            "description": "No Content"
+          },
+          "400": {
+            "description": "Bad Request",
+            "schema": {
+              "$ref": "#/definitions/server.HTTPError"
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "schema": {
+              "$ref": "#/definitions/server.HTTPError"
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "schema": {
+              "$ref": "#/definitions/server.HTTPError"
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "schema": {
+              "$ref": "#/definitions/server.HTTPError"
+            }
+          }
+        },
+        "summary": "Delete filesystem by ID",
+        "tags": [
+          "filesystems"
+        ]
+      },
+      "get": {
+        "consumes": [
+          "application/json"
+        ],
+        "description": "Get filesystem by ID",
+        "parameters": [
+          {
+            "description": "ID of filesystem to retrieve",
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "description": "Whether to include the data plane host name in response",
+            "in": "query",
+            "name": "include_hostname",
+            "type": "boolean"
+          }
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/definitions/remotefs.Filesystem"
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "schema": {
+              "$ref": "#/definitions/server.HTTPError"
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "schema": {
+              "$ref": "#/definitions/server.HTTPError"
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "schema": {
+              "$ref": "#/definitions/server.HTTPError"
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "schema": {
+              "$ref": "#/definitions/server.HTTPError"
+            }
+          }
+        },
+        "summary": "Get filesystem by ID",
+        "tags": [
+          "filesystems"
+        ]
+      },
+      "put": {
+        "consumes": [
+          "application/json"
+        ],
+        "description": "Update a filesystem. Can be updated if there are volumes associated with the filesystem",
+        "parameters": [
+          {
+            "description": "ID of filesystem to update",
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "description": "Filesystem to update",
+            "in": "body",
+            "name": "request",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/server.Filesystem"
+            }
+          }
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/definitions/remotefs.Filesystem"
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "schema": {
+              "$ref": "#/definitions/server.HTTPError"
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "schema": {
+              "$ref": "#/definitions/server.HTTPError"
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "schema": {
+              "$ref": "#/definitions/server.HTTPError"
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "schema": {
+              "$ref": "#/definitions/server.HTTPError"
+            }
+          }
+        },
+        "summary": "Update filesystem",
+        "tags": [
+          "filesystems"
+        ]
+      }
+    },
+    "/root-pvcs": {
+      "get": {
+        "consumes": [
+          "application/json"
+        ],
+        "description": "List available PVCs in the domino-compute namespace with the netapp-storage label",
+        "parameters": [
+          {
+            "description": "Data Plane ID",
+            "in": "query",
+            "name": "data_plane_id",
+            "type": "string"
+          }
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "items": {
+                "type": "string"
+              },
+              "type": "array"
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "schema": {
+              "$ref": "#/definitions/server.HTTPError"
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "schema": {
+              "$ref": "#/definitions/server.HTTPError"
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "schema": {
+              "$ref": "#/definitions/server.HTTPError"
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "schema": {
+              "$ref": "#/definitions/server.HTTPError"
+            }
+          }
+        },
+        "summary": "List available PVCs in the domino-compute namespace with the netapp-storage label",
+        "tags": [
+          "filesystems"
+        ]
+      }
+    },
+    "/rpc/attach-volume-to-project": {
+      "post": {
+        "consumes": [
+          "application/json"
+        ],
+        "description": "Attach volume to project",
+        "parameters": [
+          {
+            "description": "Project ID to attach to Volume ID",
+            "in": "body",
+            "name": "request",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/server.UpdateVolumeProject"
+            }
+          }
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "responses": {
+          "204": {
+            "description": "No Content",
+            "schema": {
+              "$ref": "#/definitions/remotefs.Volume"
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "schema": {
+              "$ref": "#/definitions/server.HTTPError"
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "schema": {
+              "$ref": "#/definitions/server.HTTPError"
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "schema": {
+              "$ref": "#/definitions/server.HTTPError"
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "schema": {
+              "$ref": "#/definitions/server.HTTPError"
+            }
+          }
+        },
+        "summary": "Attach volume to project",
+        "tags": [
+          "volumes"
+        ]
+      }
+    },
+    "/rpc/bulk-copy-volumes-to-project": {
+      "post": {
+        "consumes": [
+          "application/json"
+        ],
+        "description": "Bulk copies volumes and contents to target project and allows for authorized user impersonation,\ndoes not copy snapshots and returns success/failure per volume",
+        "parameters": [
+          {
+            "description": "Volume IDs to copy and target Project ID",
+            "in": "body",
+            "name": "request",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/server.BulkCopyVolumesRequest"
+            }
+          }
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/definitions/server.CopyVolumeOperationResults"
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "schema": {
+              "$ref": "#/definitions/server.HTTPError"
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "schema": {
+              "$ref": "#/definitions/server.HTTPError"
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "schema": {
+              "$ref": "#/definitions/server.HTTPError"
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "schema": {
+              "$ref": "#/definitions/server.HTTPError"
+            }
+          }
+        },
+        "summary": "Bulk copies volumes and contents to target project and allows for authorized user impersonation",
+        "tags": [
+          "volumes"
+        ]
+      }
+    },
+    "/rpc/check-is-over-limit": {
+      "post": {
+        "consumes": [
+          "application/json"
+        ],
+        "description": "Check whether requesting user is over allowed volume limit",
+        "produces": [
+          "application/json"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "schema": {
+              "$ref": "#/definitions/server.HTTPError"
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "schema": {
+              "$ref": "#/definitions/server.HTTPError"
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "schema": {
+              "$ref": "#/definitions/server.HTTPError"
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "schema": {
+              "$ref": "#/definitions/server.HTTPError"
+            }
+          }
+        },
+        "summary": "Check whether requesting user is over allowed volume limit",
+        "tags": [
+          "volumes"
+        ]
+      }
+    },
+    "/rpc/create-snapshot-from-run": {
+      "post": {
+        "consumes": [
+          "application/json"
+        ],
+        "description": "Create new snapshot from a volumes mounted in a run, must be called by super user",
+        "parameters": [
+          {
+            "description": "Snapshot to create from run ID",
+            "in": "body",
+            "name": "request",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/server.CreateSnapshotFromRun"
+            }
+          }
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/definitions/remotefs.Snapshot"
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "schema": {
+              "$ref": "#/definitions/server.HTTPError"
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "schema": {
+              "$ref": "#/definitions/server.HTTPError"
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "schema": {
+              "$ref": "#/definitions/server.HTTPError"
+            }
+          },
+          "409": {
+            "description": "Conflict",
+            "schema": {
+              "$ref": "#/definitions/server.HTTPError"
+            }
+          },
+          "423": {
+            "description": "Locked",
+            "schema": {
+              "$ref": "#/definitions/server.HTTPError"
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "schema": {
+              "$ref": "#/definitions/server.HTTPError"
+            }
+          }
+        },
+        "summary": "Create new snapshot from a run",
+        "tags": [
+          "snapshots"
+        ]
+      }
+    },
+    "/rpc/delete-snapshot": {
+      "post": {
+        "consumes": [
+          "application/json"
+        ],
+        "description": "Delete a snapshot by ID",
+        "parameters": [
+          {
+            "description": "Snapshot ID to delete",
+            "in": "body",
+            "name": "request",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/server.SnapshotIDRequest"
+            }
+          }
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "responses": {
+          "204": {
+            "description": "No Content"
+          },
+          "400": {
+            "description": "Bad Request",
+            "schema": {
+              "$ref": "#/definitions/server.HTTPError"
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "schema": {
+              "$ref": "#/definitions/server.HTTPError"
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "schema": {
+              "$ref": "#/definitions/server.HTTPError"
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "schema": {
+              "$ref": "#/definitions/server.HTTPError"
+            }
+          }
+        },
+        "summary": "Delete snapshot by ID",
+        "tags": [
+          "snapshots"
+        ]
+      }
+    },
+    "/rpc/delete-volume": {
+      "post": {
+        "consumes": [
+          "application/json"
+        ],
+        "description": "Delete a volume by ID",
+        "parameters": [
+          {
+            "description": "Volume ID to delete",
+            "in": "body",
+            "name": "request",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/server.VolumeIDRequest"
+            }
+          }
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "responses": {
+          "204": {
+            "description": "No Content"
+          },
+          "400": {
+            "description": "Bad Request",
+            "schema": {
+              "$ref": "#/definitions/server.HTTPError"
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "schema": {
+              "$ref": "#/definitions/server.HTTPError"
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "schema": {
+              "$ref": "#/definitions/server.HTTPError"
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "schema": {
+              "$ref": "#/definitions/server.HTTPError"
+            }
+          }
+        },
+        "summary": "Delete volume by ID",
+        "tags": [
+          "volumes"
+        ]
+      }
+    },
+    "/rpc/detach-volume-from-project": {
+      "post": {
+        "consumes": [
+          "application/json"
+        ],
+        "description": "Detach volume from project",
+        "parameters": [
+          {
+            "description": "Project ID to detach from Volume ID",
+            "in": "body",
+            "name": "request",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/server.UpdateVolumeProject"
+            }
+          }
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "responses": {
+          "204": {
+            "description": "No Content",
+            "schema": {
+              "$ref": "#/definitions/remotefs.Volume"
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "schema": {
+              "$ref": "#/definitions/server.HTTPError"
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "schema": {
+              "$ref": "#/definitions/server.HTTPError"
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "schema": {
+              "$ref": "#/definitions/server.HTTPError"
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "schema": {
+              "$ref": "#/definitions/server.HTTPError"
+            }
+          }
+        },
+        "summary": "Detach volume from project",
+        "tags": [
+          "volumes"
+        ]
+      }
+    },
+    "/rpc/get-volume-mounts": {
+      "post": {
+        "consumes": [
+          "application/json"
+        ],
+        "description": "Get volume and snapshot mounts by project ID and optional data plane ID or volume ID",
+        "parameters": [
+          {
+            "description": "Filters to apply to returned volume mounts",
+            "in": "body",
+            "name": "request",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/server.ListVolumeMountsRequest"
+            }
+          }
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "items": {
+                "$ref": "#/definitions/remotefs.VolumeMount"
+              },
+              "type": "array"
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "schema": {
+              "$ref": "#/definitions/server.HTTPError"
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "schema": {
+              "$ref": "#/definitions/server.HTTPError"
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "schema": {
+              "$ref": "#/definitions/server.HTTPError"
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "schema": {
+              "$ref": "#/definitions/server.HTTPError"
+            }
+          }
+        },
+        "summary": "Get volume mounts by project ID",
+        "tags": [
+          "volumes"
+        ]
+      }
+    },
+    "/rpc/mark-volume-for-deletion": {
+      "post": {
+        "consumes": [
+          "application/json"
+        ],
+        "description": "Mark volume for deletion",
+        "parameters": [
+          {
+            "description": "Volume ID to mark for deletion",
+            "in": "body",
+            "name": "request",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/server.VolumeIDRequest"
+            }
+          }
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "responses": {
+          "204": {
+            "description": "No Content",
+            "schema": {
+              "$ref": "#/definitions/remotefs.Volume"
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "schema": {
+              "$ref": "#/definitions/server.HTTPError"
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "schema": {
+              "$ref": "#/definitions/server.HTTPError"
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "schema": {
+              "$ref": "#/definitions/server.HTTPError"
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "schema": {
+              "$ref": "#/definitions/server.HTTPError"
+            }
+          }
+        },
+        "summary": "Mark volume for deletion",
+        "tags": [
+          "volumes"
+        ]
+      }
+    },
+    "/rpc/restore-snapshot": {
+      "post": {
+        "consumes": [
+          "application/json"
+        ],
+        "description": "Restore snapshot to active state",
+        "parameters": [
+          {
+            "description": "Snapshot ID to restore to active state",
+            "in": "body",
+            "name": "request",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/server.SnapshotIDRequest"
+            }
+          }
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "responses": {
+          "204": {
+            "description": "No Content",
+            "schema": {
+              "$ref": "#/definitions/remotefs.Snapshot"
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "schema": {
+              "$ref": "#/definitions/server.HTTPError"
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "schema": {
+              "$ref": "#/definitions/server.HTTPError"
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "schema": {
+              "$ref": "#/definitions/server.HTTPError"
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "schema": {
+              "$ref": "#/definitions/server.HTTPError"
+            }
+          }
+        },
+        "summary": "Restore snapshot to active state",
+        "tags": [
+          "snapshots"
+        ]
+      }
+    },
+    "/rpc/restore-volume": {
+      "post": {
+        "consumes": [
+          "application/json"
+        ],
+        "description": "Restore volume to active state",
+        "parameters": [
+          {
+            "description": "Volume ID to restore to active state",
+            "in": "body",
+            "name": "request",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/server.VolumeIDRequest"
+            }
+          }
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "responses": {
+          "204": {
+            "description": "No Content",
+            "schema": {
+              "$ref": "#/definitions/remotefs.Volume"
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "schema": {
+              "$ref": "#/definitions/server.HTTPError"
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "schema": {
+              "$ref": "#/definitions/server.HTTPError"
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "schema": {
+              "$ref": "#/definitions/server.HTTPError"
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "schema": {
+              "$ref": "#/definitions/server.HTTPError"
+            }
+          }
+        },
+        "summary": "Restore volume to active state",
+        "tags": [
+          "volumes"
+        ]
+      }
+    },
+    "/snapshots": {
+      "get": {
+        "consumes": [
+          "application/json"
+        ],
+        "description": "List snapshots",
+        "parameters": [
+          {
+            "description": "Limit",
+            "in": "query",
+            "name": "limit",
+            "type": "integer"
+          },
+          {
+            "description": "Offset",
+            "in": "query",
+            "name": "offset",
+            "type": "integer"
+          },
+          {
+            "description": "Order",
+            "in": "query",
+            "name": "order",
+            "type": "string"
+          },
+          {
+            "description": "Search",
+            "in": "query",
+            "name": "search",
+            "type": "string"
+          },
+          {
+            "description": "Sort by",
+            "in": "query",
+            "name": "sort_by",
+            "type": "string"
+          },
+          {
+            "collectionFormat": "multi",
+            "description": "Volume ID",
+            "in": "query",
+            "items": {
+              "type": "string"
+            },
+            "name": "volume_id",
+            "type": "array"
+          },
+          {
+            "collectionFormat": "multi",
+            "description": "Volume ID",
+            "in": "query",
+            "items": {
+              "type": "string"
+            },
+            "name": "run_id",
+            "type": "array"
+          }
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/definitions/server.PaginatedSnapshots"
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "schema": {
+              "$ref": "#/definitions/server.HTTPError"
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "schema": {
+              "$ref": "#/definitions/server.HTTPError"
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "schema": {
+              "$ref": "#/definitions/server.HTTPError"
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "schema": {
+              "$ref": "#/definitions/server.HTTPError"
+            }
+          }
+        },
+        "summary": "List snapshots",
+        "tags": [
+          "snapshots"
+        ]
+      },
+      "post": {
+        "consumes": [
+          "application/json"
+        ],
+        "description": "Create new snapshot",
+        "parameters": [
+          {
+            "description": "Snapshot to create",
+            "in": "body",
+            "name": "request",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/server.CreateSnapshot"
+            }
+          }
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/definitions/remotefs.Snapshot"
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "schema": {
+              "$ref": "#/definitions/server.HTTPError"
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "schema": {
+              "$ref": "#/definitions/server.HTTPError"
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "schema": {
+              "$ref": "#/definitions/server.HTTPError"
+            }
+          },
+          "409": {
+            "description": "Conflict",
+            "schema": {
+              "$ref": "#/definitions/server.HTTPError"
+            }
+          },
+          "423": {
+            "description": "Locked",
+            "schema": {
+              "$ref": "#/definitions/server.HTTPError"
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "schema": {
+              "$ref": "#/definitions/server.HTTPError"
+            }
+          }
+        },
+        "summary": "Create new snapshot",
+        "tags": [
+          "snapshots"
+        ]
+      }
+    },
+    "/snapshots/{id}": {
+      "get": {
+        "consumes": [
+          "application/json"
+        ],
+        "description": "Get snapshot by ID",
+        "parameters": [
+          {
+            "description": "ID of snapshot to retrieve",
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/definitions/remotefs.Snapshot"
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "schema": {
+              "$ref": "#/definitions/server.HTTPError"
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "schema": {
+              "$ref": "#/definitions/server.HTTPError"
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "schema": {
+              "$ref": "#/definitions/server.HTTPError"
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "schema": {
+              "$ref": "#/definitions/server.HTTPError"
+            }
+          }
+        },
+        "summary": "Get snapshot by ID",
+        "tags": [
+          "snapshots"
+        ]
+      },
+      "put": {
+        "consumes": [
+          "application/json"
+        ],
+        "description": "Update Snapshot by ID",
+        "parameters": [
+          {
+            "description": "ID of Snapshot to update",
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "description": "Snapshot to update",
+            "in": "body",
+            "name": "request",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/server.UpdateSnapshot"
+            }
+          }
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/definitions/remotefs.Snapshot"
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "schema": {
+              "$ref": "#/definitions/server.HTTPError"
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "schema": {
+              "$ref": "#/definitions/server.HTTPError"
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "schema": {
+              "$ref": "#/definitions/server.HTTPError"
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "schema": {
+              "$ref": "#/definitions/server.HTTPError"
+            }
+          }
+        },
+        "summary": "Update Snapshot by ID",
+        "tags": [
+          "snapshots"
+        ]
+      }
+    },
+    "/snapshots/{id}/tags": {
+      "post": {
+        "consumes": [
+          "application/json"
+        ],
+        "description": "Add a tag to a snapshot",
+        "parameters": [
+          {
+            "description": "ID of snapshot to add tag to",
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "description": "Snapshot tag to add",
+            "in": "body",
+            "name": "request",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/server.CreateSnapshotTagRequest"
+            }
+          }
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "responses": {
+          "204": {
+            "description": "No Content"
+          },
+          "400": {
+            "description": "Bad Request",
+            "schema": {
+              "$ref": "#/definitions/server.HTTPError"
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "schema": {
+              "$ref": "#/definitions/server.HTTPError"
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "schema": {
+              "$ref": "#/definitions/server.HTTPError"
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "schema": {
+              "$ref": "#/definitions/server.HTTPError"
+            }
+          }
+        },
+        "summary": "Add snapshot tag",
+        "tags": [
+          "snapshots"
+        ]
+      }
+    },
+    "/snapshots/{id}/tags/{name}": {
+      "delete": {
+        "consumes": [
+          "application/json"
+        ],
+        "description": "Delete a tag from a snapshot",
+        "parameters": [
+          {
+            "description": "ID of snapshot to delete tag from",
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "description": "Tag name to delete from snapshot",
+            "in": "path",
+            "name": "name",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "responses": {
+          "204": {
+            "description": "No Content"
+          },
+          "400": {
+            "description": "Bad Request",
+            "schema": {
+              "$ref": "#/definitions/server.HTTPError"
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "schema": {
+              "$ref": "#/definitions/server.HTTPError"
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "schema": {
+              "$ref": "#/definitions/server.HTTPError"
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "schema": {
+              "$ref": "#/definitions/server.HTTPError"
+            }
+          }
+        },
+        "summary": "Delete snapshot tag",
+        "tags": [
+          "snapshots"
+        ]
+      }
+    },
+    "/staging-volume": {
+      "get": {
+        "consumes": [
+          "application/json"
+        ],
+        "description": "Get domino staging volume name",
+        "produces": [
+          "application/json"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "type": "string"
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "schema": {
+              "$ref": "#/definitions/server.HTTPError"
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "schema": {
+              "$ref": "#/definitions/server.HTTPError"
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "schema": {
+              "$ref": "#/definitions/server.HTTPError"
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "schema": {
+              "$ref": "#/definitions/server.HTTPError"
+            }
+          }
+        },
+        "summary": "Get domino staging volume name",
+        "tags": [
+          "volumes"
+        ]
+      }
+    },
+    "/tasks/import-blobs/{key}/update": {
+      "get": {
+        "consumes": [
+          "application/json"
+        ],
+        "description": "Get import blobs task update",
+        "parameters": [
+          {
+            "description": "Key of import blobs task",
+            "in": "path",
+            "name": "key",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/definitions/remotefs.FiletaskTask"
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "schema": {
+              "$ref": "#/definitions/server.HTTPError"
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "schema": {
+              "$ref": "#/definitions/server.HTTPError"
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "schema": {
+              "$ref": "#/definitions/server.HTTPError"
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "schema": {
+              "$ref": "#/definitions/server.HTTPError"
+            }
+          }
+        },
+        "summary": "Get import blobs task update",
+        "tags": [
+          "tasks"
+        ]
+      }
+    },
+    "/volumes": {
+      "get": {
+        "consumes": [
+          "application/json"
+        ],
+        "description": "List volumes",
+        "parameters": [
+          {
+            "description": "Limit",
+            "in": "query",
+            "name": "limit",
+            "type": "integer"
+          },
+          {
+            "description": "Offset",
+            "in": "query",
+            "name": "offset",
+            "type": "integer"
+          },
+          {
+            "description": "Order",
+            "in": "query",
+            "name": "order",
+            "type": "string"
+          },
+          {
+            "description": "Search",
+            "in": "query",
+            "name": "search",
+            "type": "string"
+          },
+          {
+            "description": "Sort by",
+            "in": "query",
+            "name": "sort_by",
+            "type": "string"
+          },
+          {
+            "description": "Filter strictly by volume roles",
+            "in": "query",
+            "name": "filter_strictly_by_volume_roles",
+            "type": "boolean"
+          },
+          {
+            "collectionFormat": "multi",
+            "description": "Project ID",
+            "in": "query",
+            "items": {
+              "type": "string"
+            },
+            "name": "project_id",
+            "type": "array"
+          },
+          {
+            "collectionFormat": "multi",
+            "description": "Data Plane ID",
+            "in": "query",
+            "items": {
+              "type": "string"
+            },
+            "name": "data_plane_id",
+            "type": "array"
+          },
+          {
+            "collectionFormat": "multi",
+            "description": "Status",
+            "in": "query",
+            "items": {
+              "type": "string"
+            },
+            "name": "status",
+            "type": "array"
+          }
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/definitions/server.PaginatedVolumes"
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "schema": {
+              "$ref": "#/definitions/server.HTTPError"
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "schema": {
+              "$ref": "#/definitions/server.HTTPError"
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "schema": {
+              "$ref": "#/definitions/server.HTTPError"
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "schema": {
+              "$ref": "#/definitions/server.HTTPError"
+            }
+          }
+        },
+        "summary": "List volumes",
+        "tags": [
+          "volumes"
+        ]
+      },
+      "post": {
+        "consumes": [
+          "application/json"
+        ],
+        "description": "Create new volume",
+        "parameters": [
+          {
+            "description": "Volume to create",
+            "in": "body",
+            "name": "request",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/server.CreateVolumeRequest"
+            }
+          }
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/definitions/remotefs.Volume"
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "schema": {
+              "$ref": "#/definitions/server.HTTPError"
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "schema": {
+              "$ref": "#/definitions/server.HTTPError"
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "schema": {
+              "$ref": "#/definitions/server.HTTPError"
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "schema": {
+              "$ref": "#/definitions/server.HTTPError"
+            }
+          }
+        },
+        "summary": "Create new volume",
+        "tags": [
+          "volumes"
+        ]
+      }
+    },
+    "/volumes/unique-name/{uniqueName}": {
+      "get": {
+        "consumes": [
+          "application/json"
+        ],
+        "description": "Get a volume by unique name",
+        "parameters": [
+          {
+            "description": "Unique name of volume to retrieve",
+            "in": "path",
+            "name": "uniqueName",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/definitions/remotefs.Volume"
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "schema": {
+              "$ref": "#/definitions/server.HTTPError"
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "schema": {
+              "$ref": "#/definitions/server.HTTPError"
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "schema": {
+              "$ref": "#/definitions/server.HTTPError"
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "schema": {
+              "$ref": "#/definitions/server.HTTPError"
+            }
+          }
+        },
+        "summary": "Get a volume by unique name",
+        "tags": [
+          "volumes"
+        ]
+      }
+    },
+    "/volumes/{id}": {
+      "get": {
+        "consumes": [
+          "application/json"
+        ],
+        "description": "Get volume by ID",
+        "parameters": [
+          {
+            "description": "ID of volume to retrieve",
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/definitions/remotefs.Volume"
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "schema": {
+              "$ref": "#/definitions/server.HTTPError"
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "schema": {
+              "$ref": "#/definitions/server.HTTPError"
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "schema": {
+              "$ref": "#/definitions/server.HTTPError"
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "schema": {
+              "$ref": "#/definitions/server.HTTPError"
+            }
+          }
+        },
+        "summary": "Get volume by ID",
+        "tags": [
+          "volumes"
+        ]
+      },
+      "patch": {
+        "consumes": [
+          "application/json"
+        ],
+        "description": "Update Volume",
+        "parameters": [
+          {
+            "description": "ID of volume to retrieve",
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "description": "Name and description fields to update",
+            "in": "body",
+            "name": "request",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/server.UpdateVolumeRequest"
+            }
+          }
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/definitions/remotefs.Volume"
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "schema": {
+              "$ref": "#/definitions/server.HTTPError"
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "schema": {
+              "$ref": "#/definitions/server.HTTPError"
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "schema": {
+              "$ref": "#/definitions/server.HTTPError"
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "schema": {
+              "$ref": "#/definitions/server.HTTPError"
+            }
+          }
+        },
+        "summary": "Update Volume",
+        "tags": [
+          "volumes"
+        ]
+      }
+    },
+    "/volumes/{id}/connection-snippets": {
+      "get": {
+        "consumes": [
+          "application/json"
+        ],
+        "description": "Get the connection snippets for a given volume to access as a datasource",
+        "parameters": [
+          {
+            "description": "Volume ID",
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "items": {
+                "$ref": "#/definitions/remotefs.ConnectionSnippet"
+              },
+              "type": "array"
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "schema": {
+              "$ref": "#/definitions/server.HTTPError"
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "schema": {
+              "$ref": "#/definitions/server.HTTPError"
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "schema": {
+              "$ref": "#/definitions/server.HTTPError"
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "schema": {
+              "$ref": "#/definitions/server.HTTPError"
+            }
+          }
+        },
+        "summary": "Get the connection snippets for a given volume to access as a datasource",
+        "tags": [
+          "volumes"
+        ]
+      }
+    },
+    "/volumes/{id}/grants": {
+      "get": {
+        "consumes": [
+          "application/json"
+        ],
+        "description": "Get grants by Volume ID",
+        "parameters": [
+          {
+            "description": "ID of volume to retrieve grants from",
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "items": {
+                "$ref": "#/definitions/remotefs.VolumeGrant"
+              },
+              "type": "array"
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "schema": {
+              "$ref": "#/definitions/server.HTTPError"
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "schema": {
+              "$ref": "#/definitions/server.HTTPError"
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "schema": {
+              "$ref": "#/definitions/server.HTTPError"
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "schema": {
+              "$ref": "#/definitions/server.HTTPError"
+            }
+          }
+        },
+        "summary": "Get grants by Volume ID",
+        "tags": [
+          "volumes"
+        ]
+      },
+      "put": {
+        "consumes": [
+          "application/json"
+        ],
+        "description": "Update grants by Volume ID",
+        "parameters": [
+          {
+            "description": "ID of volume to update grants",
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "description": "New grants to replace current volume grants",
+            "in": "body",
+            "name": "request",
+            "required": true,
+            "schema": {
+              "items": {
+                "$ref": "#/definitions/remotefs.VolumeGrantDTO"
+              },
+              "type": "array"
+            }
+          }
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/definitions/remotefs.VolumeGrant"
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "schema": {
+              "$ref": "#/definitions/server.HTTPError"
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "schema": {
+              "$ref": "#/definitions/server.HTTPError"
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "schema": {
+              "$ref": "#/definitions/server.HTTPError"
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "schema": {
+              "$ref": "#/definitions/server.HTTPError"
+            }
+          }
+        },
+        "summary": "Update grants by Volume ID",
+        "tags": [
+          "volumes"
+        ]
+      }
+    },
+    "/volumes/{id}/snapshots/{version}": {
+      "get": {
+        "consumes": [
+          "application/json"
+        ],
+        "description": "Get snapshot by volume ID and snapshot version",
+        "parameters": [
+          {
+            "description": "Volume ID",
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "description": "Snapshot version",
+            "in": "path",
+            "name": "version",
+            "required": true,
+            "type": "integer"
+          }
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/definitions/remotefs.Snapshot"
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "schema": {
+              "$ref": "#/definitions/server.HTTPError"
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "schema": {
+              "$ref": "#/definitions/server.HTTPError"
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "schema": {
+              "$ref": "#/definitions/server.HTTPError"
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "schema": {
+              "$ref": "#/definitions/server.HTTPError"
+            }
+          }
+        },
+        "summary": "Get snapshot by volume ID and snapshot version",
+        "tags": [
+          "snapshots"
+        ]
+      }
+    }
+  },
+  "schemes": [
+    "http",
+    "https"
+  ],
+  "securityDefinitions": {
+    "BearerAuth": {
+      "in": "header",
+      "name": "Authorization",
+      "type": "apiKey"
+    }
+  },
+  "swagger": "2.0"
+}
