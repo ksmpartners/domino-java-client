@@ -544,7 +544,8 @@
       "properties": {
         "capacity": {
           "description": "Maximum size in bytes",
-          "type": "integer"
+          "type": "integer",
+          "format": "int64"
         },
         "createdAt": {
           "type": "string"
@@ -600,7 +601,8 @@
         },
         "storageSize": {
           "description": "Used size in bytes",
-          "type": "integer"
+          "type": "integer",
+          "format": "int64"
         },
         "uniqueName": {
           "type": "string"
@@ -900,7 +902,8 @@
     "server.CreateVolumeRequest": {
       "properties": {
         "capacity": {
-          "type": "integer"
+          "type": "integer",
+          "format": "int64"
         },
         "description": {
           "type": "string"
