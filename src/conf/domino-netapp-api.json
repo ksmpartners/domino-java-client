@@ -3777,7 +3777,10 @@
           "200": {
             "description": "OK",
             "schema": {
-              "$ref": "#/definitions/remotefs.VolumeGrant"
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/remotefs.VolumeGrant"
+              }
             }
           },
           "400": {
