@@ -19147,171 +19147,171 @@
         ]
       }
     },
+    "/api/cost/v1/billingtagSettings/mode": {
+      "get": {
+        "description": "Get mode setting of the billing tags",
+        "operationId": "getBillingTagMode",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BillingTagsModeEnvelopeV1"
+                }
+              }
+            },
+            "description": "Success"
+          },
+          "400": {
+            "$ref": "#/components/responses/400"
+          },
+          "401": {
+            "$ref": "#/components/responses/401"
+          },
+          "403": {
+            "$ref": "#/components/responses/403"
+          },
+          "404": {
+            "$ref": "#/components/responses/404"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
+          }
+        },
+        "summary": "Get mode setting of the billing tags",
+        "tags": [
+          "BillingTagSettings"
+        ]
+      },
+      "put": {
+        "description": "Update mode setting of the billing tags",
+        "operationId": "updateBillingTagMode",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/BillingTagsModeV1"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BillingTagsModeEnvelopeV1"
+                }
+              }
+            },
+            "description": "Success"
+          },
+          "400": {
+            "$ref": "#/components/responses/400"
+          },
+          "401": {
+            "$ref": "#/components/responses/401"
+          },
+          "403": {
+            "$ref": "#/components/responses/403"
+          },
+          "404": {
+            "$ref": "#/components/responses/404"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
+          }
+        },
+        "summary": "Update mode setting of the billing tags",
+        "tags": [
+          "BillingTagSettings"
+        ]
+      }
+    },
+    "/api/cost/v1/billingtagSettings/notifications": {
+      "get": {
+        "description": "Get notifications setting of the billing tags",
+        "operationId": "getBillingTagNotification",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BillingTagsNotificationsEnvelopeV1"
+                }
+              }
+            },
+            "description": "Success"
+          },
+          "400": {
+            "$ref": "#/components/responses/400"
+          },
+          "401": {
+            "$ref": "#/components/responses/401"
+          },
+          "403": {
+            "$ref": "#/components/responses/403"
+          },
+          "404": {
+            "$ref": "#/components/responses/404"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
+          }
+        },
+        "summary": "Get notifications setting of the billing tags",
+        "tags": [
+          "BillingTagSettings"
+        ]
+      },
+      "put": {
+        "description": "Update notifications setting of the billing tags",
+        "operationId": "updateBillingTagNotification",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/BillingTagsNotificationsV1"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BillingTagsNotificationsEnvelopeV1"
+                }
+              }
+            },
+            "description": "Success"
+          },
+          "400": {
+            "$ref": "#/components/responses/400"
+          },
+          "401": {
+            "$ref": "#/components/responses/401"
+          },
+          "403": {
+            "$ref": "#/components/responses/403"
+          },
+          "404": {
+            "$ref": "#/components/responses/404"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
+          }
+        },
+        "summary": "Update notifications setting of the billing tags",
+        "tags": [
+          "BillingTagSettings"
+        ]
+      }
+    },
     "/api/cost/v1/billingtagSettings": {
-      "/api/cost/v1/billingtagSettings/mode": {
-        "get": {
-          "description": "Get mode setting of the billing tags",
-          "operationId": "getBillingTagMode",
-          "responses": {
-            "200": {
-              "content": {
-                "application/json": {
-                  "schema": {
-                    "$ref": "#/components/schemas/BillingTagsModeEnvelopeV1"
-                  }
-                }
-              },
-              "description": "Success"
-            },
-            "400": {
-              "$ref": "#/components/responses/400"
-            },
-            "401": {
-              "$ref": "#/components/responses/401"
-            },
-            "403": {
-              "$ref": "#/components/responses/403"
-            },
-            "404": {
-              "$ref": "#/components/responses/404"
-            },
-            "500": {
-              "$ref": "#/components/responses/500"
-            }
-          },
-          "summary": "Get mode setting of the billing tags",
-          "tags": [
-            "BillingTagSettings"
-          ]
-        },
-        "put": {
-          "description": "Update mode setting of the billing tags",
-          "operationId": "updateBillingTagMode",
-          "requestBody": {
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/BillingTagsModeV1"
-                }
-              }
-            },
-            "required": true
-          },
-          "responses": {
-            "200": {
-              "content": {
-                "application/json": {
-                  "schema": {
-                    "$ref": "#/components/schemas/BillingTagsModeEnvelopeV1"
-                  }
-                }
-              },
-              "description": "Success"
-            },
-            "400": {
-              "$ref": "#/components/responses/400"
-            },
-            "401": {
-              "$ref": "#/components/responses/401"
-            },
-            "403": {
-              "$ref": "#/components/responses/403"
-            },
-            "404": {
-              "$ref": "#/components/responses/404"
-            },
-            "500": {
-              "$ref": "#/components/responses/500"
-            }
-          },
-          "summary": "Update mode setting of the billing tags",
-          "tags": [
-            "BillingTagSettings"
-          ]
-        }
-      },
-      "/api/cost/v1/billingtagSettings/notifications": {
-        "get": {
-          "description": "Get notifications setting of the billing tags",
-          "operationId": "getBillingTagNotification",
-          "responses": {
-            "200": {
-              "content": {
-                "application/json": {
-                  "schema": {
-                    "$ref": "#/components/schemas/BillingTagsNotificationsEnvelopeV1"
-                  }
-                }
-              },
-              "description": "Success"
-            },
-            "400": {
-              "$ref": "#/components/responses/400"
-            },
-            "401": {
-              "$ref": "#/components/responses/401"
-            },
-            "403": {
-              "$ref": "#/components/responses/403"
-            },
-            "404": {
-              "$ref": "#/components/responses/404"
-            },
-            "500": {
-              "$ref": "#/components/responses/500"
-            }
-          },
-          "summary": "Get notifications setting of the billing tags",
-          "tags": [
-            "BillingTagSettings"
-          ]
-        },
-        "put": {
-          "description": "Update notifications setting of the billing tags",
-          "operationId": "updateBillingTagNotification",
-          "requestBody": {
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/BillingTagsNotificationsV1"
-                }
-              }
-            },
-            "required": true
-          },
-          "responses": {
-            "200": {
-              "content": {
-                "application/json": {
-                  "schema": {
-                    "$ref": "#/components/schemas/BillingTagsNotificationsEnvelopeV1"
-                  }
-                }
-              },
-              "description": "Success"
-            },
-            "400": {
-              "$ref": "#/components/responses/400"
-            },
-            "401": {
-              "$ref": "#/components/responses/401"
-            },
-            "403": {
-              "$ref": "#/components/responses/403"
-            },
-            "404": {
-              "$ref": "#/components/responses/404"
-            },
-            "500": {
-              "$ref": "#/components/responses/500"
-            }
-          },
-          "summary": "Update notifications setting of the billing tags",
-          "tags": [
-            "BillingTagSettings"
-          ]
-        }
-      },
       "get": {
         "description": "Get  billing tags setting",
         "operationId": "getBillingTagSettings",
