@@ -66,7 +66,7 @@ class GatewayApiTest extends TestClientConfigurer {
         String relationship = "Owned";
 
         // Act
-        List<DominoServerProjectsApiProjectGatewaySummary> projects = gatewayApi.callList(relationship, Boolean.TRUE, null, null, null);
+        List<DominoServerProjectsApiProjectGatewaySummary> projects = gatewayApi.listProjects(relationship, Boolean.TRUE, null, null, null);
 
         // Assert
         assertNotNull(projects);
@@ -79,7 +79,7 @@ class GatewayApiTest extends TestClientConfigurer {
         String relationship = TestData.INVALID_DOMINO_ID;
 
         // Act
-        ApiException th = assertThrows(ApiException.class, () -> gatewayApi.callList(relationship, Boolean.TRUE, null, null, null));
+        ApiException th = assertThrows(ApiException.class, () -> gatewayApi.listProjects(relationship, Boolean.TRUE, null, null, null));
 
         // Assert
         assertEquals(500, th.getCode());
