@@ -859,7 +859,7 @@
                   "type": "number"
                 },
                 "timestamp": {
-                  "format": "epoch",
+                  "format": "int64",
                   "type": "number"
                 }
               },
@@ -909,7 +909,7 @@
             "type": "string"
           },
           "timestamp": {
-            "format": "epoch",
+            "format": "int64",
             "type": "number"
           }
         },
@@ -932,7 +932,7 @@
             "$ref": "#/components/schemas/AppInstanceAutoscalingInfo"
           },
           "createdAt": {
-            "format": "epoch",
+            "format": "int64",
             "type": "number"
           },
           "id": {
@@ -956,7 +956,7 @@
       "AppInstanceSummaryResponse": {
         "properties": {
           "createdAt": {
-            "format": "epoch",
+            "format": "int64",
             "type": "number"
           },
           "describeUrl": {
@@ -1064,7 +1064,7 @@
             "type": "string"
           },
           "updatedAt": {
-            "format": "epoch",
+            "format": "int64",
             "type": "number"
           },
           "url": {
@@ -1151,7 +1151,7 @@
             "type": "string"
           },
           "updatedAt": {
-            "format": "epoch",
+            "format": "int64",
             "type": "number"
           },
           "url": {
@@ -1249,7 +1249,7 @@
             "type": "string"
           },
           "updatedAt": {
-            "format": "epoch",
+            "format": "int64",
             "type": "number"
           },
           "url": {
@@ -1348,7 +1348,7 @@
             "type": "string"
           },
           "updatedAt": {
-            "format": "epoch",
+            "format": "int64",
             "type": "number"
           },
           "url": {
@@ -1403,7 +1403,7 @@
             "type": "number"
           },
           "updatedAt": {
-            "format": "epoch",
+            "format": "int64",
             "type": "number"
           }
         },
@@ -1681,7 +1681,7 @@
         "properties": {
           "promotedAt": {
             "description": "Timestamp when the version was promoted from draft to released.",
-            "format": "epoch",
+            "format": "int64",
             "nullable": true,
             "type": "number"
           },
@@ -1713,7 +1713,7 @@
             "type": "string"
           },
           "createdAt": {
-            "format": "epoch",
+            "format": "int64",
             "type": "number"
           },
           "currentInstance": {
@@ -1776,7 +1776,7 @@
             "type": "array"
           },
           "updatedAt": {
-            "format": "epoch",
+            "format": "int64",
             "type": "number"
           },
           "vanityUrl": {
@@ -1810,7 +1810,7 @@
             "$ref": "#/components/schemas/AppVersionContent"
           },
           "createdAt": {
-            "format": "epoch",
+            "format": "int64",
             "type": "number"
           },
           "currentInstance": {
@@ -1838,7 +1838,7 @@
             "type": "array"
           },
           "updatedAt": {
-            "format": "epoch",
+            "format": "int64",
             "type": "number"
           },
           "versionNumber": {
@@ -2039,7 +2039,7 @@
             "type": "integer"
           },
           "timestamp": {
-            "format": "epoch",
+            "format": "int64",
             "type": "number"
           },
           "users": {
@@ -8731,7 +8731,7 @@
                   "type": "number"
                 },
                 "timestamp": {
-                  "format": "epoch",
+                  "format": "int64",
                   "type": "number"
                 }
               },
@@ -19147,6 +19147,88 @@
         ]
       }
     },
+    "/api/cost/v1/billingtagSettings": {
+      "get": {
+        "description": "Get  billing tags setting",
+        "operationId": "getBillingTagSettings",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BillingTagsSettingsEnvelopeV1"
+                }
+              }
+            },
+            "description": "Success"
+          },
+          "400": {
+            "$ref": "#/components/responses/400"
+          },
+          "401": {
+            "$ref": "#/components/responses/401"
+          },
+          "403": {
+            "$ref": "#/components/responses/403"
+          },
+          "404": {
+            "$ref": "#/components/responses/404"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
+          }
+        },
+        "summary": "Get  billing tags setting",
+        "tags": [
+          "BillingTagSettings"
+        ]
+      },
+      "put": {
+        "description": "Update billing tags setting",
+        "operationId": "updateBillingTagSettings",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/BillingTagsSettingsV1"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BillingTagsSettingsEnvelopeV1"
+                }
+              }
+            },
+            "description": "Success"
+          },
+          "400": {
+            "$ref": "#/components/responses/400"
+          },
+          "401": {
+            "$ref": "#/components/responses/401"
+          },
+          "403": {
+            "$ref": "#/components/responses/403"
+          },
+          "404": {
+            "$ref": "#/components/responses/404"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
+          }
+        },
+        "summary": "Update billing tags setting",
+        "tags": [
+          "BillingTagSettings"
+        ]
+      }
+    },
     "/api/cost/v1/billingtagSettings/mode": {
       "get": {
         "description": "Get mode setting of the billing tags",
@@ -19306,88 +19388,6 @@
           }
         },
         "summary": "Update notifications setting of the billing tags",
-        "tags": [
-          "BillingTagSettings"
-        ]
-      }
-    },
-    "/api/cost/v1/billingtagSettings": {
-      "get": {
-        "description": "Get  billing tags setting",
-        "operationId": "getBillingTagSettings",
-        "responses": {
-          "200": {
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/BillingTagsSettingsEnvelopeV1"
-                }
-              }
-            },
-            "description": "Success"
-          },
-          "400": {
-            "$ref": "#/components/responses/400"
-          },
-          "401": {
-            "$ref": "#/components/responses/401"
-          },
-          "403": {
-            "$ref": "#/components/responses/403"
-          },
-          "404": {
-            "$ref": "#/components/responses/404"
-          },
-          "500": {
-            "$ref": "#/components/responses/500"
-          }
-        },
-        "summary": "Get  billing tags setting",
-        "tags": [
-          "BillingTagSettings"
-        ]
-      },
-      "put": {
-        "description": "Update billing tags setting",
-        "operationId": "updateBillingTagSettings",
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/BillingTagsSettingsV1"
-              }
-            }
-          },
-          "required": true
-        },
-        "responses": {
-          "200": {
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/BillingTagsSettingsEnvelopeV1"
-                }
-              }
-            },
-            "description": "Success"
-          },
-          "400": {
-            "$ref": "#/components/responses/400"
-          },
-          "401": {
-            "$ref": "#/components/responses/401"
-          },
-          "403": {
-            "$ref": "#/components/responses/403"
-          },
-          "404": {
-            "$ref": "#/components/responses/404"
-          },
-          "500": {
-            "$ref": "#/components/responses/500"
-          }
-        },
-        "summary": "Update billing tags setting",
         "tags": [
           "BillingTagSettings"
         ]
