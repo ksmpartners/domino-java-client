@@ -8,7 +8,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.logging.Level;
 
-import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.Strings;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
@@ -101,7 +101,7 @@ class JobsApiTest extends TestClientConfigurer {
 
         Object spec = revisionSpec.getActualInstance();
         if (spec instanceof String) {
-            assertTrue(StringUtils.equalsAny((String) spec, "ActiveRevision", "LatestRevision", "RestrictedRevision"));
+            assertTrue(Strings.CS.equalsAny((String) spec, "ActiveRevision", "LatestRevision", "RestrictedRevision"));
         } else {
             assertEquals(executionDetails.getEnvironment().getEnvironmentRevisionId(), ((DominoJobsInterfaceComputeClusterConfigSpecDtoComputeEnvironmentRevisionSpecOneOf) spec).getRevisionId());
         }

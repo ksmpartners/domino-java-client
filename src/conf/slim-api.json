@@ -84,7 +84,8 @@
           "Spark",
           "Ray",
           "Dask",
-          "MPI"
+          "MPI",
+          "Slurm"
         ],
         "type": "string"
       },
@@ -872,6 +873,9 @@
             ],
             "type": "string"
           },
+          "supportsSlurm": {
+            "type": "boolean"
+          },
           "supportsUpgrade": {
             "type": "boolean"
           }
@@ -882,7 +886,8 @@
           "agentVersion",
           "catalogVersion",
           "requiresUpgrade",
-          "supportsUpgrade"
+          "supportsUpgrade",
+          "supportsSlurm"
         ]
       },
       "domino.datasetrw.api.DatasetRwDetailsDto": {
@@ -2033,6 +2038,9 @@
           "restrictToRay": {
             "type": "boolean"
           },
+          "restrictToSlurm": {
+            "type": "boolean"
+          },
           "restrictToSpark": {
             "type": "boolean"
           }
@@ -2041,7 +2049,8 @@
           "restrictToSpark",
           "restrictToRay",
           "restrictToDask",
-          "restrictToMpi"
+          "restrictToMpi",
+          "restrictToSlurm"
         ]
       },
       "domino.hardwaretier.api.HardwareTierDto": {
@@ -4096,6 +4105,14 @@
       },
       "domino.projects.api.ProjectTagDTO": {
         "properties": {
+          "description": {
+            "nullable": true,
+            "type": "string"
+          },
+          "fullPath": {
+            "nullable": true,
+            "type": "string"
+          },
           "id": {
             "pattern": "^[0-9a-f]{24}$",
             "type": "string"
@@ -4104,6 +4121,18 @@
             "type": "boolean"
           },
           "name": {
+            "type": "string"
+          },
+          "namespaceId": {
+            "nullable": true,
+            "type": "string"
+          },
+          "namespaceLabel": {
+            "nullable": true,
+            "type": "string"
+          },
+          "tagId": {
+            "nullable": true,
             "type": "string"
           }
         },
@@ -4288,10 +4317,6 @@
             "nullable": true,
             "pattern": "^[0-9a-f]{24}$",
             "type": "string"
-          },
-          "isFeatureStore": {
-            "nullable": true,
-            "type": "boolean"
           },
           "name": {
             "nullable": true,
@@ -4901,6 +4926,14 @@
       },
       "domino.server.projects.api.ProjectGatewayTag": {
         "properties": {
+          "description": {
+            "nullable": true,
+            "type": "string"
+          },
+          "fullPath": {
+            "nullable": true,
+            "type": "string"
+          },
           "id": {
             "pattern": "^[0-9a-f]{24}$",
             "type": "string"
@@ -4909,6 +4942,18 @@
             "type": "boolean"
           },
           "name": {
+            "type": "string"
+          },
+          "namespaceId": {
+            "nullable": true,
+            "type": "string"
+          },
+          "namespaceLabel": {
+            "nullable": true,
+            "type": "string"
+          },
+          "tagId": {
+            "nullable": true,
             "type": "string"
           }
         },
@@ -5600,6 +5645,16 @@
               },
               "nullable": true,
               "type": "array"
+            }
+          },
+          {
+            "description": "if false, exclude datasets that belong to archived projects. Defaults to true.",
+            "in": "query",
+            "name": "includeArchivedProjects",
+            "required": false,
+            "schema": {
+              "nullable": true,
+              "type": "boolean"
             }
           },
           {
@@ -6682,6 +6737,19 @@
             "schema": {
               "default": false,
               "type": "boolean"
+            }
+          },
+          {
+            "description": "Filter projects by taxonomy tag IDs (AND semantics - returns only projects with all specified tags).\n",
+            "in": "query",
+            "name": "tagIds",
+            "required": false,
+            "schema": {
+              "items": {
+                "type": "string"
+              },
+              "nullable": true,
+              "type": "array"
             }
           }
         ],

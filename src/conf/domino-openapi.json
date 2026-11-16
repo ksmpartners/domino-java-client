@@ -154,7 +154,8 @@
           "Spark",
           "Ray",
           "Dask",
-          "MPI"
+          "MPI",
+          "Slurm"
         ],
         "type": "string"
       },
@@ -167,7 +168,8 @@
           "model",
           "environment",
           "comment",
-          "dataset"
+          "dataset",
+          "app"
         ],
         "type": "string"
       },
@@ -3089,6 +3091,35 @@
           "maybeHighlightedModelAuthor"
         ]
       },
+      "domino.common.gateway.search.SearchAppDTO": {
+        "properties": {
+          "created": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "project": {
+            "$ref": "#/components/schemas/domino.common.gateway.search.SearchProjectDetails"
+          },
+          "publisherUsername": {
+            "type": "string"
+          },
+          "tagNames": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          }
+        },
+        "required": [
+          "description",
+          "publisherUsername",
+          "created",
+          "project",
+          "tagNames"
+        ]
+      },
       "domino.common.gateway.search.SearchCommentDTO": {
         "properties": {
           "contextDescription": {
@@ -3220,6 +3251,10 @@
       },
       "domino.common.gateway.search.SearchPageResultGatewayDTO": {
         "properties": {
+          "appInfo": {
+            "$ref": "#/components/schemas/domino.common.gateway.search.SearchAppDTO",
+            "nullable": true
+          },
           "area": {
             "type": "string"
           },
@@ -3307,6 +3342,12 @@
           "snippet": {
             "type": "string"
           },
+          "tagNames": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          },
           "tags": {
             "items": {
               "$ref": "#/components/schemas/domino.common.gateway.search.SearchProjectTag"
@@ -3317,7 +3358,8 @@
         "required": [
           "snippet",
           "tags",
-          "goalLink"
+          "goalLink",
+          "tagNames"
         ]
       },
       "domino.common.gateway.search.SearchProjectDetails": {
@@ -4368,21 +4410,6 @@
           "userId",
           "action",
           "reason"
-        ]
-      },
-      "domino.common.user.TrialStatusDTO": {
-        "properties": {
-          "trialStatus": {
-            "enum": [
-              "Initial",
-              "Extended",
-              "Expired"
-            ],
-            "type": "string"
-          }
-        },
-        "required": [
-          "trialStatus"
         ]
       },
       "domino.common.user.UpdateUserUIUXStateDTO": {
@@ -5989,6 +6016,9 @@
             ],
             "type": "string"
           },
+          "supportsSlurm": {
+            "type": "boolean"
+          },
           "supportsUpgrade": {
             "type": "boolean"
           }
@@ -5999,7 +6029,8 @@
           "agentVersion",
           "catalogVersion",
           "requiresUpgrade",
-          "supportsUpgrade"
+          "supportsUpgrade",
+          "supportsSlurm"
         ]
       },
       "domino.dataplane.TargetDataPlaneVersionDto": {
@@ -6727,6 +6758,7 @@
         "enum": [
           "DeleteDatasetRwV2",
           "EditSecurityDatasetRwV2",
+          "EditTaxonomyTagsDatasetRwV2",
           "ListDatasetRwV2",
           "PerformDatasetRwActionsInProjectV2",
           "PermanentDeleteDatasetRwV2",
@@ -9124,9 +9156,10 @@
           "supportedClusters": {
             "items": {
               "enum": [
+                "Ray",
+                "Slurm",
                 "Dask",
                 "Spark",
-                "Ray",
                 "MPI"
               ],
               "type": "string"
@@ -9276,9 +9309,10 @@
           "supportedClusters": {
             "items": {
               "enum": [
+                "Ray",
+                "Slurm",
                 "Dask",
                 "Spark",
-                "Ray",
                 "MPI"
               ],
               "type": "string"
@@ -9512,9 +9546,10 @@
           "clusterTypes": {
             "items": {
               "enum": [
+                "Ray",
+                "Slurm",
                 "Dask",
                 "Spark",
-                "Ray",
                 "MPI"
               ],
               "type": "string"
@@ -9715,6 +9750,79 @@
           "revisionId"
         ]
       },
+      "domino.environments.api.EnvironmentTreeNode": {
+        "properties": {
+          "assignLatestRevisionAsActive": {
+            "type": "boolean"
+          },
+          "children": {
+            "items": {
+              "$ref": "#/components/schemas/domino.environments.api.EnvironmentTreeNode"
+            },
+            "type": "array"
+          },
+          "id": {
+            "pattern": "^[0-9a-f]{24}$",
+            "type": "string"
+          },
+          "isAccessible": {
+            "type": "boolean"
+          },
+          "lastUpdated": {
+            "format": "date-time",
+            "nullable": true,
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "owner": {
+            "$ref": "#/components/schemas/domino.environments.api.EnvironmentOwner",
+            "nullable": true
+          },
+          "subscribedToParent": {
+            "type": "boolean"
+          },
+          "visibility": {
+            "enum": [
+              "Global",
+              "Private",
+              "Organization"
+            ],
+            "type": "string"
+          },
+          "willRebuildOnRootChange": {
+            "nullable": true,
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "id",
+          "name",
+          "visibility",
+          "subscribedToParent",
+          "assignLatestRevisionAsActive",
+          "isAccessible",
+          "children"
+        ]
+      },
+      "domino.environments.api.EnvironmentTreeResponse": {
+        "properties": {
+          "ancestors": {
+            "items": {
+              "$ref": "#/components/schemas/domino.environments.api.EnvironmentTreeNode"
+            },
+            "type": "array"
+          },
+          "tree": {
+            "$ref": "#/components/schemas/domino.environments.api.EnvironmentTreeNode"
+          }
+        },
+        "required": [
+          "tree",
+          "ancestors"
+        ]
+      },
       "domino.environments.api.EnvironmentWorkspaceToolDefinition": {
         "properties": {
           "iconUrl": {
@@ -9767,9 +9875,10 @@
           "clusterTypes": {
             "items": {
               "enum": [
+                "Ray",
+                "Slurm",
                 "Dask",
                 "Spark",
-                "Ray",
                 "MPI"
               ],
               "type": "string"
@@ -9892,9 +10001,10 @@
           "supportedClusters": {
             "items": {
               "enum": [
+                "Ray",
+                "Slurm",
                 "Dask",
                 "Spark",
-                "Ray",
                 "MPI"
               ],
               "type": "string"
@@ -10249,577 +10359,6 @@
         },
         "required": [
           "items"
-        ]
-      },
-      "domino.featurestore.api.CredentialConfigItem": {
-        "properties": {
-          "envVarKey": {
-            "type": "string"
-          },
-          "name": {
-            "type": "string"
-          }
-        },
-        "required": [
-          "name",
-          "envVarKey"
-        ]
-      },
-      "domino.featurestore.api.CredentialConfigs": {
-        "properties": {
-          "offlineStoreCredentials": {
-            "items": {
-              "$ref": "#/components/schemas/domino.featurestore.api.CredentialConfigItem"
-            },
-            "type": "array"
-          },
-          "onlineStoreCredentials": {
-            "items": {
-              "$ref": "#/components/schemas/domino.featurestore.api.CredentialConfigItem"
-            },
-            "type": "array"
-          }
-        },
-        "required": [
-          "offlineStoreCredentials",
-          "onlineStoreCredentials"
-        ]
-      },
-      "domino.featurestore.api.EntityDto": {
-        "properties": {
-          "joinKey": {
-            "nullable": true,
-            "type": "string"
-          },
-          "name": {
-            "type": "string"
-          },
-          "valueType": {
-            "type": "string"
-          }
-        },
-        "required": [
-          "name",
-          "valueType"
-        ]
-      },
-      "domino.featurestore.api.FeatureDto": {
-        "properties": {
-          "name": {
-            "type": "string"
-          },
-          "tags": {
-            "additionalProperties": {
-              "type": "string"
-            },
-            "type": "object"
-          },
-          "valueType": {
-            "type": "string"
-          }
-        },
-        "required": [
-          "name",
-          "valueType",
-          "tags"
-        ]
-      },
-      "domino.featurestore.api.FeatureStoreCodeSnippetDto": {
-        "properties": {
-          "snippet": {
-            "type": "string"
-          }
-        },
-        "required": [
-          "snippet"
-        ]
-      },
-      "domino.featurestore.api.FeatureStoreDto": {
-        "properties": {
-          "creationTime": {
-            "format": "date-time",
-            "type": "string"
-          },
-          "gitCommitHash": {
-            "type": "string"
-          },
-          "gitRepo": {
-            "type": "string"
-          },
-          "gitServiceProvider": {
-            "enum": [
-              "github",
-              "gitlab",
-              "githubEnterprise",
-              "unknown",
-              "gitlabEnterprise",
-              "bitbucket",
-              "bitbucketServer"
-            ],
-            "type": "string"
-          },
-          "id": {
-            "pattern": "^[0-9a-f]{24}$",
-            "type": "string"
-          },
-          "lastUpdatedTime": {
-            "format": "date-time",
-            "type": "string"
-          },
-          "offlineStoreConfig": {
-            "additionalProperties": {
-              "type": "string"
-            },
-            "type": "object"
-          },
-          "offlineStoreType": {
-            "enum": [
-              "File",
-              "BigQuery",
-              "Redshift",
-              "Snowflake"
-            ],
-            "type": "string"
-          },
-          "onlineStoreConfig": {
-            "additionalProperties": {
-              "type": "string"
-            },
-            "type": "object"
-          },
-          "onlineStoreType": {
-            "enum": [
-              "Snowflake",
-              "DynamoDB",
-              "Redis",
-              "Datastore",
-              "Bigtable",
-              "SQLite"
-            ],
-            "type": "string"
-          },
-          "ownerId": {
-            "pattern": "^[0-9a-f]{24}$",
-            "type": "string"
-          },
-          "projectIds": {
-            "items": {
-              "pattern": "^[0-9a-f]{24}$",
-              "type": "string"
-            },
-            "type": "array"
-          },
-          "runId": {
-            "nullable": true,
-            "type": "string"
-          },
-          "status": {
-            "enum": [
-              "Active",
-              "Deleted"
-            ],
-            "type": "string"
-          },
-          "syncStatus": {
-            "enum": [
-              "Successful",
-              "Failed",
-              "InProgress"
-            ],
-            "type": "string"
-          }
-        },
-        "required": [
-          "id",
-          "ownerId",
-          "creationTime",
-          "offlineStoreType",
-          "offlineStoreConfig",
-          "onlineStoreType",
-          "onlineStoreConfig",
-          "gitRepo",
-          "gitServiceProvider",
-          "gitCommitHash",
-          "projectIds",
-          "lastUpdatedTime",
-          "status",
-          "syncStatus"
-        ]
-      },
-      "domino.featurestore.api.FeatureViewAddProjectDto": {
-        "properties": {
-          "id": {
-            "pattern": "^[0-9a-f]{24}$",
-            "type": "string"
-          },
-          "name": {
-            "type": "string"
-          }
-        },
-        "required": [
-          "id",
-          "name"
-        ]
-      },
-      "domino.featurestore.api.FeatureViewCommentContent": {
-        "properties": {
-          "value": {
-            "type": "string"
-          }
-        },
-        "required": [
-          "value"
-        ]
-      },
-      "domino.featurestore.api.FeatureViewCommentContext": {
-        "properties": {
-          "featureViewId": {
-            "pattern": "^[0-9a-f]{24}$",
-            "type": "string"
-          }
-        },
-        "required": [
-          "featureViewId"
-        ]
-      },
-      "domino.featurestore.api.FeatureViewCommentDto": {
-        "properties": {
-          "commentBody": {
-            "$ref": "#/components/schemas/domino.featurestore.api.FeatureViewCommentContent"
-          },
-          "commentId": {
-            "pattern": "^[0-9a-f]{24}$",
-            "type": "string"
-          },
-          "commenter": {
-            "$ref": "#/components/schemas/domino.featurestore.api.FeatureViewCommenter"
-          },
-          "createdAt": {
-            "format": "int64",
-            "type": "integer"
-          },
-          "lastUpdated": {
-            "format": "int64",
-            "type": "integer"
-          },
-          "status": {
-            "enum": [
-              "Active",
-              "Deleted"
-            ],
-            "type": "string"
-          }
-        },
-        "required": [
-          "commentId",
-          "commenter",
-          "commentBody",
-          "createdAt",
-          "lastUpdated",
-          "status"
-        ]
-      },
-      "domino.featurestore.api.FeatureViewCommentThreadDto": {
-        "properties": {
-          "comments": {
-            "items": {
-              "$ref": "#/components/schemas/domino.featurestore.api.FeatureViewCommentDto"
-            },
-            "type": "array"
-          },
-          "context": {
-            "$ref": "#/components/schemas/domino.featurestore.api.FeatureViewCommentContext"
-          },
-          "id": {
-            "pattern": "^[0-9a-f]{24}$",
-            "type": "string"
-          }
-        },
-        "required": [
-          "id",
-          "comments",
-          "context"
-        ]
-      },
-      "domino.featurestore.api.FeatureViewCommenter": {
-        "properties": {
-          "commenterId": {
-            "pattern": "^[0-9a-f]{24}$",
-            "type": "string"
-          },
-          "username": {
-            "type": "string"
-          }
-        },
-        "required": [
-          "commenterId",
-          "username"
-        ]
-      },
-      "domino.featurestore.api.FeatureViewDto": {
-        "properties": {
-          "addedBy": {
-            "additionalProperties": {
-              "type": "string"
-            },
-            "type": "object"
-          },
-          "author": {
-            "nullable": true,
-            "pattern": "^[0-9a-f]{24}$",
-            "type": "string"
-          },
-          "createdAtMillis": {
-            "format": "int64",
-            "type": "integer"
-          },
-          "description": {
-            "type": "string"
-          },
-          "entities": {
-            "items": {
-              "$ref": "#/components/schemas/domino.featurestore.api.EntityDto"
-            },
-            "type": "array"
-          },
-          "featureStoreId": {
-            "pattern": "^[0-9a-f]{24}$",
-            "type": "string"
-          },
-          "features": {
-            "items": {
-              "$ref": "#/components/schemas/domino.featurestore.api.FeatureDto"
-            },
-            "type": "array"
-          },
-          "id": {
-            "pattern": "^[0-9a-f]{24}$",
-            "type": "string"
-          },
-          "lastUpdatedMillis": {
-            "format": "int64",
-            "type": "integer"
-          },
-          "name": {
-            "type": "string"
-          },
-          "projectsInfo": {
-            "items": {
-              "$ref": "#/components/schemas/domino.featurestore.api.FeatureViewProjectInfoDto"
-            },
-            "type": "array"
-          },
-          "status": {
-            "enum": [
-              "Active",
-              "Deleted"
-            ],
-            "type": "string"
-          },
-          "tags": {
-            "additionalProperties": {
-              "type": "string"
-            },
-            "type": "object"
-          },
-          "ttl": {
-            "format": "int64",
-            "nullable": true,
-            "type": "integer"
-          }
-        },
-        "required": [
-          "id",
-          "name",
-          "featureStoreId",
-          "addedBy",
-          "createdAtMillis",
-          "lastUpdatedMillis",
-          "status",
-          "entities",
-          "features",
-          "tags",
-          "projectsInfo",
-          "description"
-        ]
-      },
-      "domino.featurestore.api.FeatureViewProjectInfoDto": {
-        "properties": {
-          "isOriginProject": {
-            "type": "boolean"
-          },
-          "ownerUsername": {
-            "nullable": true,
-            "type": "string"
-          },
-          "projectId": {
-            "pattern": "^[0-9a-f]{24}$",
-            "type": "string"
-          },
-          "projectName": {
-            "nullable": true,
-            "type": "string"
-          }
-        },
-        "required": [
-          "projectId",
-          "isOriginProject"
-        ]
-      },
-      "domino.featurestore.model.Field": {
-        "properties": {
-          "alias": {
-            "type": "string"
-          },
-          "environmentVariableName": {
-            "type": "string"
-          },
-          "isOptional": {
-            "type": "boolean"
-          },
-          "isOverridable": {
-            "type": "boolean"
-          },
-          "isSecret": {
-            "type": "boolean"
-          },
-          "name": {
-            "type": "string"
-          },
-          "regexp": {
-            "type": "string"
-          },
-          "regexpErrorMessage": {
-            "type": "string"
-          }
-        },
-        "required": [
-          "isOptional",
-          "isOverridable",
-          "name"
-        ],
-        "type": "object"
-      },
-      "domino.featurestore.model.OfflineStoreConfig": {
-        "properties": {
-          "fields": {
-            "additionalProperties": {
-              "$ref": "#/components/schemas/domino.featurestore.model.Field"
-            },
-            "type": "object"
-          },
-          "offlineStoreType": {
-            "$ref": "#/components/schemas/domino.featurestore.model.OfflineStoreType"
-          },
-          "supportedOnlineStores": {
-            "items": {
-              "$ref": "#/components/schemas/domino.featurestore.model.OnlineStoreType"
-            },
-            "type": "array"
-          }
-        },
-        "required": [
-          "offlineStoreType",
-          "fields",
-          "supportedOnlineStores"
-        ],
-        "type": "object"
-      },
-      "domino.featurestore.model.OfflineStoreType": {
-        "enum": [
-          "File",
-          "BigQuery",
-          "Redshift",
-          "Snowflake"
-        ],
-        "type": "string"
-      },
-      "domino.featurestore.model.OnlineStoreConfig": {
-        "properties": {
-          "fields": {
-            "additionalProperties": {
-              "$ref": "#/components/schemas/domino.featurestore.model.Field"
-            },
-            "type": "object"
-          },
-          "onlineStoreType": {
-            "$ref": "#/components/schemas/domino.featurestore.model.OnlineStoreType"
-          }
-        },
-        "required": [
-          "onlineStoreType",
-          "fields"
-        ],
-        "type": "object"
-      },
-      "domino.featurestore.model.OnlineStoreType": {
-        "enum": [
-          "Snowflake",
-          "DynamoDB",
-          "Redis",
-          "Datastore",
-          "Bigtable",
-          "SQLite"
-        ],
-        "type": "string"
-      },
-      "domino.featurestore.web.UpdateFeatureStoreConfigRequest": {
-        "properties": {
-          "offlineStoreConfig": {
-            "additionalProperties": {
-              "type": "string"
-            },
-            "nullable": true,
-            "type": "object"
-          },
-          "offlineStoreType": {
-            "enum": [
-              "File",
-              "BigQuery",
-              "Redshift",
-              "Snowflake"
-            ],
-            "nullable": true,
-            "type": "string"
-          }
-        }
-      },
-      "domino.featurestore.web.UpdateFeatureStoreSyncResultRequest": {
-        "properties": {
-          "featureStoreId": {
-            "pattern": "^[0-9a-f]{24}$",
-            "type": "string"
-          },
-          "runId": {
-            "type": "string"
-          },
-          "syncStatus": {
-            "enum": [
-              "Success",
-              "Failure"
-            ],
-            "type": "string"
-          }
-        },
-        "required": [
-          "featureStoreId",
-          "runId",
-          "syncStatus"
-        ]
-      },
-      "domino.featurestore.web.UpdateFeatureViewCommentRequest": {
-        "properties": {
-          "commentContent": {
-            "type": "string"
-          },
-          "commentId": {
-            "pattern": "^[0-9a-f]{24}$",
-            "type": "string"
-          }
-        },
-        "required": [
-          "commentId",
-          "commentContent"
         ]
       },
       "domino.files.interface.Author": {
@@ -12476,10 +12015,6 @@
             "pattern": "^[0-9a-f]{24}$",
             "type": "string"
           },
-          "isFeatureStore": {
-            "nullable": true,
-            "type": "boolean"
-          },
           "name": {
             "type": "string"
           },
@@ -13067,6 +12602,7 @@
               "ChangeGovernanceApprovers",
               "AddGovernanceBundleAttachment",
               "RemoveGovernanceBundleAttachment",
+              "ResetGovernanceBundle",
               "CreateGovernanceFinding",
               "ChangeGovernanceFindingStatus",
               "CreateGovernanceResults",
@@ -13184,6 +12720,9 @@
           "restrictToRay": {
             "type": "boolean"
           },
+          "restrictToSlurm": {
+            "type": "boolean"
+          },
           "restrictToSpark": {
             "type": "boolean"
           }
@@ -13192,7 +12731,8 @@
           "restrictToSpark",
           "restrictToRay",
           "restrictToDask",
-          "restrictToMpi"
+          "restrictToMpi",
+          "restrictToSlurm"
         ]
       },
       "domino.hardwaretier.api.HardwareTierDto": {
@@ -15946,12 +15486,10 @@
           },
           "workflowID": {
             "enum": [
-              "CreateDataset",
               "CreateDatasource",
-              "UpdateDataset",
-              "CreateFeatureStore",
               "UpdateDatasource",
-              "UpdateFeatureStore"
+              "CreateDataset",
+              "UpdateDataset"
             ],
             "type": "string"
           }
@@ -16027,12 +15565,10 @@
           },
           "workflowID": {
             "enum": [
-              "CreateDataset",
               "CreateDatasource",
-              "UpdateDataset",
-              "CreateFeatureStore",
               "UpdateDatasource",
-              "UpdateFeatureStore"
+              "CreateDataset",
+              "UpdateDataset"
             ],
             "type": "string"
           }
@@ -20938,6 +20474,36 @@
           "projectRole"
         ]
       },
+      "domino.projects.api.CollaboratorForGovernanceApprovers": {
+        "properties": {
+          "associatedOrganizationId": {
+            "nullable": true,
+            "pattern": "^[0-9a-f]{24}$",
+            "type": "string"
+          },
+          "collaborator": {
+            "$ref": "#/components/schemas/domino.common.user.PersonDTO"
+          },
+          "isOrganization": {
+            "type": "boolean"
+          },
+          "role": {
+            "enum": [
+              "ProjectImporter",
+              "Contributor",
+              "ResultsConsumer",
+              "LauncherUser",
+              "Owner"
+            ],
+            "type": "string"
+          }
+        },
+        "required": [
+          "collaborator",
+          "role",
+          "isOrganization"
+        ]
+      },
       "domino.projects.api.Comment": {
         "properties": {
           "commentBody": {
@@ -22797,6 +22363,14 @@
       },
       "domino.projects.api.ProjectTagDTO": {
         "properties": {
+          "description": {
+            "nullable": true,
+            "type": "string"
+          },
+          "fullPath": {
+            "nullable": true,
+            "type": "string"
+          },
           "id": {
             "pattern": "^[0-9a-f]{24}$",
             "type": "string"
@@ -22805,6 +22379,18 @@
             "type": "boolean"
           },
           "name": {
+            "type": "string"
+          },
+          "namespaceId": {
+            "nullable": true,
+            "type": "string"
+          },
+          "namespaceLabel": {
+            "nullable": true,
+            "type": "string"
+          },
+          "tagId": {
+            "nullable": true,
             "type": "string"
           }
         },
@@ -23383,10 +22969,6 @@
             "pattern": "^[0-9a-f]{24}$",
             "type": "string"
           },
-          "isFeatureStore": {
-            "nullable": true,
-            "type": "boolean"
-          },
           "name": {
             "nullable": true,
             "type": "string"
@@ -23796,6 +23378,13 @@
             "nullable": true,
             "type": "string"
           },
+          "taxonomyTags": {
+            "items": {
+              "$ref": "#/components/schemas/domino.projects.templates.api.models.TaxonomyTagDto"
+            },
+            "nullable": true,
+            "type": "array"
+          },
           "type": {
             "enum": [
               "customer",
@@ -23901,6 +23490,13 @@
           },
           "sourceProject": {
             "$ref": "#/components/schemas/domino.projects.templates.api.models.SourceProjectDto"
+          },
+          "taxonomyTags": {
+            "items": {
+              "$ref": "#/components/schemas/domino.projects.templates.api.models.TaxonomyTagDto"
+            },
+            "nullable": true,
+            "type": "array"
           },
           "updated": {
             "format": "date-time",
@@ -24133,6 +23729,26 @@
           "name"
         ]
       },
+      "domino.projects.templates.api.models.NetAppVolumeConfigsDto": {
+        "properties": {
+          "copyNetAppVolumeIds": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "importNetAppVolumeIds": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          }
+        },
+        "required": [
+          "copyNetAppVolumeIds",
+          "importNetAppVolumeIds"
+        ]
+      },
       "domino.projects.templates.api.models.NetAppVolumeDto": {
         "properties": {
           "id": {
@@ -24250,14 +23866,13 @@
                 "integrations",
                 "external_data_volumes",
                 "launchers",
+                "imported_repositories",
                 "artifacts",
                 "mounted_datasets",
                 "imported_projects",
                 "tags",
                 "datasets",
                 "code",
-                "feature_stores",
-                "imported_repositories",
                 "goals",
                 "apps",
                 "data_sources"
@@ -24265,6 +23880,10 @@
               "type": "string"
             },
             "type": "array"
+          },
+          "netAppVolumeConfigs": {
+            "$ref": "#/components/schemas/domino.projects.templates.api.models.NetAppVolumeConfigsDto",
+            "nullable": true
           }
         },
         "required": [
@@ -24450,6 +24069,13 @@
             "pattern": "^[0-9a-f]{24}$",
             "type": "string"
           },
+          "importedNetAppVolumeIds": {
+            "items": {
+              "type": "string"
+            },
+            "nullable": true,
+            "type": "array"
+          },
           "included": {
             "items": {
               "enum": [
@@ -24457,14 +24083,13 @@
                 "integrations",
                 "external_data_volumes",
                 "launchers",
+                "imported_repositories",
                 "artifacts",
                 "mounted_datasets",
                 "imported_projects",
                 "tags",
                 "datasets",
                 "code",
-                "feature_stores",
-                "imported_repositories",
                 "goals",
                 "apps",
                 "data_sources"
@@ -24503,6 +24128,39 @@
         "required": [
           "items",
           "totalCount"
+        ]
+      },
+      "domino.projects.templates.api.models.TaxonomyTagDto": {
+        "properties": {
+          "description": {
+            "nullable": true,
+            "type": "string"
+          },
+          "fullPath": {
+            "items": {
+              "type": "string"
+            },
+            "nullable": true,
+            "type": "array"
+          },
+          "id": {
+            "type": "string"
+          },
+          "label": {
+            "type": "string"
+          },
+          "namespaceId": {
+            "type": "string"
+          },
+          "namespaceLabel": {
+            "nullable": true,
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "label",
+          "namespaceId"
         ]
       },
       "domino.projects.templates.api.models.TemplateAccessDto": {
@@ -26779,6 +26437,14 @@
       },
       "domino.server.projects.api.ProjectGatewayTag": {
         "properties": {
+          "description": {
+            "nullable": true,
+            "type": "string"
+          },
+          "fullPath": {
+            "nullable": true,
+            "type": "string"
+          },
           "id": {
             "pattern": "^[0-9a-f]{24}$",
             "type": "string"
@@ -26787,6 +26453,18 @@
             "type": "boolean"
           },
           "name": {
+            "type": "string"
+          },
+          "namespaceId": {
+            "nullable": true,
+            "type": "string"
+          },
+          "namespaceLabel": {
+            "nullable": true,
+            "type": "string"
+          },
+          "tagId": {
+            "nullable": true,
             "type": "string"
           }
         },
@@ -27399,6 +27077,11 @@
             "$ref": "#/components/schemas/domino.workspace.api.DataPlaneDto",
             "nullable": true
           },
+          "draftAppVersionId": {
+            "nullable": true,
+            "pattern": "^[0-9a-f]{24}$",
+            "type": "string"
+          },
           "environment": {
             "$ref": "#/components/schemas/domino.environments.api.EnvironmentRevisionSummary"
           },
@@ -27691,10 +27374,6 @@
             "pattern": "^[0-9a-f]{24}$",
             "type": "string"
           },
-          "isFeatureStore": {
-            "nullable": true,
-            "type": "boolean"
-          },
           "name": {
             "type": "string"
           },
@@ -27747,6 +27426,10 @@
       },
       "domino.workspace.api.WorkspaceInitConfigDto": {
         "properties": {
+          "appsAuthoringEnabled": {
+            "nullable": true,
+            "type": "boolean"
+          },
           "mainGitRepoRef": {
             "$ref": "#/components/schemas/domino.projects.api.repositories.ReferenceDTO",
             "nullable": true
@@ -28523,6 +28206,10 @@
       },
       "domino.workspace.web.CreateWorkspaceRequest": {
         "properties": {
+          "appsAuthoringEnabled": {
+            "nullable": true,
+            "type": "boolean"
+          },
           "capacityType": {
             "enum": [
               "on-demand",
@@ -28984,10 +28671,6 @@
           "id": {
             "pattern": "^[0-9a-f]{24}$",
             "type": "string"
-          },
-          "isFeatureStore": {
-            "nullable": true,
-            "type": "boolean"
           },
           "name": {
             "type": "string"
@@ -30814,6 +30497,15 @@
               ],
               "nullable": true,
               "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "includeArchived",
+            "required": false,
+            "schema": {
+              "nullable": true,
+              "type": "boolean"
             }
           }
         ],
@@ -37664,6 +37356,16 @@
             }
           },
           {
+            "description": "if false, exclude datasets that belong to archived projects. Defaults to true.",
+            "in": "query",
+            "name": "includeArchivedProjects",
+            "required": false,
+            "schema": {
+              "nullable": true,
+              "type": "boolean"
+            }
+          },
+          {
             "description": "dataset IDs to search datasets from",
             "in": "query",
             "name": "datasetIds",
@@ -39942,6 +39644,60 @@
           }
         },
         "summary": "Deletes files from snapshot",
+        "tags": [
+          "DatasetRw"
+        ]
+      }
+    },
+    "/datasetrw/snapshot/{snapshotId}/files/recursive": {
+      "get": {
+        "operationId": "getFilesInSnapshotRecursively",
+        "parameters": [
+          {
+            "description": "snapshot ID",
+            "in": "path",
+            "name": "snapshotId",
+            "required": true,
+            "schema": {
+              "pattern": "^[0-9a-f]{24}$",
+              "type": "string"
+            }
+          },
+          {
+            "description": "subPath to get files at",
+            "in": "query",
+            "name": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/domino.datasetrw.api.DatasetRwSnapshotFilesViewDto"
+                }
+              }
+            },
+            "description": "success"
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalError"
+          }
+        },
+        "summary": "Get file names in a snapshot at a specific subpath recursively",
         "tags": [
           "DatasetRw"
         ]
@@ -44316,6 +44072,56 @@
         ]
       }
     },
+    "/environments/tree": {
+      "get": {
+        "operationId": "getEnvironmentForest",
+        "parameters": [
+          {
+            "description": "levels of children to return (omit = full tree capped at 50; 0 = root(s) only; N = N levels of children)",
+            "in": "query",
+            "name": "depth",
+            "required": false,
+            "schema": {
+              "format": "int32",
+              "minimum": 0,
+              "nullable": true,
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/domino.environments.api.EnvironmentTreeNode"
+                  },
+                  "type": "array"
+                }
+              }
+            },
+            "description": "success"
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalError"
+          }
+        },
+        "summary": "Get the full environment forest visible to the current user",
+        "tags": [
+          "Environments"
+        ]
+      }
+    },
     "/environments/{environmentId}": {
       "delete": {
         "operationId": "archiveEnvironment",
@@ -45058,6 +44864,73 @@
         ]
       }
     },
+    "/environments/{environmentId}/tree": {
+      "get": {
+        "operationId": "getEnvironmentTree",
+        "parameters": [
+          {
+            "description": "ID of the root environment",
+            "in": "path",
+            "name": "environmentId",
+            "required": true,
+            "schema": {
+              "pattern": "^[0-9a-f]{24}$",
+              "type": "string"
+            }
+          },
+          {
+            "description": "levels of children to return (omit = full tree capped at 50; 0 = root(s) only; N = N levels of children)",
+            "in": "query",
+            "name": "depth",
+            "required": false,
+            "schema": {
+              "format": "int32",
+              "minimum": 0,
+              "nullable": true,
+              "type": "integer"
+            }
+          },
+          {
+            "description": "if true, show children of environments the user cannot access (default false)",
+            "in": "query",
+            "name": "includeInaccessibleDescendants",
+            "required": false,
+            "schema": {
+              "nullable": true,
+              "type": "boolean"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/domino.environments.api.EnvironmentTreeResponse"
+                }
+              }
+            },
+            "description": "success"
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalError"
+          }
+        },
+        "summary": "Get the descendant tree for an environment",
+        "tags": [
+          "Environments"
+        ]
+      }
+    },
     "/environments/{environmentId}/visibility": {
       "post": {
         "operationId": "updateEnvironmentVisibility",
@@ -45501,943 +45374,6 @@
         "summary": "Starts (or ends) an execution trace event for a given execution id",
         "tags": [
           "Execution Events"
-        ]
-      }
-    },
-    "/featurestore": {
-      "get": {
-        "operationId": "getFeatureStore",
-        "responses": {
-          "200": {
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/domino.featurestore.api.FeatureStoreDto"
-                }
-              }
-            },
-            "description": "success"
-          },
-          "400": {
-            "$ref": "#/components/responses/BadRequest"
-          },
-          "401": {
-            "$ref": "#/components/responses/Unauthorized"
-          },
-          "403": {
-            "$ref": "#/components/responses/Forbidden"
-          },
-          "500": {
-            "$ref": "#/components/responses/InternalError"
-          }
-        },
-        "summary": "Get feature store",
-        "tags": [
-          "FeatureStore"
-        ]
-      }
-    },
-    "/featurestore/all": {
-      "get": {
-        "operationId": "getAllFeatureStores",
-        "responses": {
-          "200": {
-            "content": {
-              "application/json": {
-                "schema": {
-                  "items": {
-                    "$ref": "#/components/schemas/domino.featurestore.api.FeatureStoreDto"
-                  },
-                  "type": "array"
-                }
-              }
-            },
-            "description": "success"
-          },
-          "400": {
-            "$ref": "#/components/responses/BadRequest"
-          },
-          "401": {
-            "$ref": "#/components/responses/Unauthorized"
-          },
-          "403": {
-            "$ref": "#/components/responses/Forbidden"
-          },
-          "500": {
-            "$ref": "#/components/responses/InternalError"
-          }
-        },
-        "summary": "Get all feature stores",
-        "tags": [
-          "FeatureStore"
-        ]
-      }
-    },
-    "/featurestore/comment/{commentId}": {
-      "delete": {
-        "operationId": "deleteFeatureViewComment",
-        "parameters": [
-          {
-            "description": "Comment ID",
-            "in": "path",
-            "name": "commentId",
-            "required": true,
-            "schema": {
-              "pattern": "^[0-9a-f]{24}$",
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/domino.featurestore.api.FeatureViewCommentDto"
-                }
-              }
-            },
-            "description": "success"
-          },
-          "401": {
-            "$ref": "#/components/responses/Unauthorized"
-          },
-          "403": {
-            "$ref": "#/components/responses/Forbidden"
-          },
-          "404": {
-            "$ref": "#/components/responses/NotFound"
-          },
-          "500": {
-            "$ref": "#/components/responses/InternalError"
-          }
-        },
-        "summary": "Delete feature view comment",
-        "tags": [
-          "FeatureStore"
-        ]
-      }
-    },
-    "/featurestore/config": {
-      "get": {
-        "operationId": "getOfflineStoreConfigs",
-        "responses": {
-          "200": {
-            "content": {
-              "application/json": {
-                "schema": {
-                  "items": {
-                    "$ref": "#/components/schemas/domino.featurestore.model.OfflineStoreConfig"
-                  },
-                  "type": "array"
-                }
-              }
-            },
-            "description": "success"
-          },
-          "400": {
-            "$ref": "#/components/responses/BadRequest"
-          },
-          "401": {
-            "$ref": "#/components/responses/Unauthorized"
-          },
-          "403": {
-            "$ref": "#/components/responses/Forbidden"
-          },
-          "500": {
-            "$ref": "#/components/responses/InternalError"
-          }
-        },
-        "summary": "Get config metadata for all offline store types",
-        "tags": [
-          "FeatureStore"
-        ]
-      }
-    },
-    "/featurestore/config/{offlineStoreType}": {
-      "get": {
-        "operationId": "getOfflineStoreConfigByType",
-        "parameters": [
-          {
-            "description": "FeatureStore Type",
-            "in": "path",
-            "name": "offlineStoreType",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/domino.featurestore.model.OfflineStoreConfig"
-                }
-              }
-            },
-            "description": "success"
-          },
-          "400": {
-            "$ref": "#/components/responses/BadRequest"
-          },
-          "401": {
-            "$ref": "#/components/responses/Unauthorized"
-          },
-          "403": {
-            "$ref": "#/components/responses/Forbidden"
-          },
-          "500": {
-            "$ref": "#/components/responses/InternalError"
-          }
-        },
-        "summary": "Get config metadata for an offline store type",
-        "tags": [
-          "FeatureStore"
-        ]
-      }
-    },
-    "/featurestore/featureView/comment": {
-      "put": {
-        "operationId": "updateFeatureViewComment",
-        "parameters": [],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/domino.featurestore.web.UpdateFeatureViewCommentRequest"
-              }
-            }
-          },
-          "description": "updated feature view comment info",
-          "required": true
-        },
-        "responses": {
-          "200": {
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/domino.featurestore.api.FeatureViewCommentDto"
-                }
-              }
-            },
-            "description": "success"
-          },
-          "400": {
-            "$ref": "#/components/responses/BadRequest"
-          },
-          "401": {
-            "$ref": "#/components/responses/Unauthorized"
-          },
-          "403": {
-            "$ref": "#/components/responses/Forbidden"
-          },
-          "500": {
-            "$ref": "#/components/responses/InternalError"
-          }
-        },
-        "summary": "Update feature view comment",
-        "tags": [
-          "FeatureStore"
-        ]
-      }
-    },
-    "/featurestore/featureview/{featureViewId}": {
-      "get": {
-        "operationId": "getFeatureView",
-        "parameters": [
-          {
-            "description": "Feature view Id",
-            "in": "path",
-            "name": "featureViewId",
-            "required": true,
-            "schema": {
-              "pattern": "^[0-9a-f]{24}$",
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/domino.featurestore.api.FeatureViewDto"
-                }
-              }
-            },
-            "description": "success"
-          },
-          "400": {
-            "$ref": "#/components/responses/BadRequest"
-          },
-          "401": {
-            "$ref": "#/components/responses/Unauthorized"
-          },
-          "403": {
-            "$ref": "#/components/responses/Forbidden"
-          },
-          "500": {
-            "$ref": "#/components/responses/InternalError"
-          }
-        },
-        "summary": "Get feature view",
-        "tags": [
-          "FeatureStore"
-        ]
-      }
-    },
-    "/featurestore/featureview/{featureViewId}/code": {
-      "get": {
-        "operationId": "getCodeSnippet",
-        "parameters": [
-          {
-            "description": "Feature view Id",
-            "in": "path",
-            "name": "featureViewId",
-            "required": true,
-            "schema": {
-              "pattern": "^[0-9a-f]{24}$",
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/domino.featurestore.api.FeatureStoreCodeSnippetDto"
-                }
-              }
-            },
-            "description": "success"
-          },
-          "400": {
-            "$ref": "#/components/responses/BadRequest"
-          },
-          "401": {
-            "$ref": "#/components/responses/Unauthorized"
-          },
-          "403": {
-            "$ref": "#/components/responses/Forbidden"
-          },
-          "500": {
-            "$ref": "#/components/responses/InternalError"
-          }
-        },
-        "summary": "Get code snippet for feature view",
-        "tags": [
-          "FeatureStore"
-        ]
-      }
-    },
-    "/featurestore/featureview/{featureViewId}/comments": {
-      "get": {
-        "operationId": "getFeatureViewCommentThreads",
-        "parameters": [
-          {
-            "description": "Feature view Id",
-            "in": "path",
-            "name": "featureViewId",
-            "required": true,
-            "schema": {
-              "pattern": "^[0-9a-f]{24}$",
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "content": {
-              "application/json": {
-                "schema": {
-                  "items": {
-                    "$ref": "#/components/schemas/domino.featurestore.api.FeatureViewCommentThreadDto"
-                  },
-                  "type": "array"
-                }
-              }
-            },
-            "description": "success"
-          },
-          "400": {
-            "$ref": "#/components/responses/BadRequest"
-          },
-          "401": {
-            "$ref": "#/components/responses/Unauthorized"
-          },
-          "403": {
-            "$ref": "#/components/responses/Forbidden"
-          },
-          "500": {
-            "$ref": "#/components/responses/InternalError"
-          }
-        },
-        "summary": "Get feature view comment threads",
-        "tags": [
-          "FeatureStore"
-        ]
-      }
-    },
-    "/featurestore/featureview/{featureViewId}/project/{projectId}": {
-      "put": {
-        "operationId": "addFeatureViewToProject",
-        "parameters": [
-          {
-            "description": "Feature view Id",
-            "in": "path",
-            "name": "featureViewId",
-            "required": true,
-            "schema": {
-              "pattern": "^[0-9a-f]{24}$",
-              "type": "string"
-            }
-          },
-          {
-            "description": "Project Id",
-            "in": "path",
-            "name": "projectId",
-            "required": true,
-            "schema": {
-              "pattern": "^[0-9a-f]{24}$",
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/domino.featurestore.api.FeatureViewDto"
-                }
-              }
-            },
-            "description": "success"
-          },
-          "400": {
-            "$ref": "#/components/responses/BadRequest"
-          },
-          "401": {
-            "$ref": "#/components/responses/Unauthorized"
-          },
-          "403": {
-            "$ref": "#/components/responses/Forbidden"
-          },
-          "500": {
-            "$ref": "#/components/responses/InternalError"
-          }
-        },
-        "summary": "Add feature view to a project",
-        "tags": [
-          "FeatureStore"
-        ]
-      }
-    },
-    "/featurestore/featureviews": {
-      "get": {
-        "operationId": "getFeatureViews",
-        "parameters": [],
-        "responses": {
-          "200": {
-            "content": {
-              "application/json": {
-                "schema": {
-                  "items": {
-                    "$ref": "#/components/schemas/domino.featurestore.api.FeatureViewDto"
-                  },
-                  "type": "array"
-                }
-              }
-            },
-            "description": "success"
-          },
-          "400": {
-            "$ref": "#/components/responses/BadRequest"
-          },
-          "401": {
-            "$ref": "#/components/responses/Unauthorized"
-          },
-          "403": {
-            "$ref": "#/components/responses/Forbidden"
-          },
-          "500": {
-            "$ref": "#/components/responses/InternalError"
-          }
-        },
-        "summary": "Get all feature views in feature store",
-        "tags": [
-          "FeatureStore"
-        ]
-      }
-    },
-    "/featurestore/featureviews/project/{projectId}": {
-      "get": {
-        "operationId": "getFeatureViewsByProjectAndUser",
-        "parameters": [
-          {
-            "description": "Project Id",
-            "in": "path",
-            "name": "projectId",
-            "required": true,
-            "schema": {
-              "pattern": "^[0-9a-f]{24}$",
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "content": {
-              "application/json": {
-                "schema": {
-                  "items": {
-                    "$ref": "#/components/schemas/domino.featurestore.api.FeatureViewDto"
-                  },
-                  "type": "array"
-                }
-              }
-            },
-            "description": "success"
-          },
-          "400": {
-            "$ref": "#/components/responses/BadRequest"
-          },
-          "401": {
-            "$ref": "#/components/responses/Unauthorized"
-          },
-          "403": {
-            "$ref": "#/components/responses/Forbidden"
-          },
-          "500": {
-            "$ref": "#/components/responses/InternalError"
-          }
-        },
-        "summary": "Get feature views by project and user",
-        "tags": [
-          "FeatureStore"
-        ]
-      }
-    },
-    "/featurestore/featureviews/{featureViewId}/projects": {
-      "get": {
-        "operationId": "getProjectsForFeatureView",
-        "parameters": [
-          {
-            "description": "Feature View Id",
-            "in": "path",
-            "name": "featureViewId",
-            "required": true,
-            "schema": {
-              "pattern": "^[0-9a-f]{24}$",
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "content": {
-              "application/json": {
-                "schema": {
-                  "items": {
-                    "$ref": "#/components/schemas/domino.featurestore.api.FeatureViewAddProjectDto"
-                  },
-                  "type": "array"
-                }
-              }
-            },
-            "description": "success"
-          },
-          "400": {
-            "$ref": "#/components/responses/BadRequest"
-          },
-          "401": {
-            "$ref": "#/components/responses/Unauthorized"
-          },
-          "403": {
-            "$ref": "#/components/responses/Forbidden"
-          },
-          "500": {
-            "$ref": "#/components/responses/InternalError"
-          }
-        },
-        "summary": "Get available projects for given feature view to be added to",
-        "tags": [
-          "FeatureStore"
-        ]
-      }
-    },
-    "/featurestore/onlinestoreconfig": {
-      "get": {
-        "operationId": "getOnlineStoreConfigs",
-        "responses": {
-          "200": {
-            "content": {
-              "application/json": {
-                "schema": {
-                  "items": {
-                    "$ref": "#/components/schemas/domino.featurestore.model.OnlineStoreConfig"
-                  },
-                  "type": "array"
-                }
-              }
-            },
-            "description": "success"
-          },
-          "400": {
-            "$ref": "#/components/responses/BadRequest"
-          },
-          "401": {
-            "$ref": "#/components/responses/Unauthorized"
-          },
-          "403": {
-            "$ref": "#/components/responses/Forbidden"
-          },
-          "500": {
-            "$ref": "#/components/responses/InternalError"
-          }
-        },
-        "summary": "Get config metadata for all online store types",
-        "tags": [
-          "FeatureStore"
-        ]
-      }
-    },
-    "/featurestore/onlinestoreconfig/{onlineStoreType}": {
-      "get": {
-        "operationId": "getOnlineStoreConfigByType",
-        "parameters": [
-          {
-            "description": "FeatureStore Type",
-            "in": "path",
-            "name": "onlineStoreType",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/domino.featurestore.model.OnlineStoreConfig"
-                }
-              }
-            },
-            "description": "success"
-          },
-          "400": {
-            "$ref": "#/components/responses/BadRequest"
-          },
-          "401": {
-            "$ref": "#/components/responses/Unauthorized"
-          },
-          "403": {
-            "$ref": "#/components/responses/Forbidden"
-          },
-          "500": {
-            "$ref": "#/components/responses/InternalError"
-          }
-        },
-        "summary": "Get config metadata for an online store type",
-        "tags": [
-          "FeatureStore"
-        ]
-      }
-    },
-    "/featurestore/syncstatus": {
-      "put": {
-        "operationId": "updateFeatureStoreSyncResult",
-        "parameters": [],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/domino.featurestore.web.UpdateFeatureStoreSyncResultRequest"
-              }
-            }
-          },
-          "description": "the feature store sync result",
-          "required": true
-        },
-        "responses": {
-          "200": {
-            "description": "success"
-          },
-          "400": {
-            "$ref": "#/components/responses/BadRequest"
-          },
-          "401": {
-            "$ref": "#/components/responses/Unauthorized"
-          },
-          "403": {
-            "$ref": "#/components/responses/Forbidden"
-          },
-          "500": {
-            "$ref": "#/components/responses/InternalError"
-          }
-        },
-        "summary": "update the feature store sync result",
-        "tags": [
-          "FeatureStore"
-        ]
-      }
-    },
-    "/featurestore/{featureStoreId}": {
-      "delete": {
-        "operationId": "deleteFeatureStore",
-        "parameters": [
-          {
-            "description": "Feature Store ID",
-            "in": "path",
-            "name": "featureStoreId",
-            "required": true,
-            "schema": {
-              "pattern": "^[0-9a-f]{24}$",
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/domino.featurestore.api.FeatureStoreDto"
-                }
-              }
-            },
-            "description": "success"
-          },
-          "401": {
-            "$ref": "#/components/responses/Unauthorized"
-          },
-          "403": {
-            "$ref": "#/components/responses/Forbidden"
-          },
-          "404": {
-            "$ref": "#/components/responses/NotFound"
-          },
-          "500": {
-            "$ref": "#/components/responses/InternalError"
-          }
-        },
-        "summary": "Delete feature store",
-        "tags": [
-          "FeatureStore"
-        ]
-      }
-    },
-    "/featurestore/{featureStoreId}/config": {
-      "put": {
-        "operationId": "updateFeatureStoreConfig",
-        "parameters": [
-          {
-            "description": "featureStore id",
-            "in": "path",
-            "name": "featureStoreId",
-            "required": true,
-            "schema": {
-              "pattern": "^[0-9a-f]{24}$",
-              "type": "string"
-            }
-          }
-        ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/domino.featurestore.web.UpdateFeatureStoreConfigRequest"
-              }
-            }
-          },
-          "description": "updated feature store spec with config info to persist",
-          "required": true
-        },
-        "responses": {
-          "200": {
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/domino.featurestore.api.FeatureStoreDto"
-                }
-              }
-            },
-            "description": "success"
-          },
-          "400": {
-            "$ref": "#/components/responses/BadRequest"
-          },
-          "401": {
-            "$ref": "#/components/responses/Unauthorized"
-          },
-          "403": {
-            "$ref": "#/components/responses/Forbidden"
-          },
-          "500": {
-            "$ref": "#/components/responses/InternalError"
-          }
-        },
-        "summary": "Update feature store config",
-        "tags": [
-          "FeatureStore"
-        ]
-      }
-    },
-    "/featurestore/{featureStoreId}/credentialconfigs": {
-      "get": {
-        "operationId": "getCredentialConfigs",
-        "parameters": [
-          {
-            "description": "Feature store Id",
-            "in": "path",
-            "name": "featureStoreId",
-            "required": true,
-            "schema": {
-              "pattern": "^[0-9a-f]{24}$",
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/domino.featurestore.api.CredentialConfigs"
-                }
-              }
-            },
-            "description": "success"
-          },
-          "400": {
-            "$ref": "#/components/responses/BadRequest"
-          },
-          "401": {
-            "$ref": "#/components/responses/Unauthorized"
-          },
-          "403": {
-            "$ref": "#/components/responses/Forbidden"
-          },
-          "500": {
-            "$ref": "#/components/responses/InternalError"
-          }
-        },
-        "summary": "Get the required credential configs for specified feature store",
-        "tags": [
-          "FeatureStore"
-        ]
-      }
-    },
-    "/featurestore/{featureStoreId}/projects/{projectId}": {
-      "delete": {
-        "operationId": "disableFeatureStoreForProject",
-        "parameters": [
-          {
-            "description": "Feature store Id",
-            "in": "path",
-            "name": "featureStoreId",
-            "required": true,
-            "schema": {
-              "pattern": "^[0-9a-f]{24}$",
-              "type": "string"
-            }
-          },
-          {
-            "description": "Project Id",
-            "in": "path",
-            "name": "projectId",
-            "required": true,
-            "schema": {
-              "pattern": "^[0-9a-f]{24}$",
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/domino.featurestore.api.FeatureStoreDto"
-                }
-              }
-            },
-            "description": "success"
-          },
-          "400": {
-            "$ref": "#/components/responses/BadRequest"
-          },
-          "401": {
-            "$ref": "#/components/responses/Unauthorized"
-          },
-          "403": {
-            "$ref": "#/components/responses/Forbidden"
-          },
-          "500": {
-            "$ref": "#/components/responses/InternalError"
-          }
-        },
-        "summary": "Disable feature store for a given project",
-        "tags": [
-          "FeatureStore"
-        ]
-      },
-      "post": {
-        "operationId": "enableFeatureStoreForProject",
-        "parameters": [
-          {
-            "description": "Feature store Id",
-            "in": "path",
-            "name": "featureStoreId",
-            "required": true,
-            "schema": {
-              "pattern": "^[0-9a-f]{24}$",
-              "type": "string"
-            }
-          },
-          {
-            "description": "Project Id",
-            "in": "path",
-            "name": "projectId",
-            "required": true,
-            "schema": {
-              "pattern": "^[0-9a-f]{24}$",
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/domino.featurestore.api.FeatureStoreDto"
-                }
-              }
-            },
-            "description": "success"
-          },
-          "400": {
-            "$ref": "#/components/responses/BadRequest"
-          },
-          "401": {
-            "$ref": "#/components/responses/Unauthorized"
-          },
-          "403": {
-            "$ref": "#/components/responses/Forbidden"
-          },
-          "500": {
-            "$ref": "#/components/responses/InternalError"
-          }
-        },
-        "summary": "Enable feature store for a given project",
-        "tags": [
-          "FeatureStore"
         ]
       }
     },
@@ -47497,7 +46433,7 @@
     },
     "/gateway/projects": {
       "get": {
-        "operationId": "list",
+        "operationId": "listProjects",
         "parameters": [
           {
             "description": "The relationship between the current user and the projects to be returned",
@@ -47544,6 +46480,19 @@
             "schema": {
               "default": false,
               "type": "boolean"
+            }
+          },
+          {
+            "description": "Filter projects by taxonomy tag IDs (AND semantics - returns only projects with all specified tags).\n",
+            "in": "query",
+            "name": "tagIds",
+            "required": false,
+            "schema": {
+              "items": {
+                "type": "string"
+              },
+              "nullable": true,
+              "type": "array"
             }
           }
         ],
@@ -60445,6 +59394,49 @@
         ]
       }
     },
+    "/projects/{projectId}/collaboratorsForGovernanceApprovers": {
+      "get": {
+        "operationId": "getCollaboratorsForGovernanceApprovers",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "projectId",
+            "required": true,
+            "schema": {
+              "pattern": "^[0-9a-f]{24}$",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/domino.projects.api.CollaboratorForGovernanceApprovers",
+                  "items": null,
+                  "type": "array"
+                }
+              }
+            },
+            "description": "success"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalError"
+          }
+        },
+        "summary": "get collaborators eligible as governance approvers (ResultsConsumer and Contributor roles only)",
+        "tags": [
+          "Projects"
+        ]
+      }
+    },
     "/projects/{projectId}/comment": {
       "delete": {
         "operationId": "archiveCommentOnProject",
@@ -67102,73 +66094,6 @@
         ]
       }
     },
-    "/users/extendTrialPeriod/{userId}/{extensionPeriodInDays}": {
-      "get": {
-        "operationId": "extendTrialPeriod",
-        "parameters": [
-          {
-            "description": "Domino id of the user to whom the extension will apply",
-            "in": "path",
-            "name": "userId",
-            "required": true,
-            "schema": {
-              "pattern": "^[0-9a-f]{24}$",
-              "type": "string"
-            }
-          },
-          {
-            "description": "How many days to extend by",
-            "in": "path",
-            "name": "extensionPeriodInDays",
-            "required": true,
-            "schema": {
-              "format": "int32",
-              "type": "integer"
-            }
-          },
-          {
-            "description": "API Key",
-            "in": "header",
-            "name": "X-Domino-Api-Key",
-            "required": false,
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/domino.nucleus.user.Response"
-                }
-              }
-            },
-            "description": "success"
-          },
-          "400": {
-            "$ref": "#/components/responses/BadRequest"
-          },
-          "401": {
-            "$ref": "#/components/responses/Unauthorized"
-          },
-          "403": {
-            "$ref": "#/components/responses/Forbidden"
-          },
-          "404": {
-            "$ref": "#/components/responses/NotFound"
-          },
-          "500": {
-            "$ref": "#/components/responses/InternalError"
-          }
-        },
-        "summary": "extend trial period for a user",
-        "tags": [
-          "Users"
-        ]
-      }
-    },
     "/users/isDataAnalystUser": {
       "get": {
         "operationId": "isDataAnalystUser",
@@ -67573,53 +66498,6 @@
         ]
       }
     },
-    "/users/requestForTrialPeriodExtension": {
-      "get": {
-        "operationId": "requestForTrialPeriodExtension",
-        "parameters": [
-          {
-            "description": "API Key",
-            "in": "header",
-            "name": "X-Domino-Api-Key",
-            "required": false,
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/domino.nucleus.user.Response"
-                }
-              }
-            },
-            "description": "success"
-          },
-          "400": {
-            "$ref": "#/components/responses/BadRequest"
-          },
-          "401": {
-            "$ref": "#/components/responses/Unauthorized"
-          },
-          "403": {
-            "$ref": "#/components/responses/Forbidden"
-          },
-          "404": {
-            "$ref": "#/components/responses/NotFound"
-          },
-          "500": {
-            "$ref": "#/components/responses/InternalError"
-          }
-        },
-        "summary": "extend trial period",
-        "tags": [
-          "Users"
-        ]
-      }
-    },
     "/users/roles/{userId}": {
       "get": {
         "operationId": "getUserRoles",
@@ -67860,53 +66738,6 @@
           }
         },
         "summary": "retrieves the current user",
-        "tags": [
-          "Users"
-        ]
-      }
-    },
-    "/users/trialStatus": {
-      "get": {
-        "operationId": "getCurrentUserTrialStatus",
-        "parameters": [
-          {
-            "description": "API Key",
-            "in": "header",
-            "name": "X-Domino-Api-Key",
-            "required": false,
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/domino.common.user.TrialStatusDTO"
-                }
-              }
-            },
-            "description": "success"
-          },
-          "400": {
-            "$ref": "#/components/responses/BadRequest"
-          },
-          "401": {
-            "$ref": "#/components/responses/Unauthorized"
-          },
-          "403": {
-            "$ref": "#/components/responses/Forbidden"
-          },
-          "404": {
-            "$ref": "#/components/responses/NotFound"
-          },
-          "500": {
-            "$ref": "#/components/responses/InternalError"
-          }
-        },
-        "summary": "Get trial status of the current user",
         "tags": [
           "Users"
         ]
@@ -69534,6 +68365,16 @@
             "in": "path",
             "name": "ownerId",
             "required": true,
+            "schema": {
+              "pattern": "^[0-9a-f]{24}$",
+              "type": "string"
+            }
+          },
+          {
+            "description": "Filter workspaces by associated App draft version id. If omitted, all workspaces are returned regardless of draft association.",
+            "in": "query",
+            "name": "draftAppVersionId",
+            "required": false,
             "schema": {
               "pattern": "^[0-9a-f]{24}$",
               "type": "string"

@@ -4,7 +4,6 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.List;
 
@@ -67,7 +66,7 @@ class GatewayApiTest extends TestClientConfigurer {
         String relationship = "Owned";
 
         // Act
-        List<DominoServerProjectsApiProjectGatewaySummary> projects = gatewayApi.listProjects(relationship, Boolean.TRUE, null, null);
+        List<DominoServerProjectsApiProjectGatewaySummary> projects = gatewayApi.listProjects(relationship, Boolean.TRUE, null, null, null);
 
         // Assert
         assertNotNull(projects);
@@ -80,7 +79,7 @@ class GatewayApiTest extends TestClientConfigurer {
         String relationship = TestData.INVALID_DOMINO_ID;
 
         // Act
-        ApiException th = assertThrows(ApiException.class, () -> gatewayApi.listProjects(relationship, Boolean.TRUE, null, null));
+        ApiException th = assertThrows(ApiException.class, () -> gatewayApi.listProjects(relationship, Boolean.TRUE, null, null, null));
 
         // Assert
         assertEquals(500, th.getCode());

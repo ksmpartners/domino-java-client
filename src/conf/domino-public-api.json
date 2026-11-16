@@ -76,25 +76,39 @@
         }
       },
       "limit": {
-        "description": "Maximum number of records to return.",
+        "description": "Max number to fetch. Defaults to 10.",
         "in": "query",
         "name": "limit",
         "required": false,
         "schema": {
-          "default": 50,
-          "format": "int32",
           "type": "integer"
         }
       },
+      "name": {
+        "description": "Partial match search criteria value, that will look into PAT's name and username values",
+        "in": "query",
+        "name": "name",
+        "required": false,
+        "schema": {
+          "type": "string"
+        }
+      },
       "offset": {
-        "description": "Zero-based; indicates how many events to skip over before",
+        "description": "How many from the start to skip. Defaults to 0.",
         "in": "query",
         "name": "offset",
         "required": false,
         "schema": {
-          "default": 0,
-          "format": "int32",
           "type": "integer"
+        }
+      },
+      "patId": {
+        "description": "Id of the personal access token to filter by.",
+        "in": "path",
+        "name": "patId",
+        "required": true,
+        "schema": {
+          "type": "string"
         }
       },
       "serviceAccountIdpId": {
@@ -115,6 +129,38 @@
           "type": "string"
         }
       },
+      "sortBy": {
+        "description": "The field to sort personal access tokens by. Available fields are:\n  `name` - The name of the token.\n  `username` - The username of the token owner.\n  `createdAt` - The creation timestamp of the token.\n  `expiresAt` - The expiration timestamp of the token.\n  `isValid` - Whether the token is valid.\n  `status` - A computed status combining isValid and expiresAt (expired tokens sort last when asc).\nDefaults to `createdAt`.\n",
+        "in": "query",
+        "name": "sortBy",
+        "required": false,
+        "schema": {
+          "default": "createdAt",
+          "enum": [
+            "name",
+            "username",
+            "createdAt",
+            "expiresAt",
+            "isValid",
+            "status"
+          ],
+          "type": "string"
+        }
+      },
+      "sortOrder": {
+        "description": "The order to sort the tokens in. Can be `asc` or `desc`. Defaults to `asc`.",
+        "in": "query",
+        "name": "sortOrder",
+        "required": false,
+        "schema": {
+          "default": "asc",
+          "enum": [
+            "asc",
+            "desc"
+          ],
+          "type": "string"
+        }
+      },
       "startTimestamp": {
         "description": "unix timestamp in milliseconds",
         "in": "query",
@@ -122,6 +168,21 @@
         "required": false,
         "schema": {
           "type": "integer"
+        }
+      },
+      "status": {
+        "description": "Param to filter by status :\n  `active` - Valid token to be used.\n  `expiringSoon` - Valid token to be used but its expiration time is in less than 7 days.\n  `expired` - Already expired token.\n  `revoked` - Token that has been revoked and is no longer valid, despite its expiration time.\n",
+        "in": "query",
+        "name": "status",
+        "required": false,
+        "schema": {
+          "enum": [
+            "active",
+            "expiringSoon",
+            "expired",
+            "revoked"
+          ],
+          "type": "string"
         }
       },
       "targetId": {
@@ -157,6 +218,15 @@
       "tokenName": {
         "in": "path",
         "name": "tokenName",
+        "required": true,
+        "schema": {
+          "type": "string"
+        }
+      },
+      "userId": {
+        "description": "User Id owner of the personal access tokens.",
+        "in": "path",
+        "name": "userId",
         "required": true,
         "schema": {
           "type": "string"
@@ -231,6 +301,16 @@
           }
         },
         "description": "Not Found"
+      },
+      "409": {
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/FailureEnvelopeV1"
+            }
+          }
+        },
+        "description": "The request could not be completed due to a conflict with the current state of the target resource."
       },
       "413": {
         "content": {
@@ -532,6 +612,21 @@
         ],
         "type": "object"
       },
+      "AdminPanelMountConfig": {
+        "properties": {
+          "enabled": {
+            "description": "If true, the Extension is mounted in the admin panel of the Domino UI.",
+            "type": "boolean"
+          },
+          "urlConfig": {
+            "$ref": "#/components/schemas/MountPointTypeUrlConfig"
+          }
+        },
+        "required": [
+          "enabled"
+        ],
+        "type": "object"
+      },
       "Affecting": {
         "items": {
           "$ref": "#/components/schemas/Entity"
@@ -541,6 +636,7 @@
       "AggregationWindowV1": {
         "description": "Aggregation window for metrics data points",
         "enum": [
+          "5min",
           "hourly",
           "daily"
         ],
@@ -676,6 +772,64 @@
         ],
         "type": "object"
       },
+      "AppCreationRequestV1": {
+        "description": "Create an App with an initial version that defaults to draft status. A version is always created; the 'initialVersion' field provides optional configuration for it. Does NOT start an instance.\n",
+        "properties": {
+          "accessStatuses": {
+            "items": {
+              "$ref": "#/components/schemas/AppAccessStatus"
+            },
+            "type": "array"
+          },
+          "configurationType": {
+            "$ref": "#/components/schemas/AppConfigurationType"
+          },
+          "description": {
+            "type": "string"
+          },
+          "discoverable": {
+            "type": "boolean"
+          },
+          "entryPoint": {
+            "description": "Immutable after creation.",
+            "type": "string"
+          },
+          "initialVersion": {
+            "$ref": "#/components/schemas/AppVersionCreationRequest",
+            "description": "Optional configuration for the initial version. A version is always created; this field overrides defaults for it.\n"
+          },
+          "mountDatasets": {
+            "type": "boolean"
+          },
+          "mountNetAppVolumes": {
+            "type": "boolean"
+          },
+          "name": {
+            "type": "string"
+          },
+          "projectId": {
+            "type": "string"
+          },
+          "renderIFrame": {
+            "type": "boolean"
+          },
+          "visibility": {
+            "enum": [
+              "AUTHENTICATED",
+              "GRANT_BASED",
+              "GRANT_BASED_STRICT",
+              "PUBLIC"
+            ],
+            "type": "string"
+          }
+        },
+        "required": [
+          "name",
+          "projectId",
+          "visibility"
+        ],
+        "type": "object"
+      },
       "AppInstanceAutoscalingInfo": {
         "properties": {
           "readyReplicas": {
@@ -806,6 +960,14 @@
             "type": "number"
           },
           "describeUrl": {
+            "type": "string"
+          },
+          "dfsCommitId": {
+            "description": "The DFS commit ID that was used for this instance's execution.",
+            "type": "string"
+          },
+          "gitCommitId": {
+            "description": "The git commit SHA that was used for this instance's execution.",
             "type": "string"
           },
           "id": {
@@ -941,6 +1103,93 @@
         ],
         "type": "object"
       },
+      "AppResponseV1": {
+        "properties": {
+          "accessStatuses": {
+            "items": {
+              "$ref": "#/components/schemas/AppAccessStatus"
+            },
+            "type": "array"
+          },
+          "configurationType": {
+            "$ref": "#/components/schemas/AppConfigurationType"
+          },
+          "currentVersion": {
+            "$ref": "#/components/schemas/AppVersionResponseV1"
+          },
+          "description": {
+            "type": "string"
+          },
+          "discoverable": {
+            "type": "boolean"
+          },
+          "entryPoint": {
+            "type": "string"
+          },
+          "id": {
+            "type": "string"
+          },
+          "mountDatasets": {
+            "type": "boolean"
+          },
+          "mountNetAppVolumes": {
+            "type": "boolean"
+          },
+          "name": {
+            "type": "string"
+          },
+          "project": {
+            "$ref": "#/components/schemas/AppProjectResponse"
+          },
+          "publisher": {
+            "$ref": "#/components/schemas/AppUserResponse"
+          },
+          "renderIFrame": {
+            "type": "boolean"
+          },
+          "thumbnailEtag": {
+            "type": "string"
+          },
+          "updatedAt": {
+            "format": "int64",
+            "type": "number"
+          },
+          "url": {
+            "type": "string"
+          },
+          "vanityUrl": {
+            "type": "string"
+          },
+          "views": {
+            "type": "number"
+          },
+          "visibility": {
+            "enum": [
+              "AUTHENTICATED",
+              "GRANT_BASED",
+              "GRANT_BASED_STRICT",
+              "PUBLIC"
+            ],
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "name",
+          "project",
+          "entryPoint",
+          "renderIFrame",
+          "url",
+          "visibility",
+          "accessStatuses",
+          "discoverable",
+          "mountDatasets",
+          "mountNetAppVolumes",
+          "views",
+          "configurationType"
+        ],
+        "type": "object"
+      },
       "AppSummaryResponse": {
         "properties": {
           "accessStatuses": {
@@ -988,6 +1237,112 @@
           },
           "renderIFrame": {
             "type": "boolean"
+          },
+          "taxonomyTags": {
+            "description": "Taxonomy tags associated with this app.",
+            "items": {
+              "$ref": "#/components/schemas/TaxonomyTag"
+            },
+            "type": "array"
+          },
+          "thumbnailEtag": {
+            "type": "string"
+          },
+          "updatedAt": {
+            "format": "int64",
+            "type": "number"
+          },
+          "url": {
+            "type": "string"
+          },
+          "vanityUrl": {
+            "type": "string"
+          },
+          "views": {
+            "type": "number"
+          },
+          "visibility": {
+            "enum": [
+              "AUTHENTICATED",
+              "GRANT_BASED",
+              "GRANT_BASED_STRICT",
+              "PUBLIC"
+            ],
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "name",
+          "project",
+          "entryPoint",
+          "renderIFrame",
+          "url",
+          "visibility",
+          "accessStatuses",
+          "discoverable",
+          "mountDatasets",
+          "mountNetAppVolumes",
+          "views",
+          "isPinned",
+          "configurationType"
+        ],
+        "type": "object"
+      },
+      "AppSummaryResponseV1": {
+        "properties": {
+          "accessStatuses": {
+            "items": {
+              "$ref": "#/components/schemas/AppAccessStatus"
+            },
+            "type": "array"
+          },
+          "configurationType": {
+            "$ref": "#/components/schemas/AppConfigurationType"
+          },
+          "currentVersion": {
+            "$ref": "#/components/schemas/AppVersionResponseV1"
+          },
+          "description": {
+            "type": "string"
+          },
+          "discoverable": {
+            "type": "boolean"
+          },
+          "entryPoint": {
+            "type": "string"
+          },
+          "id": {
+            "type": "string"
+          },
+          "isPinned": {
+            "description": "Whether this app is pinned by the current user",
+            "type": "boolean"
+          },
+          "mountDatasets": {
+            "type": "boolean"
+          },
+          "mountNetAppVolumes": {
+            "type": "boolean"
+          },
+          "name": {
+            "type": "string"
+          },
+          "project": {
+            "$ref": "#/components/schemas/AppProjectResponse"
+          },
+          "publisher": {
+            "$ref": "#/components/schemas/AppUserResponse"
+          },
+          "renderIFrame": {
+            "type": "boolean"
+          },
+          "taxonomyTags": {
+            "description": "Taxonomy tags associated with this app.",
+            "items": {
+              "$ref": "#/components/schemas/TaxonomyTag"
+            },
+            "type": "array"
           },
           "thumbnailEtag": {
             "type": "string"
@@ -1061,6 +1416,61 @@
         "type": "object"
       },
       "AppUpdateRequest": {
+        "description": "Request body for updating an app. All fields are optional; omitted fields preserve existing\nvalues. The side effects of an update depend on which fields changed:\n- Reproducibility fields (mountDatasets, mountNetAppVolumes, and any reproducibility fields\n  inside the nested version object such as dfsCommitId, gitRef, environmentId,\n  environmentRevisionId, externalVolumeMountIds, netAppVolumeIds, and entryScript)\n  create a new app version and stop the currently running instance.\n  Note: bundleId is immutable after creation and is not affected by updates.\n- Execution fields (renderIFrame, and execution fields inside the nested version object such\n  as hardwareTierId, autoscalingSpecification, and vanityUrl) update the version in-place,\n  stop the running instance, and restart from the same version.\n- Metadata fields (name, description, entryPoint, visibility, accessStatuses, discoverable)\n  are updated in-place without restarting.\n",
+        "properties": {
+          "accessStatuses": {
+            "description": "Access statuses for the app. Metadata field: updated without restarting.",
+            "items": {
+              "$ref": "#/components/schemas/AppAccessStatus"
+            },
+            "type": "array"
+          },
+          "description": {
+            "description": "App description. Metadata field: updated without restarting.",
+            "type": "string"
+          },
+          "discoverable": {
+            "description": "Whether the app is discoverable. Metadata field: updated without restarting.",
+            "type": "boolean"
+          },
+          "entryPoint": {
+            "description": "App entry point. Metadata field: updated without restarting.",
+            "type": "string"
+          },
+          "mountDatasets": {
+            "description": "Whether to mount datasets. Reproducibility field: changing this creates a new version.",
+            "type": "boolean"
+          },
+          "mountNetAppVolumes": {
+            "description": "Whether to mount NetApp volumes. Reproducibility field: changing this creates a new version.",
+            "type": "boolean"
+          },
+          "name": {
+            "description": "Display name for the app. Metadata field: updated without restarting.",
+            "type": "string"
+          },
+          "renderIFrame": {
+            "description": "Whether to render the app in an iframe. Execution field: changing this triggers a restart.",
+            "type": "boolean"
+          },
+          "version": {
+            "$ref": "#/components/schemas/AppVersionCreationRequest"
+          },
+          "visibility": {
+            "description": "App visibility level. Metadata field: updated without restarting.",
+            "enum": [
+              "AUTHENTICATED",
+              "GRANT_BASED",
+              "GRANT_BASED_STRICT",
+              "PUBLIC"
+            ],
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      "AppUpdateRequestV1": {
+        "description": "Update app metadata only. entryPoint is immutable and not accepted. Execution-affecting fields (renderIFrame, mountDatasets, mountNetAppVolumes) are not accepted here; they are set at version creation or overridden via start. PATCH never stops running instances, creates new versions, or starts instances.\n",
         "properties": {
           "accessStatuses": {
             "items": {
@@ -1074,23 +1484,8 @@
           "discoverable": {
             "type": "boolean"
           },
-          "entryPoint": {
-            "type": "string"
-          },
-          "mountDatasets": {
-            "type": "boolean"
-          },
-          "mountNetAppVolumes": {
-            "type": "boolean"
-          },
           "name": {
             "type": "string"
-          },
-          "renderIFrame": {
-            "type": "boolean"
-          },
-          "version": {
-            "$ref": "#/components/schemas/AppVersionCreationRequest"
           },
           "visibility": {
             "enum": [
@@ -1119,19 +1514,83 @@
         ],
         "type": "object"
       },
-      "AppVersionCreationRequest": {
+      "AppVersionBundle": {
         "properties": {
-          "autoscalingSpecification": {
-            "$ref": "#/components/schemas/AppAutoscalingSpecification"
+          "id": {
+            "description": "Guardrails bundle ID. Immutable after creation.",
+            "type": "string"
           },
-          "bundleId": {
+          "name": {
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      "AppVersionContent": {
+        "description": "Tier 1 reproducibility fields that define the version's content.",
+        "properties": {
+          "dataPlaneId": {
+            "nullable": true,
             "type": "string"
           },
           "dfsCommitId": {
             "type": "string"
           },
           "entryScript": {
-            "description": "Optional inline script to execute instead of the app's entry point. If provided, this script will take precedence over the entry point.",
+            "type": "string"
+          },
+          "environmentId": {
+            "type": "string"
+          },
+          "environmentRevisionId": {
+            "type": "string"
+          },
+          "extendedIdentityPropagationToAppsEnabled": {
+            "type": "boolean"
+          },
+          "externalVolumeMountIds": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "gitRef": {
+            "$ref": "#/components/schemas/GitRef"
+          },
+          "netAppVolumeIds": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "resolvedCommits": {
+            "$ref": "#/components/schemas/ResolvedCommits"
+          }
+        },
+        "type": "object"
+      },
+      "AppVersionCreationRequest": {
+        "properties": {
+          "autoscalingSpecification": {
+            "$ref": "#/components/schemas/AppAutoscalingSpecification"
+          },
+          "bundleId": {
+            "description": "Guardrails bundle ID. Immutable after creation; cannot be changed via update.",
+            "type": "string"
+          },
+          "dataPlaneId": {
+            "description": "Target data plane ID. If omitted but hardwareTierId is provided, auto-populated from the hardware tier's data plane. Returns 422 if both are provided and they don't match.\n",
+            "type": "string"
+          },
+          "description": {
+            "description": "Optional version description.",
+            "type": "string"
+          },
+          "dfsCommitId": {
+            "type": "string"
+          },
+          "entryScript": {
+            "description": "Optional inline script to execute instead of the app's entry point.",
             "type": "string"
           },
           "environmentId": {
@@ -1162,6 +1621,34 @@
             },
             "type": "array"
           },
+          "resolvedDfsCommitId": {
+            "description": "Pre-resolved DFS commit ID.",
+            "type": "string"
+          },
+          "resolvedGitCommitId": {
+            "description": "Pre-resolved git commit SHA.",
+            "type": "string"
+          },
+          "resolvedImportedGitRepos": {
+            "items": {
+              "$ref": "#/components/schemas/ImportedGitRepoSnapshot"
+            },
+            "type": "array"
+          },
+          "resolvedImportedProjects": {
+            "items": {
+              "$ref": "#/components/schemas/ImportedProjectSnapshot"
+            },
+            "type": "array"
+          },
+          "status": {
+            "description": "Version status. When used with createAppVersionV1, defaults to 'released' if omitted. When used with createAppV1 (as part of initialVersion), defaults to 'draft' if omitted. If 'draft', returns 409 if a draft already exists for this app.\n",
+            "enum": [
+              "draft",
+              "released"
+            ],
+            "type": "string"
+          },
           "tags": {
             "items": {
               "$ref": "#/components/schemas/AppVersionTag"
@@ -1174,12 +1661,52 @@
         },
         "type": "object"
       },
+      "AppVersionDeployment": {
+        "description": "Tier 2 deployment settings.",
+        "properties": {
+          "autoscalingSpecification": {
+            "$ref": "#/components/schemas/AppAutoscalingSpecification"
+          },
+          "hardwareTierId": {
+            "type": "string"
+          },
+          "vanityUrl": {
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      "AppVersionLifecycleV1": {
+        "description": "Lifecycle and promotion metadata for a version.",
+        "properties": {
+          "promotedAt": {
+            "description": "Timestamp when the version was promoted from draft to released.",
+            "format": "int64",
+            "nullable": true,
+            "type": "number"
+          },
+          "promotedBy": {
+            "description": "User ID of who promoted the version from draft to released.",
+            "nullable": true,
+            "type": "string"
+          },
+          "status": {
+            "enum": [
+              "draft",
+              "released"
+            ],
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
       "AppVersionResponse": {
         "properties": {
           "autoscalingSpecification": {
             "$ref": "#/components/schemas/AppAutoscalingSpecification"
           },
           "bundleId": {
+            "description": "Guardrails bundle ID. Immutable after creation.",
             "type": "string"
           },
           "bundleName": {
@@ -1192,7 +1719,12 @@
           "currentInstance": {
             "$ref": "#/components/schemas/AppInstanceSummaryResponse"
           },
+          "description": {
+            "description": "Optional version description.",
+            "type": "string"
+          },
           "dfsCommitId": {
+            "description": "The original DFS commit ID specified when the version was created. May be null if not explicitly provided.",
             "type": "string"
           },
           "entryScript": {
@@ -1215,7 +1747,8 @@
             "type": "array"
           },
           "gitRef": {
-            "$ref": "#/components/schemas/GitRef"
+            "$ref": "#/components/schemas/GitRef",
+            "description": "The original git reference (e.g. branch name) specified when the version was created."
           },
           "hardwareTierId": {
             "type": "string"
@@ -1232,6 +1765,10 @@
           "publisher": {
             "$ref": "#/components/schemas/AppUserResponse"
           },
+          "resolvedCommits": {
+            "$ref": "#/components/schemas/ResolvedCommits",
+            "description": "Commit and import snapshots resolved at version creation time, representing the actual values used for execution."
+          },
           "tags": {
             "items": {
               "$ref": "#/components/schemas/AppVersionTag"
@@ -1244,6 +1781,10 @@
           },
           "vanityUrl": {
             "type": "string"
+          },
+          "versionNumber": {
+            "format": "int64",
+            "type": "integer"
           }
         },
         "required": [
@@ -1257,6 +1798,60 @@
           "updatedAt",
           "tags",
           "extendedIdentityPropagationToAppsEnabled"
+        ],
+        "type": "object"
+      },
+      "AppVersionResponseV1": {
+        "properties": {
+          "bundle": {
+            "$ref": "#/components/schemas/AppVersionBundle"
+          },
+          "content": {
+            "$ref": "#/components/schemas/AppVersionContent"
+          },
+          "createdAt": {
+            "format": "int64",
+            "type": "number"
+          },
+          "currentInstance": {
+            "$ref": "#/components/schemas/AppInstanceSummaryResponse"
+          },
+          "deployment": {
+            "$ref": "#/components/schemas/AppVersionDeployment"
+          },
+          "description": {
+            "type": "string"
+          },
+          "id": {
+            "type": "string"
+          },
+          "lifecycle": {
+            "$ref": "#/components/schemas/AppVersionLifecycleV1"
+          },
+          "publisher": {
+            "$ref": "#/components/schemas/AppUserResponse"
+          },
+          "tags": {
+            "items": {
+              "$ref": "#/components/schemas/AppVersionTag"
+            },
+            "type": "array"
+          },
+          "updatedAt": {
+            "format": "int64",
+            "type": "number"
+          },
+          "versionNumber": {
+            "description": "Monotonically increasing version number derived from creationOrder.",
+            "format": "int64",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "id",
+          "createdAt",
+          "updatedAt",
+          "tags"
         ],
         "type": "object"
       },
@@ -1276,9 +1871,103 @@
         "type": "object"
       },
       "AppVersionUpdateRequest": {
+        "description": "Request body for updating an app version via PATCH. All fields are optional; omitted fields\npreserve existing values. The side effects of an update depend on which fields changed:\n- Reproducibility fields (dfsCommitId, gitRef, environmentId, environmentRevisionId,\n  externalVolumeMountIds, netAppVolumeIds, entryScript, and the resolved* fields) create a new\n  app version and stop the currently running instance.\n- Execution fields (hardwareTierId, autoscalingSpecification, vanityUrl) update the version\n  in-place, stop the running instance, and restart from the same version. Setting forceRestart\n  to true has the same effect.\n- Metadata fields (tags, description) are updated in-place without restarting.\n",
         "properties": {
-          "vanityUrl": {
+          "autoscalingSpecification": {
+            "$ref": "#/components/schemas/AppAutoscalingSpecification"
+          },
+          "description": {
+            "description": "Version description. Metadata field: updated in-place without restarting.",
             "type": "string"
+          },
+          "dfsCommitId": {
+            "description": "DFS commit ID. Reproducibility field: changing this creates a new version.",
+            "type": "string"
+          },
+          "entryScript": {
+            "description": "Optional inline script to execute instead of the app's entry point. Reproducibility field: changing this creates a new version.",
+            "type": "string"
+          },
+          "environmentId": {
+            "description": "Environment ID. Reproducibility field: changing this creates a new version.",
+            "type": "string"
+          },
+          "environmentRevisionId": {
+            "description": "Environment revision ID. Reproducibility field: changing this creates a new version.",
+            "type": "string"
+          },
+          "externalVolumeMountIds": {
+            "description": "External volume mount IDs. Reproducibility field: changing these creates a new version.",
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "forceRestart": {
+            "description": "If true, forces a restart of the app version even if no fields require it.",
+            "type": "boolean"
+          },
+          "gitRef": {
+            "$ref": "#/components/schemas/GitRef"
+          },
+          "hardwareTierId": {
+            "description": "Hardware tier ID for the app version. Execution field: changing this triggers a restart.",
+            "type": "string"
+          },
+          "netAppVolumeIds": {
+            "description": "NetApp volume IDs. Reproducibility field: changing these creates a new version.",
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "resolvedDfsCommitId": {
+            "description": "Pre-resolved DFS commit ID. If provided, used for version comparison instead of resolving from dfsCommitId.",
+            "type": "string"
+          },
+          "resolvedGitCommitId": {
+            "description": "Pre-resolved git commit SHA. If provided, used for version comparison instead of resolving from gitRef.",
+            "type": "string"
+          },
+          "resolvedImportedGitRepos": {
+            "description": "Pre-resolved imported git repo snapshots. If provided, used for version comparison.",
+            "items": {
+              "$ref": "#/components/schemas/ImportedGitRepoSnapshot"
+            },
+            "type": "array"
+          },
+          "resolvedImportedProjects": {
+            "description": "Pre-resolved imported project snapshots. If provided, used for version comparison.",
+            "items": {
+              "$ref": "#/components/schemas/ImportedProjectSnapshot"
+            },
+            "type": "array"
+          },
+          "tags": {
+            "description": "Version tags. Metadata field: updated in-place without restarting.",
+            "items": {
+              "$ref": "#/components/schemas/AppVersionTag"
+            },
+            "type": "array"
+          },
+          "vanityUrl": {
+            "description": "Vanity URL for the app. Execution field: changing this triggers a restart.",
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      "AppVersionUpdateRequestV1": {
+        "description": "Update a version. Only tier 3 fields (description, tags) are accepted regardless of version status. Tier 1/2 fields and status changes return 422. Use /promote to change status.\n",
+        "properties": {
+          "description": {
+            "type": "string"
+          },
+          "tags": {
+            "items": {
+              "$ref": "#/components/schemas/AppVersionTag"
+            },
+            "type": "array"
           }
         },
         "type": "object"
@@ -1699,6 +2388,21 @@
         },
         "type": "object"
       },
+      "BulkPatIdsRequest": {
+        "properties": {
+          "patIds": {
+            "items": {
+              "pattern": "^[0-9a-f]{24}$",
+              "type": "string"
+            },
+            "type": "array"
+          }
+        },
+        "required": [
+          "patIds"
+        ],
+        "type": "object"
+      },
       "CloudCostDetailsV2": {
         "properties": {
           "cost": {
@@ -1766,6 +2470,7 @@
           "dask",
           "mpi",
           "ray",
+          "slurm",
           "spark"
         ],
         "type": "string"
@@ -1834,6 +2539,20 @@
           "workerHardwareTier"
         ],
         "type": "object"
+      },
+      "ContextualQueryParam": {
+        "description": "A query parameter whose value should be derived by the client from the user's context and added to the link. If the value cannot be derived from context, an empty value should be passed.",
+        "enum": [
+          "projectId",
+          "netAppVolumeId",
+          "netAppVolumeSnapshotId",
+          "datasetId",
+          "datasetSnapshotId",
+          "filePath",
+          "modelId",
+          "modelVersionId"
+        ],
+        "type": "string"
       },
       "CopyProjectSpecV1": {
         "properties": {
@@ -2861,6 +3580,24 @@
         },
         "type": "object"
       },
+      "CreatePersonalAccessTokenRequest": {
+        "properties": {
+          "description": {
+            "type": "string"
+          },
+          "expiresIn": {
+            "type": "integer"
+          },
+          "name": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "name",
+          "expiresIn"
+        ],
+        "type": "object"
+      },
       "CreateServiceAccount": {
         "properties": {
           "email": {
@@ -3167,6 +3904,56 @@
         },
         "type": "object"
       },
+      "DatasetFileContextMountConfig": {
+        "properties": {
+          "allProjects": {
+            "description": "If true, the Extension will be mounted for all projects. If false, the extension will only be mounted for the projects specified by each mount point's projectId (mountPoints[].projectId).",
+            "type": "boolean"
+          },
+          "enabled": {
+            "description": "If true, the Extension is mounted in the Dataset file context of the Domino UI.",
+            "type": "boolean"
+          },
+          "fileTypes": {
+            "description": "The file types that the Extension should be mounted for in the dataset file context.",
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "mountPoints": {
+            "items": {
+              "$ref": "#/components/schemas/DatasetFileContextMountPoint"
+            },
+            "type": "array"
+          },
+          "urlConfig": {
+            "$ref": "#/components/schemas/MountPointTypeUrlConfig"
+          }
+        },
+        "required": [
+          "enabled"
+        ],
+        "type": "object"
+      },
+      "DatasetFileContextMountPoint": {
+        "description": "Additional mount point information for the Dataset file context.",
+        "properties": {
+          "enabled": {
+            "description": "Whether the Extension is enabled for this specific mount point in the Dataset file context.",
+            "type": "boolean"
+          },
+          "projectId": {
+            "description": "Project ID where the dataset file context mount point is enabled.",
+            "type": "string"
+          }
+        },
+        "required": [
+          "enabled",
+          "projectId"
+        ],
+        "type": "object"
+      },
       "DatasetInfoV1": {
         "properties": {
           "createdAt": {
@@ -3199,6 +3986,21 @@
           "id",
           "name",
           "createdAt"
+        ],
+        "type": "object"
+      },
+      "DatasetMountConfig": {
+        "properties": {
+          "enabled": {
+            "description": "If true, the Extension is mounted in the dataset view of the Domino UI.",
+            "type": "boolean"
+          },
+          "urlConfig": {
+            "$ref": "#/components/schemas/MountPointTypeUrlConfig"
+          }
+        },
+        "required": [
+          "enabled"
         ],
         "type": "object"
       },
@@ -3437,6 +4239,7 @@
         "enum": [
           "DeleteDatasetRwV2",
           "EditSecurityDatasetRwV2",
+          "EditTaxonomyTagsDatasetRwV2",
           "ListDatasetRwV2",
           "PerformDatasetRwActionsInProjectV2",
           "PermanentDeleteDatasetRwV2",
@@ -4053,6 +4856,22 @@
         "description": "The supported deployment types.  There must be one property present for each deployment type.",
         "type": "object"
       },
+      "DfsHeadCommitEnvelopeV1": {
+        "properties": {
+          "commitId": {
+            "description": "The current DFS head commit ID for the project.",
+            "type": "string"
+          },
+          "metadata": {
+            "$ref": "#/components/schemas/MetadataV1"
+          }
+        },
+        "required": [
+          "commitId",
+          "metadata"
+        ],
+        "type": "object"
+      },
       "DominoStatsV1": {
         "properties": {
           "name": {
@@ -4069,6 +4888,22 @@
         "required": [
           "name",
           "value"
+        ],
+        "type": "object"
+      },
+      "DraftConflictResponse": {
+        "properties": {
+          "existingDraftId": {
+            "description": "ID of the existing draft version for this app.",
+            "type": "string"
+          },
+          "message": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "message",
+          "existingDraftId"
         ],
         "type": "object"
       },
@@ -4564,6 +5399,150 @@
           }
         ]
       },
+      "ExtensionCreationRequest": {
+        "properties": {
+          "appId": {
+            "description": "The id of the App to associate the Extension with.",
+            "type": "string"
+          },
+          "appVersionId": {
+            "description": "The version of the App to associate the Extension with. If not provided, the Extension will use the app's latest version.",
+            "type": "string"
+          },
+          "description": {
+            "description": "The description of the Extension.",
+            "type": "string"
+          },
+          "enabled": {
+            "description": "Whether the Extension is globally enabled or disabled.",
+            "type": "boolean"
+          },
+          "name": {
+            "description": "The name of the Extension.",
+            "type": "string"
+          },
+          "uiMountPointTypeConfigs": {
+            "$ref": "#/components/schemas/UIMountPointTypeConfigs"
+          }
+        },
+        "required": [
+          "name",
+          "enabled",
+          "appId",
+          "uiMountPointTypeConfigs"
+        ],
+        "type": "object"
+      },
+      "ExtensionKind": {
+        "description": "The category of the Extension.",
+        "enum": [
+          "DominoOfficial",
+          "Uncategorized"
+        ],
+        "type": "string"
+      },
+      "ExtensionPatchRequest": {
+        "properties": {
+          "appVersionId": {
+            "description": "The version of the App to associate the Extension with.",
+            "type": "string"
+          },
+          "description": {
+            "description": "The description of the Extension.",
+            "type": "string"
+          },
+          "enabled": {
+            "description": "Whether the Extension is globally enabled or disabled.",
+            "type": "boolean"
+          },
+          "name": {
+            "description": "The name of the Extension.",
+            "type": "string"
+          },
+          "uiMountPointTypeConfigs": {
+            "$ref": "#/components/schemas/UIMountPointTypeConfigs",
+            "description": "Any mount points within any `uiMountPointTypeConfig` are upserted."
+          }
+        },
+        "type": "object"
+      },
+      "ExtensionResponse": {
+        "properties": {
+          "appId": {
+            "description": "The id of the App to associate the Extension with.",
+            "type": "string"
+          },
+          "appVersionId": {
+            "description": "The version of the App to associate the Extension with.",
+            "type": "string"
+          },
+          "createdAt": {
+            "description": "The date and time when the Extension was created.",
+            "format": "date-time",
+            "type": "string"
+          },
+          "createdBy": {
+            "$ref": "#/components/schemas/UserSummary"
+          },
+          "deletedAt": {
+            "description": "The date and time when the Extension was deleted. If null, the Extension has not been deleted.",
+            "format": "date-time",
+            "type": "string"
+          },
+          "deletedBy": {
+            "$ref": "#/components/schemas/UserSummary"
+          },
+          "description": {
+            "description": "The description of the Extension.",
+            "type": "string"
+          },
+          "enabled": {
+            "description": "Whether the Extension is globally enabled or disabled.",
+            "type": "boolean"
+          },
+          "id": {
+            "description": "The id of the Extension.",
+            "type": "string"
+          },
+          "kind": {
+            "$ref": "#/components/schemas/ExtensionKind"
+          },
+          "name": {
+            "description": "The name of the Extension.",
+            "type": "string"
+          },
+          "totalViews": {
+            "description": "The total number of views across all app versions.",
+            "format": "int64",
+            "type": "integer"
+          },
+          "uiMountPointTypeConfigs": {
+            "$ref": "#/components/schemas/UIMountPointTypeConfigs"
+          },
+          "updatedAt": {
+            "description": "The date and time when the Extension was last updated.",
+            "format": "date-time",
+            "type": "string"
+          },
+          "updatedBy": {
+            "$ref": "#/components/schemas/UserSummary"
+          }
+        },
+        "required": [
+          "id",
+          "name",
+          "enabled",
+          "appId",
+          "uiMountPointTypeConfigs",
+          "kind",
+          "totalViews",
+          "createdAt",
+          "createdBy",
+          "updatedAt",
+          "updatedBy"
+        ],
+        "type": "object"
+      },
       "ExternalVolumeMountV1": {
         "properties": {
           "mountPath": {
@@ -4663,8 +5642,7 @@
       "GitCredentialAccessorEnvelopeV1": {
         "properties": {
           "credential": {
-            "$ref": "#/components/schemas/GitCredentialsAccessorV1",
-            "type": "object"
+            "$ref": "#/components/schemas/GitCredentialsAccessorV1"
           },
           "metadata": {
             "$ref": "#/components/schemas/MetadataV1"
@@ -4747,6 +5725,45 @@
         },
         "required": [
           "type"
+        ],
+        "type": "object"
+      },
+      "GitRefResolutionEnvelopeV1": {
+        "properties": {
+          "commitId": {
+            "description": "The resolved git commit SHA.",
+            "type": "string"
+          },
+          "metadata": {
+            "$ref": "#/components/schemas/MetadataV1"
+          }
+        },
+        "required": [
+          "commitId",
+          "metadata"
+        ],
+        "type": "object"
+      },
+      "GitRefResolutionRequestV1": {
+        "properties": {
+          "refType": {
+            "description": "The type of git reference.",
+            "enum": [
+              "head",
+              "commitId",
+              "branches",
+              "tags",
+              "custom"
+            ],
+            "type": "string"
+          },
+          "value": {
+            "description": "The value of the git reference (e.g. branch name, tag name, or commit SHA).",
+            "type": "string"
+          }
+        },
+        "required": [
+          "refType"
         ],
         "type": "object"
       },
@@ -4891,6 +5908,9 @@
           "restrictToRay": {
             "type": "boolean"
           },
+          "restrictToSlurm": {
+            "type": "boolean"
+          },
           "restrictToSpark": {
             "type": "boolean"
           }
@@ -4899,7 +5919,8 @@
           "restrictToSpark",
           "restrictToRay",
           "restrictToDask",
-          "restrictToMpi"
+          "restrictToMpi",
+          "restrictToSlurm"
         ],
         "type": "object"
       },
@@ -5210,6 +6231,64 @@
           "repoName",
           "repoOwnerName"
         ],
+        "type": "object"
+      },
+      "ImportedGitRepoSnapshot": {
+        "properties": {
+          "ref": {
+            "type": "string"
+          },
+          "repoId": {
+            "type": "string"
+          },
+          "repoName": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "repoId",
+          "repoName",
+          "ref"
+        ],
+        "type": "object"
+      },
+      "ImportedProjectSnapshot": {
+        "properties": {
+          "commitId": {
+            "type": "string"
+          },
+          "directoryName": {
+            "type": "string"
+          },
+          "ownerId": {
+            "type": "string"
+          },
+          "projectId": {
+            "type": "string"
+          },
+          "projectName": {
+            "type": "string"
+          },
+          "release": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "projectId",
+          "projectName",
+          "ownerId",
+          "directoryName",
+          "commitId"
+        ],
+        "type": "object"
+      },
+      "IncrementExtensionViewsRequest": {
+        "properties": {
+          "appVersionId": {
+            "description": "The App Version id to attribute the view to. If not provided, the Extension's stored appVersionId is used.",
+            "type": "string"
+          }
+        },
         "type": "object"
       },
       "InformationV1": {
@@ -5768,6 +6847,24 @@
         ],
         "type": "object"
       },
+      "ListAppVersionsResponseV1": {
+        "properties": {
+          "items": {
+            "items": {
+              "$ref": "#/components/schemas/AppVersionResponseV1"
+            },
+            "type": "array"
+          },
+          "metadata": {
+            "$ref": "#/components/schemas/PaginatedMetadataV1"
+          }
+        },
+        "required": [
+          "items",
+          "metadata"
+        ],
+        "type": "object"
+      },
       "ListAppsResponse": {
         "properties": {
           "items": {
@@ -5783,6 +6880,42 @@
         "required": [
           "items",
           "metadata"
+        ],
+        "type": "object"
+      },
+      "ListAppsResponseV1": {
+        "properties": {
+          "items": {
+            "items": {
+              "$ref": "#/components/schemas/AppSummaryResponseV1"
+            },
+            "type": "array"
+          },
+          "metadata": {
+            "$ref": "#/components/schemas/PaginatedMetadataV1"
+          }
+        },
+        "required": [
+          "items",
+          "metadata"
+        ],
+        "type": "object"
+      },
+      "ListExtensionsResponse": {
+        "properties": {
+          "data": {
+            "items": {
+              "$ref": "#/components/schemas/ExtensionResponse"
+            },
+            "type": "array"
+          },
+          "meta": {
+            "$ref": "#/components/schemas/PaginationMeta"
+          }
+        },
+        "required": [
+          "meta",
+          "data"
         ],
         "type": "object"
       },
@@ -7417,6 +8550,21 @@
           "registeredModelType"
         ]
       },
+      "ModelDetailsMountConfig": {
+        "properties": {
+          "enabled": {
+            "description": "If true, the Extension is mounted to places in the Domino UI that show model details (e.g. model cards).",
+            "type": "boolean"
+          },
+          "urlConfig": {
+            "$ref": "#/components/schemas/MountPointTypeUrlConfig"
+          }
+        },
+        "required": [
+          "enabled"
+        ],
+        "type": "object"
+      },
       "ModelEndpointCollaboratorV1": {
         "properties": {
           "name": {
@@ -7860,7 +9008,7 @@
           },
           "versionLabel": {
             "description": "The label of the initial version of the endpoint",
-            "example": 1,
+            "example": 1.0,
             "type": "string"
           }
         },
@@ -7937,7 +9085,7 @@
           },
           "label": {
             "description": "The label of the endpoint version",
-            "example": 1,
+            "example": 1.0,
             "type": "string"
           },
           "modelSource": {
@@ -8028,6 +9176,23 @@
         ],
         "type": "string"
       },
+      "MountPointTypeUrlConfig": {
+        "description": "URL configuration for links to the Extension's runtime (e.g. Domino App) for a particular mount point type.",
+        "properties": {
+          "contextualQueryParams": {
+            "description": "Query parameters whose values should be derived by the client from the user's context and added to the link. If the value cannot be derived from context, an empty value should be passed.",
+            "items": {
+              "$ref": "#/components/schemas/ContextualQueryParam"
+            },
+            "type": "array"
+          },
+          "route": {
+            "description": "The route within the runtime to link to. If absent, link should be constructed to runtime root.",
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
       "MountedGitRepoV1": {
         "properties": {
           "endingBranch": {
@@ -8100,6 +9265,80 @@
         ],
         "type": "object"
       },
+      "NetAppVolumeConfigs": {
+        "description": "Explicit volume copy/import configuration. When set, both fields are required. Volumes in copyNetAppVolumeIds are duplicated; volumes in importNetAppVolumeIds are added by reference. A volume may appear in both lists to be both copied and imported. Requires net_app_volumes in the included features list.\n",
+        "properties": {
+          "copyNetAppVolumeIds": {
+            "description": "Volume IDs to copy (duplicate) into the target project",
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "importNetAppVolumeIds": {
+            "description": "Volume IDs to import (add by reference) into the target project",
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          }
+        },
+        "required": [
+          "copyNetAppVolumeIds",
+          "importNetAppVolumeIds"
+        ],
+        "type": "object"
+      },
+      "NetAppVolumeFileContextMountConfig": {
+        "properties": {
+          "allProjects": {
+            "description": "If true, the Extension will be mounted for all projects. If false, the extension will only be mounted for the projects specified by each mount point's projectId (mountPoints[].projectId).",
+            "type": "boolean"
+          },
+          "enabled": {
+            "description": "If true, the Extension is mounted in the NetApp volume file context of the Domino UI.",
+            "type": "boolean"
+          },
+          "fileTypes": {
+            "description": "The file types that the Extension should be mounted for in the NetApp volume file context.",
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "mountPoints": {
+            "items": {
+              "$ref": "#/components/schemas/NetAppVolumeFileContextMountPoint"
+            },
+            "type": "array"
+          },
+          "urlConfig": {
+            "$ref": "#/components/schemas/MountPointTypeUrlConfig"
+          }
+        },
+        "required": [
+          "enabled"
+        ],
+        "type": "object"
+      },
+      "NetAppVolumeFileContextMountPoint": {
+        "description": "Additional mount point information for the NetApp volume file context.",
+        "properties": {
+          "enabled": {
+            "description": "Whether the Extension is enabled for this specific mount point in the NetApp volume file context.",
+            "type": "boolean"
+          },
+          "projectId": {
+            "description": "Project ID where the NetApp volume file context mount point is enabled.",
+            "type": "string"
+          }
+        },
+        "required": [
+          "enabled",
+          "projectId"
+        ],
+        "type": "object"
+      },
       "NetAppVolumeInfoV1": {
         "properties": {
           "createdAt": {
@@ -8126,6 +9365,21 @@
         "required": [
           "id",
           "name"
+        ],
+        "type": "object"
+      },
+      "NetAppVolumeMountConfig": {
+        "properties": {
+          "enabled": {
+            "description": "If true, the Extension is mounted in the NetApp volume view of the Domino UI.",
+            "type": "boolean"
+          },
+          "urlConfig": {
+            "$ref": "#/components/schemas/MountPointTypeUrlConfig"
+          }
+        },
+        "required": [
+          "enabled"
         ],
         "type": "object"
       },
@@ -8943,7 +10197,7 @@
           },
           "versionLabel": {
             "description": "The label of the initial version of the endpoint",
-            "example": 1,
+            "example": 1.0,
             "type": "string"
           }
         },
@@ -9125,6 +10379,9 @@
               "$ref": "#/components/schemas/ProjectTemplateSourceProjectComponent"
             },
             "type": "array"
+          },
+          "netAppVolumeConfigs": {
+            "$ref": "#/components/schemas/NetAppVolumeConfigs"
           }
         },
         "required": [
@@ -9699,6 +10956,24 @@
         ],
         "type": "object"
       },
+      "PaginatedPersonalAccessTokenEnvelope": {
+        "properties": {
+          "metadata": {
+            "$ref": "#/components/schemas/PaginatedMetadataV1"
+          },
+          "tokens": {
+            "items": {
+              "$ref": "#/components/schemas/PersonalAccessTokenDetails"
+            },
+            "type": "array"
+          }
+        },
+        "required": [
+          "tokens",
+          "metadata"
+        ],
+        "type": "object"
+      },
       "PaginatedProjectsEnvelopeV1": {
         "properties": {
           "metadata": {
@@ -9952,6 +11227,106 @@
         ],
         "type": "object"
       },
+      "PaginationMeta": {
+        "properties": {
+          "filters": {
+            "items": {
+              "$ref": "#/components/schemas/PaginationMetaFilter"
+            },
+            "type": "array"
+          },
+          "orderBy": {
+            "$ref": "#/components/schemas/PaginationMetaOrder"
+          },
+          "pagination": {
+            "$ref": "#/components/schemas/PaginationMetaPagination"
+          },
+          "sortBy": {
+            "$ref": "#/components/schemas/PaginationMetaSortBy"
+          }
+        },
+        "required": [
+          "filters",
+          "pagination",
+          "sortBy",
+          "orderBy"
+        ],
+        "type": "object"
+      },
+      "PaginationMetaFilter": {
+        "description": "The filters applied to the list of Extensions.",
+        "properties": {
+          "key": {
+            "$ref": "#/components/schemas/PaginationMetaFilterKey"
+          },
+          "values": {
+            "description": "The values associated with the filter key.",
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          }
+        },
+        "required": [
+          "key",
+          "values"
+        ],
+        "type": "object"
+      },
+      "PaginationMetaFilterKey": {
+        "description": "The field that the list of Extensions is filtered by.",
+        "enum": [
+          "mount_point_type",
+          "project_id",
+          "enabled",
+          "mount_point_enabled",
+          "deleted",
+          "kind",
+          "search_query"
+        ],
+        "type": "string"
+      },
+      "PaginationMetaOrder": {
+        "description": "The order that the list of Extensions is sorted in.",
+        "enum": [
+          "asc",
+          "desc"
+        ],
+        "type": "string"
+      },
+      "PaginationMetaPagination": {
+        "description": "The pagination information for the list of Extensions.",
+        "properties": {
+          "limit": {
+            "description": "The number of Extensions returned per page.",
+            "type": "integer"
+          },
+          "offset": {
+            "description": "The number of Extensions skipped before starting to collect the result set.",
+            "type": "integer"
+          },
+          "totalCount": {
+            "description": "The total number of Extensions returned that match the filters.",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "limit",
+          "offset",
+          "totalCount"
+        ],
+        "type": "object"
+      },
+      "PaginationMetaSortBy": {
+        "description": "The field that the list of Extensions is sorted by.",
+        "enum": [
+          "createdAt",
+          "name",
+          "updatedAt",
+          "totalViews"
+        ],
+        "type": "string"
+      },
       "PaginationV1": {
         "properties": {
           "limit": {
@@ -10007,6 +11382,105 @@
             "type": "boolean"
           }
         },
+        "type": "object"
+      },
+      "PersonalAccessToken": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/PersonalAccessTokenDetails"
+          },
+          {
+            "properties": {
+              "token": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "patId",
+              "userId",
+              "username",
+              "name",
+              "isValid",
+              "createdAt",
+              "expiresAt",
+              "token"
+            ],
+            "type": "object"
+          }
+        ]
+      },
+      "PersonalAccessTokenDetails": {
+        "properties": {
+          "createdAt": {
+            "example": "2025-08-21T23:51:54.075Z",
+            "format": "date-time",
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "expiresAt": {
+            "example": "2025-08-21T23:51:54.075Z",
+            "format": "date-time",
+            "type": "string"
+          },
+          "isValid": {
+            "type": "boolean"
+          },
+          "name": {
+            "type": "string"
+          },
+          "patId": {
+            "type": "string"
+          },
+          "userId": {
+            "type": "string"
+          },
+          "username": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "patId",
+          "userId",
+          "username",
+          "name",
+          "isValid",
+          "createdAt",
+          "expiresAt"
+        ],
+        "type": "object"
+      },
+      "PersonalAccessTokenEnvelope": {
+        "properties": {
+          "metadata": {
+            "$ref": "#/components/schemas/MetadataV1"
+          },
+          "token": {
+            "$ref": "#/components/schemas/PersonalAccessToken"
+          }
+        },
+        "required": [
+          "token",
+          "metadata"
+        ],
+        "type": "object"
+      },
+      "PersonalAccessTokenExpirationPolicy": {
+        "properties": {
+          "maxExpiresIn": {
+            "description": "Maximum expiration time allowed for a personal access token, in seconds.",
+            "type": "integer"
+          },
+          "minExpiresIn": {
+            "description": "Minimum expiration time allowed for a personal access token, in seconds.",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "minExpiresIn",
+          "maxExpiresIn"
+        ],
         "type": "object"
       },
       "PodResourceObservationV1": {
@@ -10445,6 +11919,49 @@
         ],
         "type": "object"
       },
+      "ProjectSidebarMountConfig": {
+        "properties": {
+          "allProjects": {
+            "description": "If true, the Extension will be mounted for all projects. If false, the extension will only be mounted for the projects specified by each mount point's projectId (mountPoints[].projectId).",
+            "type": "boolean"
+          },
+          "enabled": {
+            "description": "If true, the Extension is mounted in the project sidebar of the Domino UI.",
+            "type": "boolean"
+          },
+          "mountPoints": {
+            "items": {
+              "$ref": "#/components/schemas/ProjectSidebarMountPoint"
+            },
+            "type": "array"
+          },
+          "urlConfig": {
+            "$ref": "#/components/schemas/MountPointTypeUrlConfig"
+          }
+        },
+        "required": [
+          "enabled"
+        ],
+        "type": "object"
+      },
+      "ProjectSidebarMountPoint": {
+        "description": "Additional mount point information for the project sidebar.",
+        "properties": {
+          "enabled": {
+            "description": "Whether the Extension is enabled for this specific mount point in the project sidebar.",
+            "type": "boolean"
+          },
+          "projectId": {
+            "description": "Project ID where the project sidebar mount point is enabled.",
+            "type": "string"
+          }
+        },
+        "required": [
+          "enabled",
+          "projectId"
+        ],
+        "type": "object"
+      },
       "ProjectStatusEnvelopeV1": {
         "properties": {
           "metadata": {
@@ -10728,7 +12245,6 @@
           "Datasets",
           "MountedDatasets",
           "Code",
-          "FeatureStores",
           "ImportedRepositories",
           "Goals",
           "Apps",
@@ -10813,6 +12329,24 @@
           "private"
         ],
         "type": "string"
+      },
+      "PromoteAppVersionRequest": {
+        "description": "Optional body for promote. Fields are only used when ?start=true is set. Since the version becomes released upon promotion, only tier 2 overrides are accepted (same rules as starting a released version).\n",
+        "properties": {
+          "autoscalingSpecification": {
+            "$ref": "#/components/schemas/AppAutoscalingSpecification",
+            "description": "Override autoscaling config for the started instance."
+          },
+          "hardwareTierId": {
+            "description": "Override hardware tier for the started instance.",
+            "type": "string"
+          },
+          "vanityUrl": {
+            "description": "Override vanity URL for the started instance.",
+            "type": "string"
+          }
+        },
+        "type": "object"
       },
       "ProviderRepoVisibilityV1": {
         "description": "The visibility of the code repo. Internal can only be used for Github Enterprise.",
@@ -11767,6 +13301,34 @@
         ],
         "type": "object"
       },
+      "ResolvedCommits": {
+        "description": "Resolved commit and import snapshot information captured at version creation time.",
+        "properties": {
+          "dfsCommitId": {
+            "description": "The DFS commit ID resolved at version creation time.",
+            "type": "string"
+          },
+          "gitCommitId": {
+            "description": "The git commit SHA resolved at version creation time.",
+            "type": "string"
+          },
+          "importedGitRepos": {
+            "description": "Imported git repo snapshots resolved at version creation time.",
+            "items": {
+              "$ref": "#/components/schemas/ImportedGitRepoSnapshot"
+            },
+            "type": "array"
+          },
+          "importedProjects": {
+            "description": "Imported project snapshots resolved at version creation time.",
+            "items": {
+              "$ref": "#/components/schemas/ImportedProjectSnapshot"
+            },
+            "type": "array"
+          }
+        },
+        "type": "object"
+      },
       "ResourceConfiguration": {
         "description": "Resource Configuration",
         "example": {
@@ -11887,6 +13449,10 @@
             "default": false,
             "description": "If true, uses currentSnapshot from workspaceRepos as starting point for forward search. Requires workspaceRepos to be provided",
             "type": "boolean"
+          },
+          "minRVersion": {
+            "description": "Minimum R version for filtering packages (e.g., \"4.0\", \"3.5.0\"). If provided, only packages that require this R version or greater will be returned",
+            "type": "string"
           },
           "repo": {
             "description": "Specific repository name filter (e.g., \"cran\", \"bioconductor\", \"pypi\"). If omitted, query all enabled repos",
@@ -12091,6 +13657,21 @@
         ],
         "type": "object"
       },
+      "SetUserRolesRequestV1": {
+        "properties": {
+          "roles": {
+            "description": "The complete list of roles to assign to the user. Any roles not listed will be revoked.",
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          }
+        },
+        "required": [
+          "roles"
+        ],
+        "type": "object"
+      },
       "SharedAndModelSpecificSchemas": {
         "description": "Shared and Model Specific configs.",
         "properties": {
@@ -12290,6 +13871,96 @@
         ],
         "type": "object"
       },
+      "StartAppVersionRequest": {
+        "description": "Start an instance for a version. Overrides are persisted before launch. Omitted fields use existing values. For released versions, only tier 2 fields accepted. For draft versions, tier 1 + tier 2 accepted.\n",
+        "properties": {
+          "autoscalingSpecification": {
+            "$ref": "#/components/schemas/AppAutoscalingSpecification",
+            "description": "Override autoscaling config. Persisted to app_versions before start."
+          },
+          "dataPlaneId": {
+            "description": "Draft only. Override data plane. Must match hardwareTierId's data plane if both provided.",
+            "type": "string"
+          },
+          "dfsCommitId": {
+            "description": "Draft only. Override DFS commit ID.",
+            "type": "string"
+          },
+          "entryScript": {
+            "description": "Draft only. Override entry script.",
+            "type": "string"
+          },
+          "environmentId": {
+            "description": "Draft only. Override environment.",
+            "type": "string"
+          },
+          "environmentRevisionId": {
+            "description": "Draft only. Override environment revision.",
+            "type": "string"
+          },
+          "extendedIdentityPropagationToAppsEnabled": {
+            "description": "Draft only. Override identity propagation setting.",
+            "type": "boolean"
+          },
+          "externalVolumeMountIds": {
+            "description": "Draft only. Override external volume mounts.",
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "gitRef": {
+            "$ref": "#/components/schemas/GitRef",
+            "description": "Draft only. Override git reference."
+          },
+          "hardwareTierId": {
+            "description": "Override hardware tier. Persisted to app_versions before start.",
+            "type": "string"
+          },
+          "mountDatasets": {
+            "description": "Draft only. Override mount datasets.",
+            "type": "boolean"
+          },
+          "mountNetAppVolumes": {
+            "description": "Draft only. Override mount NetApp volumes.",
+            "type": "boolean"
+          },
+          "netAppVolumeIds": {
+            "description": "Draft only. Override NetApp volume mounts.",
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "resolvedDfsCommitId": {
+            "description": "Draft only. Pre-resolved DFS commit ID; bypasses the commit resolver when provided.",
+            "type": "string"
+          },
+          "resolvedGitCommitId": {
+            "description": "Draft only. Pre-resolved git commit SHA; bypasses the commit resolver when provided.",
+            "type": "string"
+          },
+          "resolvedImportedGitRepos": {
+            "description": "Draft only. Pre-resolved imported git repo snapshots; bypasses the resolver when provided.",
+            "items": {
+              "$ref": "#/components/schemas/ImportedGitRepoSnapshot"
+            },
+            "type": "array"
+          },
+          "resolvedImportedProjects": {
+            "description": "Draft only. Pre-resolved imported project snapshots; bypasses the resolver when provided.",
+            "items": {
+              "$ref": "#/components/schemas/ImportedProjectSnapshot"
+            },
+            "type": "array"
+          },
+          "vanityUrl": {
+            "description": "Override vanity URL. Persisted to model_products before start.",
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
       "StreamedResponseDTO": {
         "description": "An internal DTO to stream responses. Should not be referenced by public OAS files directly.",
         "properties": {
@@ -12450,6 +14121,38 @@
         ],
         "type": "object"
       },
+      "TaxonomyTag": {
+        "properties": {
+          "description": {
+            "type": "string"
+          },
+          "fullPath": {
+            "description": "Ancestor labels from root to direct parent. Empty for root-level tags.",
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "id": {
+            "type": "string"
+          },
+          "label": {
+            "type": "string"
+          },
+          "namespaceId": {
+            "type": "string"
+          },
+          "namespaceLabel": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "label",
+          "namespaceId"
+        ],
+        "type": "object"
+      },
       "TemplateBackingGitCodeSpec": {
         "properties": {
           "credentialId": {
@@ -12542,6 +14245,46 @@
           "nextPageToken": {
             "description": "Pagination token to request the next page of objects",
             "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      "UIMountPointType": {
+        "description": "The type of mount point for the Extension.",
+        "enum": [
+          "adminPanel",
+          "netAppVolume",
+          "dataset",
+          "projectSidebar",
+          "netAppVolumeFileContext",
+          "datasetFileContext",
+          "modelDetails"
+        ],
+        "type": "string"
+      },
+      "UIMountPointTypeConfigs": {
+        "description": "The configuration for the UI mount points of the Extension. Each property corresponds to a different mount point in the Domino UI where the Extension can be mounted.",
+        "properties": {
+          "adminPanel": {
+            "$ref": "#/components/schemas/AdminPanelMountConfig"
+          },
+          "dataset": {
+            "$ref": "#/components/schemas/DatasetMountConfig"
+          },
+          "datasetFileContext": {
+            "$ref": "#/components/schemas/DatasetFileContextMountConfig"
+          },
+          "modelDetails": {
+            "$ref": "#/components/schemas/ModelDetailsMountConfig"
+          },
+          "netAppVolume": {
+            "$ref": "#/components/schemas/NetAppVolumeMountConfig"
+          },
+          "netAppVolumeFileContext": {
+            "$ref": "#/components/schemas/NetAppVolumeFileContextMountConfig"
+          },
+          "projectSidebar": {
+            "$ref": "#/components/schemas/ProjectSidebarMountConfig"
           }
         },
         "type": "object"
@@ -12885,6 +14628,52 @@
         ],
         "type": "object"
       },
+      "UserRolesEnvelopeV1": {
+        "properties": {
+          "metadata": {
+            "$ref": "#/components/schemas/MetadataV1"
+          },
+          "roles": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          }
+        },
+        "required": [
+          "roles",
+          "metadata"
+        ],
+        "type": "object"
+      },
+      "UserSummary": {
+        "description": "Information about a Domino user including id and names.",
+        "properties": {
+          "firstName": {
+            "description": "The first name of the user.",
+            "type": "string"
+          },
+          "id": {
+            "description": "The id of the user.",
+            "type": "string"
+          },
+          "lastName": {
+            "description": "The last name of the user.",
+            "type": "string"
+          },
+          "userName": {
+            "description": "The username of the user.",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "firstName",
+          "lastName",
+          "userName"
+        ],
+        "type": "object"
+      },
       "UserV1": {
         "properties": {
           "avatarUrl": {
@@ -13212,7 +15001,7 @@
   "info": {
     "description": "Domino Public API Endpoints",
     "title": "Domino Public API",
-    "version": "6.2.0"
+    "version": "6.3.0"
   },
   "openapi": "3.0.3",
   "paths": {
@@ -14618,6 +16407,20 @@
             "schema": {
               "type": "string"
             }
+          },
+          {
+            "description": "Filter apps by taxonomy tag IDs (AND semantics - returns only apps with all specified tags). Comma-separated. Requires EnableTaxonomy feature flag; ignored otherwise.\n",
+            "explode": false,
+            "in": "query",
+            "name": "tagIds",
+            "required": false,
+            "schema": {
+              "items": {
+                "type": "string"
+              },
+              "type": "array"
+            },
+            "style": "form"
           }
         ],
         "responses": {
@@ -15323,6 +17126,12 @@
           "404": {
             "$ref": "#/components/responses/404"
           },
+          "409": {
+            "$ref": "#/components/responses/409"
+          },
+          "422": {
+            "$ref": "#/components/responses/422"
+          },
           "500": {
             "$ref": "#/components/responses/500"
           }
@@ -15919,6 +17728,113 @@
         ]
       }
     },
+    "/api/apps/beta/apps/{appId}/versions/{versionId}/start": {
+      "post": {
+        "description": "Start an existing App Version, creating a new instance for it",
+        "operationId": "startAppVersion",
+        "parameters": [
+          {
+            "description": "The id of the app.",
+            "in": "path",
+            "name": "appId",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "description": "The id of the app version to start.",
+            "in": "path",
+            "name": "versionId",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AppVersionResponse"
+                }
+              }
+            },
+            "description": "Success"
+          },
+          "400": {
+            "$ref": "#/components/responses/400"
+          },
+          "401": {
+            "$ref": "#/components/responses/401"
+          },
+          "403": {
+            "$ref": "#/components/responses/403"
+          },
+          "404": {
+            "$ref": "#/components/responses/404"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
+          }
+        },
+        "summary": "Start App Version",
+        "tags": [
+          "AppVersions"
+        ]
+      }
+    },
+    "/api/apps/beta/apps/{appId}/versions/{versionId}/stop": {
+      "post": {
+        "description": "Stop the running instance of an App Version",
+        "operationId": "stopAppVersion",
+        "parameters": [
+          {
+            "description": "The id of the app.",
+            "in": "path",
+            "name": "appId",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "description": "The id of the app version to stop.",
+            "in": "path",
+            "name": "versionId",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "400": {
+            "$ref": "#/components/responses/400"
+          },
+          "401": {
+            "$ref": "#/components/responses/401"
+          },
+          "403": {
+            "$ref": "#/components/responses/403"
+          },
+          "404": {
+            "$ref": "#/components/responses/404"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
+          }
+        },
+        "summary": "Stop App Version",
+        "tags": [
+          "AppVersions"
+        ]
+      }
+    },
     "/api/apps/beta/apps/{appId}/views": {
       "get": {
         "description": "Retrieve an App's Views",
@@ -15995,6 +17911,798 @@
         "summary": "Get App Views",
         "tags": [
           "Apps"
+        ]
+      }
+    },
+    "/api/apps/v1/apps": {
+      "get": {
+        "description": "List all Apps",
+        "operationId": "listAppsV1",
+        "parameters": [
+          {
+            "description": "The id of the project to retrieve apps for.",
+            "in": "query",
+            "name": "projectId",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "description": "The name filter for the apps to retrieve.",
+            "in": "query",
+            "name": "name",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "includeTemplateApps",
+            "required": false,
+            "schema": {
+              "default": false,
+              "type": "boolean"
+            }
+          },
+          {
+            "in": "query",
+            "name": "sortField",
+            "required": false,
+            "schema": {
+              "default": "lastViewed",
+              "enum": [
+                "name",
+                "lastUpdated",
+                "status",
+                "views",
+                "lastViewed"
+              ],
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "sortOrder",
+            "required": false,
+            "schema": {
+              "default": "asc",
+              "enum": [
+                "asc",
+                "desc"
+              ],
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "limit",
+            "required": false,
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "in": "query",
+            "name": "offset",
+            "required": false,
+            "schema": {
+              "default": 0,
+              "type": "integer"
+            }
+          },
+          {
+            "in": "query",
+            "name": "ownerId",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "status",
+            "required": false,
+            "schema": {
+              "enum": [
+                "Queued",
+                "Scheduled",
+                "Pending",
+                "Preparing",
+                "Building",
+                "Pulling",
+                "Running",
+                "Serving",
+                "StopRequested",
+                "StopAndDiscardRequested",
+                "Stopping",
+                "Finishing",
+                "Stopped",
+                "Succeeded",
+                "Failed",
+                "Error"
+              ],
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "publisherId",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "explode": false,
+            "in": "query",
+            "name": "tagIds",
+            "required": false,
+            "schema": {
+              "items": {
+                "type": "string"
+              },
+              "type": "array"
+            },
+            "style": "form"
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ListAppsResponseV1"
+                }
+              }
+            },
+            "description": "Success"
+          },
+          "400": {
+            "$ref": "#/components/responses/400"
+          },
+          "401": {
+            "$ref": "#/components/responses/401"
+          },
+          "403": {
+            "$ref": "#/components/responses/403"
+          },
+          "404": {
+            "$ref": "#/components/responses/404"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
+          }
+        },
+        "summary": "List Apps (v1)",
+        "tags": [
+          "Apps"
+        ]
+      },
+      "post": {
+        "description": "Create an App with an initial version that defaults to draft status. The initialVersion field provides optional configuration for the version; a version is always created even if the field is omitted. Does NOT start an instance.\n",
+        "operationId": "createAppV1",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AppCreationRequestV1"
+              }
+            }
+          },
+          "description": "Request to create an app",
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AppResponseV1"
+                }
+              }
+            },
+            "description": "Success"
+          },
+          "400": {
+            "$ref": "#/components/responses/400"
+          },
+          "401": {
+            "$ref": "#/components/responses/401"
+          },
+          "403": {
+            "$ref": "#/components/responses/403"
+          },
+          "409": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DraftConflictResponse"
+                }
+              }
+            },
+            "description": "A draft version already exists for this app."
+          },
+          "422": {
+            "$ref": "#/components/responses/422"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
+          }
+        },
+        "summary": "Create App (v1)",
+        "tags": [
+          "Apps"
+        ]
+      }
+    },
+    "/api/apps/v1/apps/{appId}": {
+      "delete": {
+        "description": "Delete an App",
+        "operationId": "deleteAppV1",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "appId",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "400": {
+            "$ref": "#/components/responses/400"
+          },
+          "401": {
+            "$ref": "#/components/responses/401"
+          },
+          "403": {
+            "$ref": "#/components/responses/403"
+          },
+          "404": {
+            "$ref": "#/components/responses/404"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
+          }
+        },
+        "summary": "Delete App (v1)",
+        "tags": [
+          "Apps"
+        ]
+      },
+      "get": {
+        "description": "Get a single App by ID",
+        "operationId": "getAppV1",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "appId",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AppResponseV1"
+                }
+              }
+            },
+            "description": "Success"
+          },
+          "400": {
+            "$ref": "#/components/responses/400"
+          },
+          "401": {
+            "$ref": "#/components/responses/401"
+          },
+          "403": {
+            "$ref": "#/components/responses/403"
+          },
+          "404": {
+            "$ref": "#/components/responses/404"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
+          }
+        },
+        "summary": "Get App (v1)",
+        "tags": [
+          "Apps"
+        ]
+      },
+      "patch": {
+        "description": "Update app metadata and defaults. Does not touch versions or instances. entryPoint is immutable and not accepted.\n",
+        "operationId": "updateAppV1",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "appId",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AppUpdateRequestV1"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AppResponseV1"
+                }
+              }
+            },
+            "description": "Success"
+          },
+          "400": {
+            "$ref": "#/components/responses/400"
+          },
+          "401": {
+            "$ref": "#/components/responses/401"
+          },
+          "403": {
+            "$ref": "#/components/responses/403"
+          },
+          "404": {
+            "$ref": "#/components/responses/404"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
+          }
+        },
+        "summary": "Update App (v1)",
+        "tags": [
+          "Apps"
+        ]
+      }
+    },
+    "/api/apps/v1/apps/{appId}/versions": {
+      "get": {
+        "description": "List all versions for an app",
+        "operationId": "listAppVersionsV1",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "appId",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ListAppVersionsResponseV1"
+                }
+              }
+            },
+            "description": "Success"
+          },
+          "400": {
+            "$ref": "#/components/responses/400"
+          },
+          "401": {
+            "$ref": "#/components/responses/401"
+          },
+          "403": {
+            "$ref": "#/components/responses/403"
+          },
+          "404": {
+            "$ref": "#/components/responses/404"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
+          }
+        },
+        "summary": "List App Versions (v1)",
+        "tags": [
+          "AppVersions"
+        ]
+      },
+      "post": {
+        "description": "Create a new version. If status=draft and a draft already exists, returns 409. Does NOT start an instance.\n",
+        "operationId": "createAppVersionV1",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "appId",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AppVersionCreationRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AppVersionResponseV1"
+                }
+              }
+            },
+            "description": "Success"
+          },
+          "400": {
+            "$ref": "#/components/responses/400"
+          },
+          "401": {
+            "$ref": "#/components/responses/401"
+          },
+          "403": {
+            "$ref": "#/components/responses/403"
+          },
+          "409": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DraftConflictResponse"
+                }
+              }
+            },
+            "description": "A draft version already exists for this app."
+          },
+          "422": {
+            "$ref": "#/components/responses/422"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
+          }
+        },
+        "summary": "Create App Version (v1)",
+        "tags": [
+          "AppVersions"
+        ]
+      }
+    },
+    "/api/apps/v1/apps/{appId}/versions/{versionId}": {
+      "get": {
+        "description": "Get a single version by ID",
+        "operationId": "getAppVersionV1",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "appId",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "path",
+            "name": "versionId",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AppVersionResponseV1"
+                }
+              }
+            },
+            "description": "Success"
+          },
+          "400": {
+            "$ref": "#/components/responses/400"
+          },
+          "401": {
+            "$ref": "#/components/responses/401"
+          },
+          "403": {
+            "$ref": "#/components/responses/403"
+          },
+          "404": {
+            "$ref": "#/components/responses/404"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
+          }
+        },
+        "summary": "Get App Version (v1)",
+        "tags": [
+          "AppVersions"
+        ]
+      },
+      "patch": {
+        "description": "Update version metadata. Only tier 3 fields (description, tags) are accepted. Tier 1/2 fields and status return 422.\n",
+        "operationId": "updateAppVersionV1",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "appId",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "path",
+            "name": "versionId",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AppVersionUpdateRequestV1"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AppVersionResponseV1"
+                }
+              }
+            },
+            "description": "Success"
+          },
+          "400": {
+            "$ref": "#/components/responses/400"
+          },
+          "401": {
+            "$ref": "#/components/responses/401"
+          },
+          "403": {
+            "$ref": "#/components/responses/403"
+          },
+          "404": {
+            "$ref": "#/components/responses/404"
+          },
+          "422": {
+            "$ref": "#/components/responses/422"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
+          }
+        },
+        "summary": "Update App Version (v1)",
+        "tags": [
+          "AppVersions"
+        ]
+      }
+    },
+    "/api/apps/v1/apps/{appId}/versions/{versionId}/promote": {
+      "post": {
+        "description": "Promote a draft version to released. Validates that all fields required for launch are present. Optionally starts the version after promotion when start=true is set.\n",
+        "operationId": "promoteAppVersionV1",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "appId",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "path",
+            "name": "versionId",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "description": "If true, start the version immediately after promotion.",
+            "in": "query",
+            "name": "start",
+            "required": false,
+            "schema": {
+              "default": false,
+              "type": "boolean"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PromoteAppVersionRequest"
+              }
+            }
+          },
+          "description": "Fields are only used when start=true is set. Since the version becomes released upon promotion, only tier 2 overrides are accepted. Send {} if no overrides are needed.\n",
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AppVersionResponseV1"
+                }
+              }
+            },
+            "description": "Success"
+          },
+          "400": {
+            "$ref": "#/components/responses/400"
+          },
+          "401": {
+            "$ref": "#/components/responses/401"
+          },
+          "403": {
+            "$ref": "#/components/responses/403"
+          },
+          "404": {
+            "$ref": "#/components/responses/404"
+          },
+          "422": {
+            "$ref": "#/components/responses/422"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
+          }
+        },
+        "summary": "Promote App Version (v1)",
+        "tags": [
+          "AppVersions"
+        ]
+      }
+    },
+    "/api/apps/v1/apps/{appId}/versions/{versionId}/start": {
+      "post": {
+        "description": "Start an instance for a version. For draft versions, tier 1 + tier 2 overrides are accepted. For released versions, only tier 2 overrides are accepted. Overrides are persisted before launch.\n",
+        "operationId": "startAppVersionV1",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "appId",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "path",
+            "name": "versionId",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/StartAppVersionRequest"
+              }
+            }
+          },
+          "description": "Overrides are persisted before launch. Send {} if no overrides are needed.\n",
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AppVersionResponseV1"
+                }
+              }
+            },
+            "description": "Success"
+          },
+          "400": {
+            "$ref": "#/components/responses/400"
+          },
+          "401": {
+            "$ref": "#/components/responses/401"
+          },
+          "403": {
+            "$ref": "#/components/responses/403"
+          },
+          "404": {
+            "$ref": "#/components/responses/404"
+          },
+          "422": {
+            "$ref": "#/components/responses/422"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
+          }
+        },
+        "summary": "Start App Version (v1)",
+        "tags": [
+          "AppVersions"
+        ]
+      }
+    },
+    "/api/apps/v1/apps/{appId}/versions/{versionId}/stop": {
+      "post": {
+        "description": "Stop the running instance for this version.",
+        "operationId": "stopAppVersionV1",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "appId",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "path",
+            "name": "versionId",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "400": {
+            "$ref": "#/components/responses/400"
+          },
+          "401": {
+            "$ref": "#/components/responses/401"
+          },
+          "403": {
+            "$ref": "#/components/responses/403"
+          },
+          "404": {
+            "$ref": "#/components/responses/404"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
+          }
+        },
+        "summary": "Stop App Version (v1)",
+        "tags": [
+          "AppVersions"
         ]
       }
     },
@@ -16440,170 +19148,6 @@
       }
     },
     "/api/cost/v1/billingtagSettings": {
-      "/api/cost/v1/billingtagSettings/mode": {
-        "get": {
-          "description": "Get mode setting of the billing tags",
-          "operationId": "getBillingTagMode",
-          "responses": {
-            "200": {
-              "content": {
-                "application/json": {
-                  "schema": {
-                    "$ref": "#/components/schemas/BillingTagsModeEnvelopeV1"
-                  }
-                }
-              },
-              "description": "Success"
-            },
-            "400": {
-              "$ref": "#/components/responses/400"
-            },
-            "401": {
-              "$ref": "#/components/responses/401"
-            },
-            "403": {
-              "$ref": "#/components/responses/403"
-            },
-            "404": {
-              "$ref": "#/components/responses/404"
-            },
-            "500": {
-              "$ref": "#/components/responses/500"
-            }
-          },
-          "summary": "Get mode setting of the billing tags",
-          "tags": [
-            "BillingTagSettings"
-          ]
-        },
-        "put": {
-          "description": "Update mode setting of the billing tags",
-          "operationId": "updateBillingTagMode",
-          "requestBody": {
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/BillingTagsModeV1"
-                }
-              }
-            },
-            "required": true
-          },
-          "responses": {
-            "200": {
-              "content": {
-                "application/json": {
-                  "schema": {
-                    "$ref": "#/components/schemas/BillingTagsModeEnvelopeV1"
-                  }
-                }
-              },
-              "description": "Success"
-            },
-            "400": {
-              "$ref": "#/components/responses/400"
-            },
-            "401": {
-              "$ref": "#/components/responses/401"
-            },
-            "403": {
-              "$ref": "#/components/responses/403"
-            },
-            "404": {
-              "$ref": "#/components/responses/404"
-            },
-            "500": {
-              "$ref": "#/components/responses/500"
-            }
-          },
-          "summary": "Update mode setting of the billing tags",
-          "tags": [
-            "BillingTagSettings"
-          ]
-        }
-      },
-      "/api/cost/v1/billingtagSettings/notifications": {
-        "get": {
-          "description": "Get notifications setting of the billing tags",
-          "operationId": "getBillingTagNotification",
-          "responses": {
-            "200": {
-              "content": {
-                "application/json": {
-                  "schema": {
-                    "$ref": "#/components/schemas/BillingTagsNotificationsEnvelopeV1"
-                  }
-                }
-              },
-              "description": "Success"
-            },
-            "400": {
-              "$ref": "#/components/responses/400"
-            },
-            "401": {
-              "$ref": "#/components/responses/401"
-            },
-            "403": {
-              "$ref": "#/components/responses/403"
-            },
-            "404": {
-              "$ref": "#/components/responses/404"
-            },
-            "500": {
-              "$ref": "#/components/responses/500"
-            }
-          },
-          "summary": "Get notifications setting of the billing tags",
-          "tags": [
-            "BillingTagSettings"
-          ]
-        },
-        "put": {
-          "description": "Update notifications setting of the billing tags",
-          "operationId": "updateBillingTagNotification",
-          "requestBody": {
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/BillingTagsNotificationsV1"
-                }
-              }
-            },
-            "required": true
-          },
-          "responses": {
-            "200": {
-              "content": {
-                "application/json": {
-                  "schema": {
-                    "$ref": "#/components/schemas/BillingTagsNotificationsEnvelopeV1"
-                  }
-                }
-              },
-              "description": "Success"
-            },
-            "400": {
-              "$ref": "#/components/responses/400"
-            },
-            "401": {
-              "$ref": "#/components/responses/401"
-            },
-            "403": {
-              "$ref": "#/components/responses/403"
-            },
-            "404": {
-              "$ref": "#/components/responses/404"
-            },
-            "500": {
-              "$ref": "#/components/responses/500"
-            }
-          },
-          "summary": "Update notifications setting of the billing tags",
-          "tags": [
-            "BillingTagSettings"
-          ]
-        }
-      },
       "get": {
         "description": "Get  billing tags setting",
         "operationId": "getBillingTagSettings",
@@ -16680,6 +19224,170 @@
           }
         },
         "summary": "Update billing tags setting",
+        "tags": [
+          "BillingTagSettings"
+        ]
+      }
+    },
+    "/api/cost/v1/billingtagSettings/mode": {
+      "get": {
+        "description": "Get mode setting of the billing tags",
+        "operationId": "getBillingTagMode",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BillingTagsModeEnvelopeV1"
+                }
+              }
+            },
+            "description": "Success"
+          },
+          "400": {
+            "$ref": "#/components/responses/400"
+          },
+          "401": {
+            "$ref": "#/components/responses/401"
+          },
+          "403": {
+            "$ref": "#/components/responses/403"
+          },
+          "404": {
+            "$ref": "#/components/responses/404"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
+          }
+        },
+        "summary": "Get mode setting of the billing tags",
+        "tags": [
+          "BillingTagSettings"
+        ]
+      },
+      "put": {
+        "description": "Update mode setting of the billing tags",
+        "operationId": "updateBillingTagMode",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/BillingTagsModeV1"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BillingTagsModeEnvelopeV1"
+                }
+              }
+            },
+            "description": "Success"
+          },
+          "400": {
+            "$ref": "#/components/responses/400"
+          },
+          "401": {
+            "$ref": "#/components/responses/401"
+          },
+          "403": {
+            "$ref": "#/components/responses/403"
+          },
+          "404": {
+            "$ref": "#/components/responses/404"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
+          }
+        },
+        "summary": "Update mode setting of the billing tags",
+        "tags": [
+          "BillingTagSettings"
+        ]
+      }
+    },
+    "/api/cost/v1/billingtagSettings/notifications": {
+      "get": {
+        "description": "Get notifications setting of the billing tags",
+        "operationId": "getBillingTagNotification",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BillingTagsNotificationsEnvelopeV1"
+                }
+              }
+            },
+            "description": "Success"
+          },
+          "400": {
+            "$ref": "#/components/responses/400"
+          },
+          "401": {
+            "$ref": "#/components/responses/401"
+          },
+          "403": {
+            "$ref": "#/components/responses/403"
+          },
+          "404": {
+            "$ref": "#/components/responses/404"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
+          }
+        },
+        "summary": "Get notifications setting of the billing tags",
+        "tags": [
+          "BillingTagSettings"
+        ]
+      },
+      "put": {
+        "description": "Update notifications setting of the billing tags",
+        "operationId": "updateBillingTagNotification",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/BillingTagsNotificationsV1"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BillingTagsNotificationsEnvelopeV1"
+                }
+              }
+            },
+            "description": "Success"
+          },
+          "400": {
+            "$ref": "#/components/responses/400"
+          },
+          "401": {
+            "$ref": "#/components/responses/401"
+          },
+          "403": {
+            "$ref": "#/components/responses/403"
+          },
+          "404": {
+            "$ref": "#/components/responses/404"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
+          }
+        },
+        "summary": "Update notifications setting of the billing tags",
         "tags": [
           "BillingTagSettings"
         ]
@@ -18883,6 +21591,15 @@
             }
           },
           {
+            "description": "If false, exclude Datasets that belong to archived projects. Defaults to true for backward compatibility.",
+            "in": "query",
+            "name": "includeArchivedProjects",
+            "required": false,
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
             "description": "How many Datasets from the start to skip. Defaults to 0.",
             "in": "query",
             "name": "offset",
@@ -19974,6 +22691,393 @@
         ]
       }
     },
+    "/api/extensions/beta/extensions": {
+      "get": {
+        "description": "List Extensions",
+        "operationId": "listExtensions",
+        "parameters": [
+          {
+            "description": "The mount point type to filter by. Can accept multiple values.",
+            "explode": true,
+            "in": "query",
+            "name": "mount_point_type",
+            "required": false,
+            "schema": {
+              "items": {
+                "$ref": "#/components/schemas/UIMountPointType"
+              },
+              "type": "array"
+            },
+            "style": "form"
+          },
+          {
+            "description": "Whether to exclude mount point information in the response. By default, mount point information is included.",
+            "in": "query",
+            "name": "exclude_mount_points",
+            "required": false,
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "description": "The id of the project to filter by.",
+            "in": "query",
+            "name": "project_id",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "description": "Filter by top-level enabled status. By default, both enabled and disabled Extensions are shown.",
+            "in": "query",
+            "name": "enabled",
+            "required": false,
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "description": "Filter by the enabled status within a mount point for the given `mount_point_type` type(s) and `project_id` params. When set to true, returns Extensions with at least one enabled mount point matching the other filters. When set to false, returns Extensions with at least one disabled mount point matching the other filters. By default, both enabled and disabled mount points are shown.\n",
+            "in": "query",
+            "name": "mount_point_enabled",
+            "required": false,
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "description": "Filter by deletion status. By default, only non-deleted Extensions are returned.",
+            "in": "query",
+            "name": "deleted",
+            "required": false,
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "description": "Filter Extensions by their kind (e.g. \"DominoOfficial\", \"Uncategorized\").",
+            "in": "query",
+            "name": "kind",
+            "required": false,
+            "schema": {
+              "$ref": "#/components/schemas/ExtensionKind"
+            }
+          },
+          {
+            "description": "Filter Extensions by a case-insensitive substring match against name or description. Returns Extensions where either the name or description contains the provided string.\n",
+            "in": "query",
+            "name": "search_query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "description": "The maximum number of results to return. Use 0 for no limit (default).",
+            "in": "query",
+            "name": "limit",
+            "required": false,
+            "schema": {
+              "minimum": 0,
+              "type": "integer"
+            }
+          },
+          {
+            "description": "The number of results to skip before starting to collect the result set.",
+            "in": "query",
+            "name": "offset",
+            "required": false,
+            "schema": {
+              "minimum": 0,
+              "type": "integer"
+            }
+          },
+          {
+            "description": "The field to sort by. By default, results are sorted by creation time.",
+            "in": "query",
+            "name": "sort_by",
+            "required": false,
+            "schema": {
+              "$ref": "#/components/schemas/PaginationMetaSortBy"
+            }
+          },
+          {
+            "description": "The order to sort results in. By default, results are sorted in descending order.",
+            "in": "query",
+            "name": "order_by",
+            "required": false,
+            "schema": {
+              "$ref": "#/components/schemas/PaginationMetaOrder"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ListExtensionsResponse"
+                }
+              }
+            },
+            "description": "Success"
+          },
+          "401": {
+            "$ref": "#/components/responses/401"
+          },
+          "403": {
+            "$ref": "#/components/responses/403"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
+          }
+        },
+        "summary": "List Extensions",
+        "tags": [
+          "Extensions"
+        ]
+      },
+      "post": {
+        "description": "Create an Extension given an App reference",
+        "operationId": "createExtension",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ExtensionCreationRequest"
+              }
+            }
+          },
+          "description": "Request to create an extension",
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ExtensionResponse"
+                }
+              }
+            },
+            "description": "Success"
+          },
+          "400": {
+            "$ref": "#/components/responses/400"
+          },
+          "401": {
+            "$ref": "#/components/responses/401"
+          },
+          "403": {
+            "$ref": "#/components/responses/403"
+          },
+          "404": {
+            "$ref": "#/components/responses/404"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
+          }
+        },
+        "summary": "Create an Extension",
+        "tags": [
+          "Extensions"
+        ]
+      }
+    },
+    "/api/extensions/beta/extensions/{extensionId}": {
+      "delete": {
+        "description": "Soft delete an Extension by id",
+        "operationId": "deleteExtension",
+        "parameters": [
+          {
+            "description": "The id of the Extension to delete.",
+            "in": "path",
+            "name": "extensionId",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Success"
+          },
+          "401": {
+            "$ref": "#/components/responses/401"
+          },
+          "403": {
+            "$ref": "#/components/responses/403"
+          },
+          "404": {
+            "$ref": "#/components/responses/404"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
+          }
+        },
+        "summary": "Soft delete an Extension by id",
+        "tags": [
+          "Extensions"
+        ]
+      },
+      "get": {
+        "description": "Get an Extension by id",
+        "operationId": "getExtension",
+        "parameters": [
+          {
+            "description": "The id of the Extension to retrieve.",
+            "in": "path",
+            "name": "extensionId",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "description": "Whether to exclude mount point information in the response. By default, mount point information is included.",
+            "in": "query",
+            "name": "exclude_mount_points",
+            "required": false,
+            "schema": {
+              "type": "boolean"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ExtensionResponse"
+                }
+              }
+            },
+            "description": "Success"
+          },
+          "401": {
+            "$ref": "#/components/responses/401"
+          },
+          "403": {
+            "$ref": "#/components/responses/403"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
+          }
+        },
+        "summary": "Get an Extension by id",
+        "tags": [
+          "Extensions"
+        ]
+      },
+      "patch": {
+        "description": "Partially update an Extension. Absent fields are left unchanged.\nAny mount points within any `uiMountPointTypeConfig` are upserted.\n",
+        "operationId": "patchExtension",
+        "parameters": [
+          {
+            "description": "The id of the Extension to patch.",
+            "in": "path",
+            "name": "extensionId",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ExtensionPatchRequest"
+              }
+            }
+          },
+          "description": "Request to patch an extension",
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ExtensionResponse"
+                }
+              }
+            },
+            "description": "Success"
+          },
+          "400": {
+            "$ref": "#/components/responses/400"
+          },
+          "401": {
+            "$ref": "#/components/responses/401"
+          },
+          "403": {
+            "$ref": "#/components/responses/403"
+          },
+          "404": {
+            "$ref": "#/components/responses/404"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
+          }
+        },
+        "summary": "Patch an Extension by id",
+        "tags": [
+          "Extensions"
+        ]
+      }
+    },
+    "/api/extensions/beta/extensions/{extensionId}/views": {
+      "post": {
+        "description": "Increment the view count for an Extension by one. If appVersionId is provided, uses that for per-version tracking; otherwise falls back to the Extension's stored appVersionId.",
+        "operationId": "incrementExtensionViews",
+        "parameters": [
+          {
+            "description": "The id of the Extension to increment views for.",
+            "in": "path",
+            "name": "extensionId",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/IncrementExtensionViewsRequest"
+              }
+            }
+          },
+          "description": "Request body optionally containing the App Version id to attribute the view to.",
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "401": {
+            "$ref": "#/components/responses/401"
+          },
+          "403": {
+            "$ref": "#/components/responses/403"
+          },
+          "404": {
+            "$ref": "#/components/responses/404"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
+          }
+        },
+        "summary": "Increment views for an Extension by one",
+        "tags": [
+          "Extensions"
+        ]
+      }
+    },
     "/api/gen-ai/beta/default-endpoint-environment": {
       "get": {
         "description": "Returns the default environment for Gen AI endpoints",
@@ -20474,18 +23578,30 @@
             }
           },
           {
-            "description": "Aggregation window for metrics data points. Defaults to hourly.",
+            "description": "Optional aggregation window for metrics data points. When provided, uses the specified window (5min, hourly, or daily) for step size. When omitted, uses adaptive step sizing based on the time range to optimize data point count.",
             "in": "query",
             "name": "aggregationWindow",
             "required": false,
             "schema": {
-              "default": "hourly",
               "enum": [
                 "hourly",
                 "daily"
               ],
               "example": "hourly",
               "type": "string"
+            }
+          },
+          {
+            "description": "Maximum number of historical executions to include in metrics aggregation. Defaults to 3 if not specified.",
+            "in": "query",
+            "name": "maxHistoricalExecutions",
+            "required": false,
+            "schema": {
+              "default": 3,
+              "example": 3,
+              "maximum": 10,
+              "minimum": 1,
+              "type": "integer"
             }
           }
         ],
@@ -20673,18 +23789,30 @@
             }
           },
           {
-            "description": "Aggregation window for metrics data points. Defaults to hourly.",
+            "description": "Optional aggregation window for metrics data points. When provided, uses the specified window (5min, hourly, or daily) for step size. When omitted, uses adaptive step sizing based on the time range to optimize data point count.",
             "in": "query",
             "name": "aggregationWindow",
             "required": false,
             "schema": {
-              "default": "hourly",
               "enum": [
                 "hourly",
                 "daily"
               ],
               "example": "hourly",
               "type": "string"
+            }
+          },
+          {
+            "description": "Maximum number of historical executions to include in metrics aggregation. Defaults to 3 if not specified.",
+            "in": "query",
+            "name": "maxHistoricalExecutions",
+            "required": false,
+            "schema": {
+              "default": 3,
+              "example": 3,
+              "maximum": 10,
+              "minimum": 1,
+              "type": "integer"
             }
           }
         ],
@@ -20869,18 +23997,30 @@
             }
           },
           {
-            "description": "Aggregation window for metrics data points. Defaults to hourly.",
+            "description": "Optional aggregation window for metrics data points. When provided, uses the specified window (5min, hourly, or daily) for step size. When omitted, uses adaptive step sizing based on the time range to optimize data point count.",
             "in": "query",
             "name": "aggregationWindow",
             "required": false,
             "schema": {
-              "default": "hourly",
               "enum": [
                 "hourly",
                 "daily"
               ],
               "example": "hourly",
               "type": "string"
+            }
+          },
+          {
+            "description": "Maximum number of historical executions to include in metrics aggregation. Defaults to 3 if not specified.",
+            "in": "query",
+            "name": "maxHistoricalExecutions",
+            "required": false,
+            "schema": {
+              "default": 3,
+              "example": 3,
+              "maximum": 10,
+              "minimum": 1,
+              "type": "integer"
             }
           }
         ],
@@ -20965,18 +24105,30 @@
             }
           },
           {
-            "description": "Aggregation window for metrics data points. Defaults to hourly.",
+            "description": "Optional aggregation window for metrics data points. When provided, uses the specified window (5min, hourly, or daily) for step size. When omitted, uses adaptive step sizing based on the time range to optimize data point count.",
             "in": "query",
             "name": "aggregationWindow",
             "required": false,
             "schema": {
-              "default": "hourly",
               "enum": [
                 "hourly",
                 "daily"
               ],
               "example": "hourly",
               "type": "string"
+            }
+          },
+          {
+            "description": "Maximum number of historical executions to include in metrics aggregation. Defaults to 3 if not specified.",
+            "in": "query",
+            "name": "maxHistoricalExecutions",
+            "required": false,
+            "schema": {
+              "default": 3,
+              "example": 3,
+              "maximum": 10,
+              "minimum": 1,
+              "type": "integer"
             }
           }
         ],
@@ -23714,6 +26866,705 @@
         ]
       }
     },
+    "/api/pat/v1/tokens": {
+      "delete": {
+        "operationId": "deleteAllPersonalAccessToken",
+        "responses": {
+          "200": {
+            "description": "success"
+          },
+          "400": {
+            "$ref": "#/components/responses/400"
+          },
+          "401": {
+            "$ref": "#/components/responses/401"
+          },
+          "403": {
+            "$ref": "#/components/responses/403"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
+          }
+        },
+        "summary": "Delete all their personal access token",
+        "tags": [
+          "PersonalAccessToken"
+        ]
+      },
+      "get": {
+        "operationId": "listPersonalAccessTokens",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/name"
+          },
+          {
+            "$ref": "#/components/parameters/status"
+          },
+          {
+            "$ref": "#/components/parameters/sortBy"
+          },
+          {
+            "$ref": "#/components/parameters/sortOrder"
+          },
+          {
+            "$ref": "#/components/parameters/offset"
+          },
+          {
+            "$ref": "#/components/parameters/limit"
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PaginatedPersonalAccessTokenEnvelope"
+                }
+              }
+            },
+            "description": "success"
+          },
+          "400": {
+            "$ref": "#/components/responses/400"
+          },
+          "401": {
+            "$ref": "#/components/responses/401"
+          },
+          "403": {
+            "$ref": "#/components/responses/403"
+          },
+          "404": {
+            "$ref": "#/components/responses/404"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
+          }
+        },
+        "summary": "Retrieves a list of personal access tokens",
+        "tags": [
+          "PersonalAccessToken"
+        ]
+      },
+      "post": {
+        "operationId": "createPersonalAccessToken",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreatePersonalAccessTokenRequest"
+              }
+            }
+          },
+          "description": "Personal access token to be created",
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PersonalAccessToken"
+                }
+              }
+            },
+            "description": "success"
+          },
+          "400": {
+            "$ref": "#/components/responses/400"
+          },
+          "401": {
+            "$ref": "#/components/responses/401"
+          },
+          "403": {
+            "$ref": "#/components/responses/403"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
+          }
+        },
+        "summary": "Create a personal access token",
+        "tags": [
+          "PersonalAccessToken"
+        ]
+      }
+    },
+    "/api/pat/v1/tokens/delete/bulk": {
+      "post": {
+        "operationId": "deletePersonalAccessTokens",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/BulkPatIdsRequest"
+              }
+            }
+          },
+          "description": "List of personal access token ids to delete",
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "success"
+          },
+          "400": {
+            "$ref": "#/components/responses/400"
+          },
+          "401": {
+            "$ref": "#/components/responses/401"
+          },
+          "403": {
+            "$ref": "#/components/responses/403"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
+          }
+        },
+        "summary": "Delete a list of personal access tokens",
+        "tags": [
+          "PersonalAccessToken"
+        ]
+      }
+    },
+    "/api/pat/v1/tokens/expiration-policy": {
+      "get": {
+        "operationId": "getPersonalAccessTokenExpirationPolicy",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PersonalAccessTokenExpirationPolicy"
+                }
+              }
+            },
+            "description": "success"
+          },
+          "401": {
+            "$ref": "#/components/responses/401"
+          },
+          "403": {
+            "$ref": "#/components/responses/403"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
+          }
+        },
+        "summary": "Retrieves the min and max expiration time allowed for a personal access token",
+        "tags": [
+          "PersonalAccessToken"
+        ]
+      }
+    },
+    "/api/pat/v1/tokens/invalidate": {
+      "post": {
+        "operationId": "invalidateAllPersonalAccessToken",
+        "responses": {
+          "200": {
+            "description": "success"
+          },
+          "400": {
+            "$ref": "#/components/responses/400"
+          },
+          "401": {
+            "$ref": "#/components/responses/401"
+          },
+          "403": {
+            "$ref": "#/components/responses/403"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
+          }
+        },
+        "summary": "Invalidate all their personal access token",
+        "tags": [
+          "PersonalAccessToken"
+        ]
+      }
+    },
+    "/api/pat/v1/tokens/invalidate/bulk": {
+      "post": {
+        "operationId": "invalidatePersonalAccessTokens",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/BulkPatIdsRequest"
+              }
+            }
+          },
+          "description": "List of personal access token ids to invalidate",
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "success"
+          },
+          "400": {
+            "$ref": "#/components/responses/400"
+          },
+          "401": {
+            "$ref": "#/components/responses/401"
+          },
+          "403": {
+            "$ref": "#/components/responses/403"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
+          }
+        },
+        "summary": "Invalidate a list of personal access tokens",
+        "tags": [
+          "PersonalAccessToken"
+        ]
+      }
+    },
+    "/api/pat/v1/tokens/{patId}": {
+      "delete": {
+        "operationId": "deletePersonalAccessToken",
+        "parameters": [
+          {
+            "description": "Id of the personal access tokens to delete",
+            "in": "path",
+            "name": "patId",
+            "required": true,
+            "schema": {
+              "pattern": "^[0-9a-f]{24}$",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "success"
+          },
+          "400": {
+            "$ref": "#/components/responses/400"
+          },
+          "401": {
+            "$ref": "#/components/responses/401"
+          },
+          "403": {
+            "$ref": "#/components/responses/403"
+          },
+          "404": {
+            "$ref": "#/components/responses/404"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
+          }
+        },
+        "summary": "Delete a personal access token",
+        "tags": [
+          "PersonalAccessToken"
+        ]
+      }
+    },
+    "/api/pat/v1/tokens/{patId}/invalidate": {
+      "post": {
+        "operationId": "invalidatePersonalAccessToken",
+        "parameters": [
+          {
+            "description": "Token Id of the personal access tokens to invalidate",
+            "in": "path",
+            "name": "patId",
+            "required": true,
+            "schema": {
+              "pattern": "^[0-9a-f]{24}$",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "success"
+          },
+          "400": {
+            "$ref": "#/components/responses/400"
+          },
+          "401": {
+            "$ref": "#/components/responses/401"
+          },
+          "403": {
+            "$ref": "#/components/responses/403"
+          },
+          "404": {
+            "$ref": "#/components/responses/404"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
+          }
+        },
+        "summary": "Invalidate a personal access token",
+        "tags": [
+          "PersonalAccessToken"
+        ]
+      }
+    },
+    "/api/pat/v1/users/tokens": {
+      "get": {
+        "operationId": "listAllPersonalAccessTokens",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/name"
+          },
+          {
+            "$ref": "#/components/parameters/status"
+          },
+          {
+            "$ref": "#/components/parameters/sortBy"
+          },
+          {
+            "$ref": "#/components/parameters/sortOrder"
+          },
+          {
+            "$ref": "#/components/parameters/offset"
+          },
+          {
+            "$ref": "#/components/parameters/limit"
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PaginatedPersonalAccessTokenEnvelope"
+                }
+              }
+            },
+            "description": "success"
+          },
+          "400": {
+            "$ref": "#/components/responses/400"
+          },
+          "401": {
+            "$ref": "#/components/responses/401"
+          },
+          "403": {
+            "$ref": "#/components/responses/403"
+          },
+          "404": {
+            "$ref": "#/components/responses/404"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
+          }
+        },
+        "summary": "Retrieves a list of personal access tokens",
+        "tags": [
+          "PersonalAccessTokenAdmin"
+        ]
+      }
+    },
+    "/api/pat/v1/users/tokens/delete/bulk": {
+      "post": {
+        "operationId": "deletePersonalAccessTokensOfUser",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/BulkPatIdsRequest"
+              }
+            }
+          },
+          "description": "List of personal access token ids to delete",
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "success"
+          },
+          "400": {
+            "$ref": "#/components/responses/400"
+          },
+          "401": {
+            "$ref": "#/components/responses/401"
+          },
+          "403": {
+            "$ref": "#/components/responses/403"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
+          }
+        },
+        "summary": "Delete a list of personal access tokens",
+        "tags": [
+          "PersonalAccessTokenAdmin"
+        ]
+      }
+    },
+    "/api/pat/v1/users/tokens/invalidate/bulk": {
+      "post": {
+        "operationId": "invalidatePersonalAccessTokensOfUser",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/BulkPatIdsRequest"
+              }
+            }
+          },
+          "description": "List of personal access token ids to invalidate",
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "success"
+          },
+          "400": {
+            "$ref": "#/components/responses/400"
+          },
+          "401": {
+            "$ref": "#/components/responses/401"
+          },
+          "403": {
+            "$ref": "#/components/responses/403"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
+          }
+        },
+        "summary": "Invalidate a list of personal access tokens",
+        "tags": [
+          "PersonalAccessTokenAdmin"
+        ]
+      }
+    },
+    "/api/pat/v1/users/{userId}/tokens": {
+      "delete": {
+        "operationId": "deleteAllPersonalAccessTokensOfUser",
+        "parameters": [
+          {
+            "description": "User Id owner of the personal access token",
+            "in": "path",
+            "name": "userId",
+            "required": true,
+            "schema": {
+              "pattern": "^[0-9a-f]{24}$",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "success"
+          },
+          "400": {
+            "$ref": "#/components/responses/400"
+          },
+          "401": {
+            "$ref": "#/components/responses/401"
+          },
+          "403": {
+            "$ref": "#/components/responses/403"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
+          }
+        },
+        "summary": "Delete all personal access token of a User",
+        "tags": [
+          "PersonalAccessTokenAdmin"
+        ]
+      },
+      "get": {
+        "operationId": "listAllPersonalAccessTokensOfUser",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/userId"
+          },
+          {
+            "$ref": "#/components/parameters/name"
+          },
+          {
+            "$ref": "#/components/parameters/status"
+          },
+          {
+            "$ref": "#/components/parameters/sortBy"
+          },
+          {
+            "$ref": "#/components/parameters/sortOrder"
+          },
+          {
+            "$ref": "#/components/parameters/offset"
+          },
+          {
+            "$ref": "#/components/parameters/limit"
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PaginatedPersonalAccessTokenEnvelope"
+                }
+              }
+            },
+            "description": "success"
+          },
+          "400": {
+            "$ref": "#/components/responses/400"
+          },
+          "401": {
+            "$ref": "#/components/responses/401"
+          },
+          "403": {
+            "$ref": "#/components/responses/403"
+          },
+          "404": {
+            "$ref": "#/components/responses/404"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
+          }
+        },
+        "summary": "Retrieves a list of personal access tokens",
+        "tags": [
+          "PersonalAccessTokenAdmin"
+        ]
+      }
+    },
+    "/api/pat/v1/users/{userId}/tokens/invalidate": {
+      "post": {
+        "operationId": "invalidateAllPersonalAccessTokensOfUser",
+        "parameters": [
+          {
+            "description": "User Id owner of the personal access tokens",
+            "in": "path",
+            "name": "userId",
+            "required": true,
+            "schema": {
+              "pattern": "^[0-9a-f]{24}$",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "success"
+          },
+          "400": {
+            "$ref": "#/components/responses/400"
+          },
+          "401": {
+            "$ref": "#/components/responses/401"
+          },
+          "403": {
+            "$ref": "#/components/responses/403"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
+          }
+        },
+        "summary": "Invalidate all personal access tokens of a User",
+        "tags": [
+          "PersonalAccessTokenAdmin"
+        ]
+      }
+    },
+    "/api/pat/v1/users/{userId}/tokens/{patId}": {
+      "delete": {
+        "operationId": "deletePersonalAccessTokenOfUser",
+        "parameters": [
+          {
+            "description": "User Id owner of the personal access token",
+            "in": "path",
+            "name": "userId",
+            "required": true,
+            "schema": {
+              "pattern": "^[0-9a-f]{24}$",
+              "type": "string"
+            }
+          },
+          {
+            "description": "Token Id of the personal access tokens to delete",
+            "in": "path",
+            "name": "patId",
+            "required": true,
+            "schema": {
+              "pattern": "^[0-9a-f]{24}$",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "success"
+          },
+          "400": {
+            "$ref": "#/components/responses/400"
+          },
+          "401": {
+            "$ref": "#/components/responses/401"
+          },
+          "403": {
+            "$ref": "#/components/responses/403"
+          },
+          "404": {
+            "$ref": "#/components/responses/404"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
+          }
+        },
+        "summary": "Delete a personal access token of a User",
+        "tags": [
+          "PersonalAccessTokenAdmin"
+        ]
+      }
+    },
+    "/api/pat/v1/users/{userId}/tokens/{patId}/invalidate": {
+      "post": {
+        "operationId": "invalidatePersonalAccessTokenOfUser",
+        "parameters": [
+          {
+            "description": "User Id owner of the personal access tokens",
+            "in": "path",
+            "name": "userId",
+            "required": true,
+            "schema": {
+              "pattern": "^[0-9a-f]{24}$",
+              "type": "string"
+            }
+          },
+          {
+            "description": "Token Id of the personal access tokens to invalidate",
+            "in": "path",
+            "name": "patId",
+            "required": true,
+            "schema": {
+              "pattern": "^[0-9a-f]{24}$",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "success"
+          },
+          "400": {
+            "$ref": "#/components/responses/400"
+          },
+          "401": {
+            "$ref": "#/components/responses/401"
+          },
+          "403": {
+            "$ref": "#/components/responses/403"
+          },
+          "404": {
+            "$ref": "#/components/responses/404"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
+          }
+        },
+        "summary": "Invalidate a personal access token of a User",
+        "tags": [
+          "PersonalAccessTokenAdmin"
+        ]
+      }
+    },
     "/api/projects/beta/projects": {
       "get": {
         "description": "Get projects that a user can see. Required permissions: `ListProject`. *Note:* This is a beta endpoint with known limitations.",
@@ -23862,6 +27713,113 @@
         "summary": "Archive project by id",
         "tags": [
           "Projects"
+        ]
+      }
+    },
+    "/api/projects/beta/projects/{projectId}/commits/head": {
+      "get": {
+        "description": "Returns the current DFS head commit ID for the project. Required permissions: `ListProject`.",
+        "operationId": "getDfsHeadCommit",
+        "parameters": [
+          {
+            "description": "Project ID",
+            "in": "path",
+            "name": "projectId",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DfsHeadCommitEnvelopeV1"
+                }
+              }
+            },
+            "description": "Success"
+          },
+          "400": {
+            "$ref": "#/components/responses/400"
+          },
+          "401": {
+            "$ref": "#/components/responses/401"
+          },
+          "403": {
+            "$ref": "#/components/responses/403"
+          },
+          "404": {
+            "$ref": "#/components/responses/404"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
+          }
+        },
+        "summary": "Get DFS head commit",
+        "tags": [
+          "ProjectsCommits"
+        ]
+      }
+    },
+    "/api/projects/beta/projects/{projectId}/commits/resolveGitRef": {
+      "post": {
+        "description": "Resolves a git reference (branch, tag, etc.) to a concrete commit SHA for the project's main repository. Required permissions: `ListProject`.",
+        "operationId": "resolveGitRef",
+        "parameters": [
+          {
+            "description": "Project ID",
+            "in": "path",
+            "name": "projectId",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/GitRefResolutionRequestV1"
+              }
+            }
+          },
+          "description": "Git reference to resolve",
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GitRefResolutionEnvelopeV1"
+                }
+              }
+            },
+            "description": "Success"
+          },
+          "400": {
+            "$ref": "#/components/responses/400"
+          },
+          "401": {
+            "$ref": "#/components/responses/401"
+          },
+          "403": {
+            "$ref": "#/components/responses/403"
+          },
+          "404": {
+            "$ref": "#/components/responses/404"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
+          }
+        },
+        "summary": "Resolve a git reference to a commit SHA",
+        "tags": [
+          "ProjectsCommits"
         ]
       }
     },
@@ -25146,7 +29104,8 @@
         ]
       },
       "post": {
-        "description": "Create a new Registered Model from an experiment run",
+        "deprecated": true,
+        "description": "**DEPRECATED**: This endpoint is deprecated as of version 6.2.1.\nPlease migrate to POST /api/registeredmodels/v2 for enhanced functionality.\n",
         "operationId": "createRegisteredModelFromRun",
         "requestBody": {
           "content": {
@@ -25186,7 +29145,7 @@
             "$ref": "#/components/responses/500"
           }
         },
-        "summary": "Create a new Registered Model from an experiment run",
+        "summary": "[DEPRECATED] Create a new Registered Model from an experiment run",
         "tags": [
           "RegisteredModels"
         ]
@@ -25684,7 +29643,8 @@
         ]
       },
       "post": {
-        "description": "Create a new version of a Registered Model",
+        "deprecated": true,
+        "description": "**DEPRECATED**: This endpoint is deprecated as of version 6.2.1.\nPlease migrate to POST /api/registeredmodels/v2 for enhanced functionality.\n",
         "operationId": "createRegisteredModelVersionFromRun",
         "parameters": [
           {
@@ -25735,7 +29695,7 @@
             "$ref": "#/components/responses/500"
           }
         },
-        "summary": "Create a new version of a Registered Model",
+        "summary": "[DEPRECATED] Create a new version of a Registered Model",
         "tags": [
           "RegisteredModels"
         ]
@@ -27023,9 +30983,114 @@
         ]
       }
     },
+    "/api/users/v1/user/{userId}/roles": {
+      "get": {
+        "description": "Retrieve the roles assigned to a user. Required permissions: `SetUserSystemRoles`",
+        "operationId": "getUserRoles",
+        "parameters": [
+          {
+            "description": "Id of the User to fetch roles for",
+            "in": "path",
+            "name": "userId",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserRolesEnvelopeV1"
+                }
+              }
+            },
+            "description": "Success"
+          },
+          "400": {
+            "$ref": "#/components/responses/400"
+          },
+          "401": {
+            "$ref": "#/components/responses/401"
+          },
+          "403": {
+            "$ref": "#/components/responses/403"
+          },
+          "404": {
+            "$ref": "#/components/responses/404"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
+          }
+        },
+        "summary": "Get roles assigned to a user",
+        "tags": [
+          "Users"
+        ]
+      },
+      "post": {
+        "description": "Set the complete list of roles for a user, replacing any previously assigned roles. Required permissions: `SetUserSystemRoles`",
+        "operationId": "setUserRoles",
+        "parameters": [
+          {
+            "description": "Id of the User to set roles for",
+            "in": "path",
+            "name": "userId",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SetUserRolesRequestV1"
+              }
+            }
+          },
+          "description": "The roles to assign to the user",
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserRolesEnvelopeV1"
+                }
+              }
+            },
+            "description": "Success"
+          },
+          "400": {
+            "$ref": "#/components/responses/400"
+          },
+          "401": {
+            "$ref": "#/components/responses/401"
+          },
+          "403": {
+            "$ref": "#/components/responses/403"
+          },
+          "404": {
+            "$ref": "#/components/responses/404"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
+          }
+        },
+        "summary": "Set roles for a user",
+        "tags": [
+          "Users"
+        ]
+      }
+    },
     "/api/users/v1/user/{userId}/tokenCredentials/{credentialId}": {
       "put": {
-        "description": "Update a user's git credential. Required permissions: `UpdateUser`. *Note:* This only supports updating Github PATs.",
+        "description": "Update a user's git credential. Required permissions: `UpdateUser`. *Note:* This only supports updating GitHub and GitHub Enterprise PATs.",
         "operationId": "updateUserGitCred",
         "parameters": [
           {
@@ -27548,6 +31613,9 @@
       "name": "Environments"
     },
     {
+      "name": "Extensions"
+    },
+    {
       "name": "GenAI"
     },
     {
@@ -27572,6 +31640,9 @@
       "name": "PPM"
     },
     {
+      "name": "PersonalAccessToken"
+    },
+    {
       "name": "ProjectSharedDatasets"
     },
     {
@@ -27579,6 +31650,9 @@
     },
     {
       "name": "Projects"
+    },
+    {
+      "name": "ProjectsCommits"
     },
     {
       "name": "ProjectsFiles"
