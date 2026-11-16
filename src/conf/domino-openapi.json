@@ -30189,7 +30189,7 @@
     },
     "/activity/metadata": {
       "get": {
-        "operationId": "notFound",
+        "operationId": "getActivityMetadata",
         "responses": {
           "200": {
             "content": {
@@ -32202,7 +32202,7 @@
         "operationId": "getKubecostLiveness",
         "summary": "this endpoint will be temporarily used to discover if Kubecost is installed and will be removed if we retire the current cost& compute page",
         "tags": [
-          "controlcenter"
+          "Control Center"
         ]
       }
     },
@@ -65810,7 +65810,7 @@
     },
     "/tags": {
       "get": {
-        "operationId": "list",
+        "operationId": "listProjects",
         "parameters": [
           {
             "description": "Optional filter for a tag by name",
