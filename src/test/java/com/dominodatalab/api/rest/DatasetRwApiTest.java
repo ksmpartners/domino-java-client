@@ -211,7 +211,7 @@ class DatasetRwApiTest extends TestClientConfigurer {
         // Arrange
 
         // Act
-        List<DominoDatasetrwApiDatasetRwInfoDto> datasets = datasetRwApi.getDatasetsV2(Boolean.FALSE, Boolean.TRUE, Boolean.FALSE, null, null, null, null);
+        List<DominoDatasetrwApiDatasetRwInfoDto> datasets = datasetRwApi.getDatasetsV2(Boolean.FALSE, Boolean.TRUE, Boolean.FALSE, null, null, null, null, null);
 
         // Assert
         assertNotNull(datasets);
@@ -224,7 +224,7 @@ class DatasetRwApiTest extends TestClientConfigurer {
         String projectId = TestData.VALID_PROJECT_ID_0;
 
         // Act
-        List<DominoDatasetrwApiDatasetRwInfoDto> datasets = datasetRwApi.getDatasetsV2(Boolean.FALSE, Boolean.TRUE, Boolean.FALSE, null, null, List.of(projectId), null);
+        List<DominoDatasetrwApiDatasetRwInfoDto> datasets = datasetRwApi.getDatasetsV2(Boolean.FALSE, Boolean.TRUE, Boolean.FALSE, null, null, List.of(projectId), null, null);
 
         // Assert
         assertNotNull(datasets);
@@ -241,7 +241,7 @@ class DatasetRwApiTest extends TestClientConfigurer {
         String datasetId = TestData.VALID_DATASET_ID_0;
 
         // Act
-        List<DominoDatasetrwApiDatasetRwInfoDto> datasets = datasetRwApi.getDatasetsV2(Boolean.FALSE, Boolean.TRUE, Boolean.FALSE, null, null, null, List.of(datasetId));
+        List<DominoDatasetrwApiDatasetRwInfoDto> datasets = datasetRwApi.getDatasetsV2(Boolean.FALSE, Boolean.TRUE, Boolean.FALSE, null, null, null, null, List.of(datasetId));
 
         // Assert
         assertNotNull(datasets);
@@ -257,7 +257,7 @@ class DatasetRwApiTest extends TestClientConfigurer {
         String projectId = TestData.NOT_FOUND_DOMINO_ID;
 
         // Act
-        List<DominoDatasetrwApiDatasetRwInfoDto> datasets = datasetRwApi.getDatasetsV2(Boolean.FALSE, Boolean.TRUE, Boolean.FALSE, null, null, List.of(projectId), null);
+        List<DominoDatasetrwApiDatasetRwInfoDto> datasets = datasetRwApi.getDatasetsV2(Boolean.FALSE, Boolean.TRUE, Boolean.FALSE, null, null, List.of(projectId), null, null);
 
         // Assert
         assertNotNull(datasets);
@@ -270,7 +270,7 @@ class DatasetRwApiTest extends TestClientConfigurer {
         String datasetId = TestData.NOT_FOUND_DOMINO_ID;
 
         // Act
-        List<DominoDatasetrwApiDatasetRwInfoDto> datasets = datasetRwApi.getDatasetsV2(Boolean.FALSE, Boolean.TRUE, Boolean.FALSE, null, null, null, List.of(datasetId));
+        List<DominoDatasetrwApiDatasetRwInfoDto> datasets = datasetRwApi.getDatasetsV2(Boolean.FALSE, Boolean.TRUE, Boolean.FALSE, null, null, null, null, List.of(datasetId));
 
         // Assert
         assertNotNull(datasets);
